@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SISPPe — Portal da Escola</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<style>
+:root{
+  --navy:#0d2137;--navy2:#1a3a5c;
+  --green:#1e6b45;--green2:#28855a;--green-pale:#e8f5ee;
+  --gold:#b8860b;--gold-pale:#fdf7e3;
+  --red:#9b2335;--red-pale:#fdf0f2;
+  --amber:#d97706;--amber-pale:#fef3c7;
+  --gray-50:#f9fafb;--gray-100:#f2f4f7;--gray-200:#dde2ea;
+  --gray-300:#c4ccd8;--gray-400:#8896a9;--gray-500:#68778d;
+  --gray-600:#4b5668;--gray-700:#2e3748;--white:#fff;
+  --shadow:0 1px 3px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',sans-serif;background:#f0f2f5;min-height:100vh;font-size:14px;color:var(--gray-700)}
+a{color:var(--green);text-decoration:underline;cursor:pointer}
+a:hover{color:var(--navy)}
+button,input,select,textarea{font-family:'Source Sans 3',sans-serif}
+
+/* ── TOPBAR ─────────────────────────────────────────────────── */
+.topbar{background:var(--navy);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:3px solid var(--green);position:sticky;top:0;z-index:300}
+.topbar-brand{display:flex;align-items:center;gap:10px}
+.tb-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--green),var(--green2));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.tb-name{display:flex;flex-direction:column}
+.tb-abbr{font-family:'Source Serif 4',serif;font-size:18px;font-weight:700;color:#fff;letter-spacing:.04em;line-height:1}
+.tb-full{font-size:9px;color:rgba(255,255,255,.5);line-height:1.3;max-width:240px}
+.topbar-admin{font-size:11px;color:rgba(255,255,255,.5);text-decoration:underline;cursor:pointer;border:none;background:none}
+.topbar-admin:hover{color:rgba(255,255,255,.9)}
+
+/* ── SCHOOL BAR ──────────────────────────────────────────────── */
+.school-bar{background:var(--green);padding:0 20px;height:38px;display:none;align-items:center;justify-content:space-between}
+.school-bar.show{display:flex}
+.school-info{display:flex;align-items:center;gap:14px}
+.school-name{font-weight:700;color:#fff;font-size:13px}
+.perfil-badge{padding:3px 10px;background:rgba(255,255,255,.2);border-radius:12px;font-size:11px;color:#fff;font-weight:600}
+.school-nav{display:flex;gap:2px;flex-wrap:wrap}
+.snav-btn{padding:5px 12px;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:12px;font-weight:600;cursor:pointer;border-radius:3px;transition:all .15s}
+.snav-btn:hover,.snav-btn.active{background:rgba(255,255,255,.32)}
+
+/* ── BLOQUEIO BANNER ─────────────────────────────────────────── */
+#banner-bloqueio{display:none;background:var(--red);color:#fff;padding:8px 20px;font-size:12.5px;font-weight:600;text-align:center;z-index:200}
+#banner-bloqueio.show{display:block}
+#banner-analise{display:none;background:var(--amber);color:#fff;padding:8px 20px;font-size:12.5px;font-weight:600;text-align:center;z-index:200}
+#banner-analise.show{display:block}
+
+/* ── SCREENS ─────────────────────────────────────────────────── */
+.screen{display:none}
+.screen.show{display:block}
+
+/* ── LOGIN ───────────────────────────────────────────────────── */
+#s-login{display:flex;align-items:center;justify-content:center;padding:28px 16px;min-height:calc(100vh - 52px)}
+.login-grid{display:grid;grid-template-columns:1fr 1fr;max-width:900px;width:100%;background:var(--white);border:1px solid var(--gray-300);box-shadow:var(--shadow-md)}
+.lp-left{padding:24px 28px;border-right:1px solid var(--gray-200)}
+.comm-box{border:1px solid var(--gray-300);margin-bottom:16px}
+.comm-hd{background:var(--green);padding:8px 14px}
+.comm-hd span{font-family:'Source Serif 4',serif;font-size:14px;font-weight:700;color:#fff}
+.comm-body{padding:14px;font-size:12.5px;color:var(--gray-700);line-height:1.7}
+.comm-body p{margin-bottom:8px}
+.comm-body strong{color:var(--navy);font-weight:700}
+.orien-box{border:1px solid var(--gray-200)}
+.orien-hd{background:var(--gray-100);padding:6px 12px;font-size:11px;font-weight:700;color:var(--gray-600);text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--gray-200)}
+.orien-body ul{list-style:none;padding:10px 14px}
+.orien-body li{font-size:12px;color:var(--gray-600);line-height:1.6;padding:3px 0;border-bottom:1px solid var(--gray-100);display:flex;gap:7px}
+.orien-body li:last-child{border-bottom:none}
+.orien-body li::before{content:'▸';color:var(--green);font-size:10px;flex-shrink:0;margin-top:2px}
+.orien-body strong{color:var(--red)}
+.lp-right{padding:24px 28px;display:flex;flex-direction:column}
+.area-title{font-family:'Source Serif 4',serif;font-size:16px;font-weight:700;color:var(--green);margin-bottom:3px}
+.area-sub{font-size:12px;color:var(--gray-500);margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--gray-200)}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:12px;color:var(--gray-700);margin-bottom:4px}
+.fg input,.fg select{width:100%;padding:8px 10px;border:1px solid var(--gray-300);font-size:13px;color:var(--gray-700);outline:none;transition:border-color .2s}
+.fg input:focus,.fg select:focus{border-color:var(--green);box-shadow:0 0 0 2px rgba(30,107,69,.1)}
+.cpf-hint{font-size:11px;color:var(--gray-400);margin-top:3px}
+.terms-row{display:flex;align-items:flex-start;gap:7px;margin-bottom:16px;font-size:12px;color:var(--gray-600);line-height:1.5}
+.terms-row input[type=checkbox]{accent-color:var(--green);margin-top:1px;flex-shrink:0}
+.btn-login{width:100%;padding:9px;background:var(--green);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;transition:background .2s}
+.btn-login:hover{background:var(--navy)}
+.err-msg{padding:8px 11px;background:var(--red-pale);border:1px solid #e8b4ba;font-size:12px;color:var(--red);margin-bottom:12px;display:none}
+.login-links{display:flex;flex-direction:column;gap:3px;margin-top:12px}
+.login-links a{font-size:12px}
+.version-info{margin-top:auto;padding-top:16px;font-size:10px;color:var(--gray-300);border-top:1px solid var(--gray-100)}
+.hint-box{margin-top:12px;padding:8px 11px;background:var(--gold-pale);border-left:3px solid var(--gold);font-size:11px;color:var(--gray-600);line-height:1.7}
+
+/* ── HOME ────────────────────────────────────────────────────── */
+.home-grid{display:grid;grid-template-columns:300px 1fr;gap:16px;max-width:1200px;padding:20px}
+.card{background:var(--white);border:1px solid var(--gray-200);box-shadow:var(--shadow)}
+.card-title{font-family:'Source Serif 4',serif;font-size:15px;color:var(--green);padding:10px 14px;border-bottom:1px solid var(--gray-200)}
+.card-body{padding:14px}
+.widget-icon{width:40px;height:40px;float:left;margin-right:10px;font-size:28px;line-height:1}
+.widget-text{font-size:12.5px;color:var(--gray-600);line-height:1.5;overflow:hidden}
+.widget-text strong{color:var(--green)}
+.btn-g{display:inline-block;padding:6px 14px;background:var(--green);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.03em;margin-top:8px;text-transform:uppercase;transition:background .2s}
+.btn-g:hover{background:var(--navy)}
+.btn-g:disabled{background:var(--gray-400);cursor:not-allowed}
+.btn-g-sm{padding:4px 10px;font-size:11px}
+.doc-list{list-style:none;padding:0}
+.doc-list li{padding:5px 0;border-bottom:1px solid var(--gray-100);font-size:12.5px}
+.doc-list li:last-child{border-bottom:none}
+.stbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.stbl th{background:var(--gray-700);color:#fff;padding:7px 10px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.stbl td{padding:8px 10px;border-bottom:1px solid var(--gray-100);vertical-align:middle}
+.stbl tr:hover td{background:var(--gray-50)}
+.status-active{color:var(--green);font-weight:700}
+.section-title{font-family:'Source Serif 4',serif;font-size:16px;color:var(--green);margin-bottom:10px}
+.process-item{border:1px solid var(--gray-200);margin-bottom:8px;font-size:12.5px}
+.pi-hd{background:var(--gray-50);padding:6px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.pi-num{width:24px;height:24px;background:var(--green);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.pi-body{display:none;padding:10px 14px}
+.pi-body.open{display:block}
+.pi-row{display:grid;grid-template-columns:150px 1fr;gap:4px;padding:4px 0;border-bottom:1px solid var(--gray-100);font-size:12px}
+.pi-row:last-child{border-bottom:none}
+.pi-lbl{color:var(--gray-500);font-weight:600}
+.btn-see{padding:5px 12px;background:var(--green);color:#fff;border:none;font-size:11.5px;font-weight:700;cursor:pointer;transition:background .2s;text-transform:uppercase;margin-bottom:10px}
+.btn-see:hover{background:var(--navy)}
+
+/* ── FICHA ───────────────────────────────────────────────────── */
+.filter-box{background:var(--white);border:1px solid var(--gray-300);padding:16px 20px;margin-bottom:16px;max-width:800px}
+.filter-title{font-weight:700;color:var(--gray-700);margin-bottom:4px;font-size:13px;text-align:center}
+.filter-sub{font-size:12px;color:var(--gray-500);text-align:center;margin-bottom:14px;text-transform:uppercase;letter-spacing:.05em}
+.filter-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 12px;border:1px solid var(--gray-300);padding:12px;margin-bottom:12px}
+.filter-cb{display:flex;align-items:center;gap:5px;font-size:12.5px;cursor:pointer}
+.filter-cb input{accent-color:var(--green)}
+.filter-btns{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.btn-outline{padding:6px 14px;background:#fff;border:1px solid var(--gray-400);font-size:12px;font-weight:600;cursor:pointer;color:var(--gray-600);transition:all .2s}
+.btn-outline:hover{border-color:var(--navy);color:var(--navy)}
+.ficha-doc{background:var(--white);border:1px solid var(--gray-300);max-width:800px;font-size:12px}
+.ficha-header{padding:12px 16px;border-bottom:1px solid var(--gray-200);display:flex;justify-content:space-between;align-items:flex-start}
+.ficha-sec-title{background:var(--gray-100);padding:6px 14px;font-weight:700;font-size:12px;color:var(--gray-700);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--gray-200)}
+.ficha-grid{display:grid;grid-template-columns:1fr 1fr}
+.fcell{padding:5px 14px;border-bottom:1px solid var(--gray-100);border-right:1px solid var(--gray-100)}
+.fcell.lbl{color:var(--gray-500);font-weight:600}
+.fcell.val{color:var(--gray-800)}
+.btn-pdf{padding:6px 14px;background:var(--green);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;transition:background .2s;text-transform:uppercase;letter-spacing:.03em}
+.btn-pdf:hover{background:var(--navy)}
+.btn-pdf:disabled{background:var(--gray-400);cursor:not-allowed}
+
+/* ── AÇÕES ───────────────────────────────────────────────────── */
+.tipo-acoes-box{border:1px solid var(--gray-300);padding:10px 14px;margin-bottom:14px;width:fit-content}
+.tipo-acoes-box legend{font-size:12px;font-weight:700;color:var(--gray-600);padding:0 6px}
+.tipo-acoes-row{display:flex;gap:18px}
+.tipo-cb{display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer}
+.tipo-cb input{accent-color:var(--green)}
+.btn-pesquisar{padding:7px 18px;background:var(--green);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s;text-transform:uppercase;letter-spacing:.03em}
+.btn-pesquisar:hover{background:var(--navy)}
+.acoes-item{border:1px solid var(--gray-200);margin-bottom:6px;font-size:12.5px}
+.ai-hd{background:var(--gray-50);padding:7px 12px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.ai-num{width:22px;height:22px;background:var(--green);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.action-badge{padding:2px 7px;font-size:10px;font-weight:700;border-radius:2px;text-transform:uppercase;letter-spacing:.04em}
+.ab-inc{background:#1e6b45;color:#fff}
+.ab-alt{background:#b8860b;color:#fff}
+.ai-body{display:none;padding:10px 14px;font-size:12px;color:var(--gray-600)}
+.ai-body.open{display:block}
+
+/* ── CONTA ───────────────────────────────────────────────────── */
+.conta-box{background:var(--white);border:1px solid var(--gray-200);padding:20px;max-width:440px;box-shadow:var(--shadow)}
+.conta-title{font-family:'Source Serif 4',serif;font-size:15px;color:var(--green);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--gray-200)}
+.fg2 label{display:block;font-size:12.5px;color:var(--gray-700);margin-bottom:4px;font-weight:600}
+.fg2 input{width:100%;padding:8px 10px;border:1px solid var(--gray-300);font-size:13px;outline:none;margin-bottom:14px}
+.fg2 input:focus{border-color:var(--green)}
+.dados-line{display:flex;gap:6px;font-size:13px;color:var(--gray-600);padding:5px 0;border-bottom:1px solid var(--gray-100)}
+.dados-line strong{color:var(--gray-700);min-width:100px}
+.perfil-tag{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;letter-spacing:.04em}
+.perfil-dir{background:#dbeafe;color:#1d4ed8}
+.perfil-sec{background:var(--green-pale);color:var(--green)}
+
+/* ── DOCUMENTOS ──────────────────────────────────────────────── */
+.doc-upload-box{background:var(--white);border:1px solid var(--gray-200);padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
+.doc-upload-title{font-family:'Source Serif 4',serif;font-size:15px;color:var(--green);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--gray-200)}
+.upload-zone{border:2px dashed var(--gray-300);padding:24px;text-align:center;background:var(--gray-50);cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:14px;border-radius:4px}
+.upload-zone:hover{border-color:var(--green);background:var(--green-pale)}
+.upload-zone input[type=file]{display:none}
+.uz-icon{font-size:36px;margin-bottom:8px}
+.uz-text{font-size:13px;color:var(--gray-600);font-weight:600}
+.uz-hint{font-size:11px;color:var(--gray-400);margin-top:4px}
+.progress-wrap{display:none;margin:12px 0}
+.progress-label{font-size:12px;color:var(--gray-600);margin-bottom:5px;display:flex;justify-content:space-between}
+.progress-bg{background:var(--gray-200);height:10px;border-radius:5px;overflow:hidden}
+.progress-fill{height:100%;background:var(--green);width:0%;transition:width .3s}
+.tag-ok{color:var(--green);font-weight:700;font-size:11px}
+.tag-pend{color:var(--red);font-weight:600;font-size:11px}
+.docs-info-box{background:var(--gold-pale);border-left:3px solid var(--gold);padding:10px 14px;font-size:12px;color:var(--gray-600);margin-bottom:16px;line-height:1.7}
+
+/* ── TOAST ───────────────────────────────────────────────────── */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:11px 16px;font-size:13px;font-weight:500;box-shadow:var(--shadow-md);z-index:9999;display:none;border-left:4px solid var(--green);max-width:340px;border-radius:2px;animation:si .25s ease}
+@keyframes si{from{transform:translateX(14px);opacity:0}to{transform:translateX(0);opacity:1}}
+.cpf-input{letter-spacing:.08em}
+@media(max-width:700px){.login-grid,.home-grid{grid-template-columns:1fr}.lp-left{display:none}.filter-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="tb-icon">📂</div>
+    <div class="tb-name">
+      <span class="tb-abbr">SISPPe</span>
+      <span class="tb-full">Sistema de Informatização e Simplificação dos Processos de Pereiro</span>
+    </div>
+  </div>
+  <button class="topbar-admin" onclick="window.open('admin.html','_blank')">Área Administrativa (acesso restrito)</button>
+</header>
+
+<div id="banner-bloqueio">⛔ Acesso bloqueado pelo COMEP. Documentos e ficha em modo somente leitura. Entre em contato com a Secretaria Municipal de Educação.</div>
+<div id="banner-analise">🔍 Processo em análise pelo COMEP. Aguarde o retorno para novas alterações.</div>
+
+<div class="school-bar" id="schoolBar">
+  <div class="school-info">
+    <span class="school-name" id="schoolBarName"></span>
+    <span class="perfil-badge" id="perfilBadge"></span>
+  </div>
+  <div class="school-nav">
+    <button class="snav-btn active" id="btn-home"  onclick="showScreen('home')">Início</button>
+    <button class="snav-btn"        id="btn-docs"  onclick="showScreen('docs')">📁 Documentos</button>
+    <button class="snav-btn"        id="btn-ficha" onclick="showScreen('ficha')">Ficha da Escola</button>
+    <button class="snav-btn"        id="btn-acoes" onclick="showScreen('acoes')">Ações</button>
+    <button class="snav-btn"        id="btn-conta" onclick="showScreen('conta')">Conta</button>
+    <button class="snav-btn"        onclick="doLogout()">Sair</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ LOGIN ═══════════════════════════ -->
+<div class="screen show" id="s-login">
+  <div style="display:flex;align-items:center;justify-content:center;padding:28px 16px;min-height:calc(100vh - 52px)">
+    <div class="login-grid">
+      <div class="lp-left">
+        <div class="comm-box">
+          <div class="comm-hd"><span>📢 Comunicado Importante</span></div>
+          <div class="comm-body">
+            <p>A <strong>Resolução COMEP nº 001/2022</strong> determina que a instituição de ensino deverá encaminhar a solicitação de recredenciamento ao Conselho Municipal de Educação de Pereiro, <strong>90 (noventa) dias antes de expirar</strong> o prazo de vigência do credenciamento anterior.</p>
+            <p>As unidades escolares deverão atualizar o <strong>SISPPe</strong> sempre que houver mudança no quadro administrativo (diretor(a) e secretário(a)).</p>
+          </div>
+        </div>
+        <div class="orien-box">
+          <div class="orien-hd">— Orientações</div>
+          <div class="orien-body">
+            <ul>
+              <li><span>Escolas em diligência: prazo de <strong>30 dias para cumprimento</strong>, conforme notificação do COMEP.</span></li>
+              <li><span>Acesso com <strong>CPF do diretor(a) ou secretário(a)</strong> e a senha provisória fornecida pela Secretaria de Educação.</span></li>
+              <li><span>Documentos aceitos: <strong>PDF e JPG/JPEG</strong> · Máximo 10 MB por arquivo.</span></li>
+              <li><span>A Ficha da Escola deve ser atualizada antes do envio do processo de recredenciamento.</span></li>
+              <li><span>Dúvidas: entre em contato com a <strong>Secretaria Municipal de Educação de Pereiro</strong> ou com o COMEP.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="lp-right">
+        <div class="area-title">🏫 Área Escola</div>
+        <p class="area-sub">Acesso para diretores(as) e secretários(as) escolares das unidades municipais de Pereiro/CE.</p>
+        <div class="err-msg" id="errMsg">⚠️ CPF ou senha incorretos. Verifique os dados e tente novamente.</div>
+        <div class="fg">
+          <label>CPF:</label>
+          <input type="text" id="inpCpf" class="cpf-input" placeholder="000.000.000-00" maxlength="14" oninput="maskCpf(this)">
+          <div class="cpf-hint">Digite apenas os números — a formatação é automática.</div>
+        </div>
+        <div class="fg">
+          <label>Senha:</label>
+          <input type="password" id="inpSenha" placeholder="Senha provisória">
+        </div>
+        <div class="terms-row">
+          <input type="checkbox" id="chkTerms" checked>
+          <label for="chkTerms">Declaro ter lido e aceito os <a onclick="showTermos()">Termos de uso do sistema</a>.*</label>
+        </div>
+        <button class="btn-login" onclick="doLogin()">Entrar</button>
+        <div class="hint-box">
+          <strong>💡 Exemplo diretor:</strong> CPF <b>100.000.001-01</b> · Senha <b>Dir@2025#01</b><br>
+          <strong>💡 Exemplo secretário:</strong> CPF <b>200.000.001-01</b> · Senha <b>Sec@2025#01</b><br>
+          <em style="color:var(--gray-400)">CPFs provisórios — serão substituídos pelos reais.</em>
+        </div>
+        <div class="login-links">
+          <a onclick="alert('Entre em contato com a Secretaria Municipal de Educação de Pereiro para redefinir sua senha.')">Esqueci minha senha.</a>
+          <a onclick="alert('Solicite o cadastro junto à Secretaria Municipal de Educação de Pereiro.')">Ainda não possui cadastro?</a>
+        </div>
+        <div class="version-info">Versão 1.3.0 — SISPPe · COMEP Pereiro/CE · 2025</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ HOME ═══════════════════════════ -->
+<div class="screen" id="s-home">
+  <div class="home-grid">
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">Status de Documentos</div>
+        <div class="card-body">
+          <span class="widget-icon">🧾</span>
+          <div class="widget-text" id="comprovante-status">Verificando...</div>
+          <div style="clear:both"></div>
+          <button class="btn-g btn-g-sm" style="margin-top:10px" onclick="showScreen('docs')">Ver Documentos</button>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">Documentos da Escola</div>
+        <div class="card-body">
+          <span class="widget-icon">📁</span>
+          <div class="widget-text">Envie e gerencie os documentos obrigatórios para o processo de recredenciamento.</div>
+          <div style="clear:both"></div>
+          <button class="btn-g btn-g-sm" style="margin-top:10px" onclick="showScreen('docs')">Gerenciar Documentos</button>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">Ficha da Escola</div>
+        <div class="card-body">
+          <span class="widget-icon">📋</span>
+          <div class="widget-text">Acesse a ficha da escola para verificação e atualização dos dados cadastrais.</div>
+          <div style="clear:both"></div>
+          <button class="btn-g btn-g-sm" style="margin-top:10px" onclick="showScreen('ficha')">Visualizar ficha</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Modelos de Documentos</div>
+        <div class="card-body">
+          <ul class="doc-list">
+            <li><a onclick="toast('Em breve disponível para download.')">Manual — Instrumentos de Gestão.pdf</a></li>
+            <li><a onclick="toast('Em breve disponível para download.')">Modelo de Regimento Escolar.doc</a></li>
+            <li><a onclick="toast('Em breve disponível para download.')">Orientações para Elaboração do Regimento.pdf</a></li>
+            <li><a onclick="toast('Em breve disponível para download.')">Proposta Curricular — Ensino Fundamental.doc</a></li>
+            <li><a onclick="toast('Em breve disponível para download.')">Projeto de EJA.docx</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div>
+      <table class="stbl" style="margin-bottom:16px">
+        <thead><tr><th>Cód. Censo</th><th>Instituição</th><th>Data Validade</th><th>Nº Documento</th><th>Status</th><th>DOE</th></tr></thead>
+        <tbody id="statusRow"></tbody>
+      </table>
+      <div style="margin-bottom:16px">
+        <div class="section-title">Credenciamento / Recredenciamento</div>
+        <button class="btn-see" onclick="toggleEl('cred-body')">Visualizar Credenciamento / Recredenciamento</button>
+        <div id="cred-body" style="display:none">
+          <div class="process-item">
+            <div class="pi-hd" onclick="togglePi('pi1-body')">
+              <div class="pi-num">1</div>
+              <span style="font-size:12.5px;color:var(--gray-600)" id="cred-line">—</span>
+              <span style="margin-left:auto;font-size:10px;color:var(--gray-400)">▸ detalhes</span>
+            </div>
+            <div class="pi-body" id="pi1-body">
+              <div class="pi-row"><span class="pi-lbl">Data da Inclusão</span><span id="cred-inc">—</span></div>
+              <div class="pi-row"><span class="pi-lbl">Nº SPU</span><span id="cred-spu">—</span></div>
+              <div class="pi-row"><span class="pi-lbl">Data do Processo</span><span id="cred-dp">—</span></div>
+              <div class="pi-row"><span class="pi-lbl">Processo com</span><span>Arquivo digital</span></div>
+              <div class="pi-row"><span class="pi-lbl">Observação</span><span>—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="section-title">Histórico de Processos</div>
+        <button class="btn-see" onclick="toggleEl('hist-body')">Visualizar todos os processos</button>
+        <div id="hist-body" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ DOCUMENTOS ═══════════════════════ -->
+<div class="screen" id="s-docs">
+  <div style="padding:20px;max-width:920px">
+    <h2 style="font-family:'Source Serif 4',serif;font-size:18px;color:var(--green);margin-bottom:4px">📁 Documentos da Escola</h2>
+    <p style="font-size:12px;color:var(--gray-500);margin-bottom:16px">Formatos aceitos: PDF, JPG, JPEG · Máximo 10 MB por arquivo</p>
+    <div class="docs-info-box">
+      💡 <strong>Como usar:</strong> Selecione o tipo do documento, escolha o arquivo e clique em <em>Enviar Documento</em>.
+      Os arquivos ficam salvos na nuvem e podem ser baixados a qualquer momento.
+      Pendentes aparecem em <span style="color:var(--red);font-weight:700">vermelho</span>.
+    </div>
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+        <span>📋 Status dos Documentos</span>
+        <button class="btn-g btn-g-sm" style="margin-top:0" onclick="carregarDocumentos()">🔄 Atualizar</button>
+      </div>
+      <div style="padding:0">
+        <table class="stbl">
+          <thead>
+            <tr>
+              <th style="width:34px">#</th>
+              <th>Tipo de Documento</th>
+              <th style="width:110px">Status</th>
+              <th style="width:145px">Enviado em</th>
+              <th style="width:110px">Ação</th>
+            </tr>
+          </thead>
+          <tbody id="tbl-docs">
+            <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--gray-400)">🔄 Carregando documentos...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="doc-upload-box" id="upload-section">
+      <div class="doc-upload-title">📤 Enviar Novo Documento</div>
+      <div class="fg">
+        <label>Tipo de Documento: *</label>
+        <select id="sel-tipo-doc">
+          <option value="">— Selecione o tipo —</option>
+          <optgroup label="Obrigatórios">
+            <option>ATO DE CRIAÇÃO</option>
+            <option>COMPROVANTE DO CENSO ESCOLAR</option>
+            <option>COMPROVANTE DO RELATÓRIO ANUAL</option>
+            <option>FOTO FACHADA DO PRÉDIO</option>
+            <option>FOTOS DAS DEPENDÊNCIAS</option>
+            <option>REQUERIMENTO / OFÍCIO</option>
+          </optgroup>
+          <optgroup label="Complementares">
+            <option>LAUDO TÉCNICO</option>
+            <option>ALVARÁ / REGISTRO SANITÁRIO</option>
+            <option>PROJETO POLÍTICO-PEDAGÓGICO (PPP)</option>
+            <option>REGIMENTO ESCOLAR</option>
+            <option>PLANO DE AÇÃO</option>
+            <option>CALENDÁRIO ESCOLAR</option>
+            <option>PROPOSTA PEDAGÓGICA</option>
+            <option>OUTRO DOCUMENTO</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="upload-zone" id="upload-zone"
+           onclick="document.getElementById('inp-arquivo').click()"
+           ondragover="event.preventDefault();this.style.borderColor='var(--green)'"
+           ondragleave="this.style.borderColor=''"
+           ondrop="onDrop(event)">
+        <div class="uz-icon">📎</div>
+        <div class="uz-text" id="uz-text">Clique aqui ou arraste o arquivo</div>
+        <div class="uz-hint">PDF, JPG ou JPEG — máximo 10 MB</div>
+        <input type="file" id="inp-arquivo" accept=".pdf,.jpg,.jpeg" onchange="onArquivoSelecionado(this)">
+      </div>
+      <div class="progress-wrap" id="progress-wrap">
+        <div class="progress-label">
+          <span id="progress-status">Enviando...</span>
+          <span id="progress-pct">0%</span>
+        </div>
+        <div class="progress-bg"><div class="progress-fill" id="progress-fill"></div></div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="btn-g" onclick="uploadDocumento()" id="btn-upload">📤 Enviar Documento</button>
+        <span style="font-size:11px;color:var(--gray-400)">* Campo obrigatório</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ FICHA ════════════════════════════ -->
+<div class="screen" id="s-ficha">
+  <div style="padding:20px">
+    <div class="filter-box">
+      <div class="filter-title">FILTROS DO RELATÓRIO</div>
+      <div class="filter-sub">Escolha os filtros abaixo</div>
+      <div class="filter-grid">
+        <label class="filter-cb"><input type="checkbox" id="f-inst"  onchange="syncTodos()"> Instituição</label>
+        <label class="filter-cb"><input type="checkbox" id="f-mant"  onchange="syncTodos()"> Mantenedoras</label>
+        <label class="filter-cb"><input type="checkbox" id="f-dep"   onchange="syncTodos()"> Dependências Físicas</label>
+        <label class="filter-cb"><input type="checkbox" id="f-laud"  onchange="syncTodos()"> Laudos e Atestados</label>
+        <label class="filter-cb"><input type="checkbox" id="f-mob"   onchange="syncTodos()"> Mobiliário / Equipamento</label>
+        <label class="filter-cb"><input type="checkbox" id="f-escr"  onchange="syncTodos()"> Escrituração</label>
+        <label class="filter-cb"><input type="checkbox" id="f-instg" onchange="syncTodos()"> Instrumentos de Gestão</label>
+        <label class="filter-cb"><input type="checkbox" id="f-dir"   onchange="syncTodos()"> Diretores</label>
+        <label class="filter-cb"><input type="checkbox" id="f-sec"   onchange="syncTodos()"> Secretários Escolares</label>
+        <label class="filter-cb"><input type="checkbox" id="f-prof"  onchange="syncTodos()"> Professores</label>
+        <label class="filter-cb"><input type="checkbox" id="f-dem"   onchange="syncTodos()"> Demais Funcionários</label>
+        <label class="filter-cb"><input type="checkbox" id="f-org"   onchange="syncTodos()"> Organização do Ensino</label>
+        <label class="filter-cb"><input type="checkbox" id="f-ate"   onchange="syncTodos()"> Atendimento Especial</label>
+        <label class="filter-cb"><input type="checkbox" id="f-bib"   onchange="syncTodos()"> Biblioteca</label>
+        <label class="filter-cb"><input type="checkbox" id="f-ddoc"  onchange="syncTodos()"> Demais Documentos</label>
+        <label class="filter-cb" style="justify-content:flex-end"><input type="checkbox" id="f-todos" onchange="toggleTodos(this)"> <strong>Todos</strong></label>
+      </div>
+      <div class="filter-btns">
+        <button class="btn-outline" onclick="showScreen('home')">← Voltar</button>
+        <div style="display:flex;gap:6px">
+          <button class="btn-g btn-g-sm" onclick="toast('PDF gerado com sucesso.')">Gerar PDF</button>
+          <button class="btn-g btn-g-sm" onclick="renderFicha()">Carregar Filtro</button>
+        </div>
+      </div>
+    </div>
+    <div class="ficha-doc" id="fichaDoc" style="display:none">
+      <div class="ficha-header">
+        <div style="font-size:11px;color:var(--gray-600);line-height:1.4"><strong>COMEP</strong><br>Conselho Municipal de<br>Educação de Pereiro</div>
+        <div style="text-align:center;flex:1;padding:0 16px"><h3 style="font-size:12px;font-weight:700;color:var(--gray-700)">SISPPe<br>FICHA DE INFORMAÇÃO ESCOLAR</h3></div>
+        <div style="font-size:11px;color:var(--gray-500);text-align:right;white-space:nowrap" id="fEmissao"></div>
+      </div>
+      <div id="fs-inst" style="display:none">
+        <div class="ficha-sec-title">Instituição</div>
+        <div class="ficha-grid">
+          <div class="fcell lbl">Código de Censo:</div><div class="fcell val" id="fi-censo"></div>
+          <div class="fcell lbl">Nome da Escola:</div><div class="fcell val" id="fi-nome"></div>
+          <div class="fcell lbl">CNPJ:</div><div class="fcell val">07.570.518/0001-00</div>
+          <div class="fcell lbl">Dep. Administrativa:</div><div class="fcell val">PÚBLICA » MUNICIPAL</div>
+          <div class="fcell lbl">Endereço:</div><div class="fcell val" id="fi-end"></div>
+          <div class="fcell lbl">Município:</div><div class="fcell val">PEREIRO / CE</div>
+          <div class="fcell lbl">Qtd. Dias Letivos:</div><div class="fcell val">200</div>
+          <div class="fcell lbl">Carga Horária Semanal:</div><div class="fcell val">40h</div>
+          <div class="fcell lbl">Acesso à internet:</div><div class="fcell val">FIBRA ÓPTICA</div>
+          <div class="fcell lbl">Rural:</div><div class="fcell val" id="fi-rural"></div>
+        </div>
+      </div>
+      <div id="fs-mant" style="display:none">
+        <div class="ficha-sec-title">Mantenedoras</div>
+        <div class="ficha-grid">
+          <div class="fcell lbl">CNPJ:</div><div class="fcell val">07.570.518/0001-00</div>
+          <div class="fcell lbl">Razão Social:</div><div class="fcell val">PREFEITURA MUNICIPAL DE PEREIRO</div>
+          <div class="fcell lbl">Endereço:</div><div class="fcell val">Rua Dr. Antônio Augusto de Vasconcelos, 227 — Centro</div>
+          <div class="fcell lbl">Município:</div><div class="fcell val">PEREIRO / CE — CEP 63.460-000</div>
+          <div class="fcell lbl">Telefone:</div><div class="fcell val">(88) 3527-1250</div>
+          <div class="fcell lbl">Tipo:</div><div class="fcell val">PÚBLICA MUNICIPAL</div>
+        </div>
+      </div>
+      <div id="fs-laud" style="display:none">
+        <div class="ficha-sec-title">Laudos e Atestados</div>
+        <div style="padding:12px 14px;font-size:12px;color:var(--gray-500)">
+          <p>Laudos Técnicos: Nenhum cadastrado neste ciclo.</p>
+          <p style="margin-top:6px;color:var(--red)">⚠️ Envie os laudos na tela <strong>📁 Documentos</strong>.</p>
+        </div>
+      </div>
+      <div id="fs-dir" style="display:none">
+        <div class="ficha-sec-title">Diretores</div>
+        <div style="padding:12px 14px;font-size:12px;color:var(--gray-600)">
+          <p><strong>Nome:</strong> A preencher no cadastro</p><p><strong>Função:</strong> DIRETOR(A) GERAL</p>
+        </div>
+      </div>
+      <div id="fs-sec" style="display:none">
+        <div class="ficha-sec-title">Secretários Escolares</div>
+        <div style="padding:12px 14px;font-size:12px;color:var(--gray-600)">
+          <p><strong>Nome:</strong> A preencher no cadastro</p><p><strong>Função:</strong> SECRETÁRIO(A) ESCOLAR · Habilitado(a)</p>
+        </div>
+      </div>
+      <div id="fs-ddoc" style="display:none">
+        <div class="ficha-sec-title">Demais Documentos</div>
+        <div style="padding:12px 14px;font-size:12px;color:var(--gray-500)">
+          <p>Consulte a tela <strong>📁 Documentos</strong> para visualizar e enviar os documentos da escola.</p>
+        </div>
+      </div>
+      <div style="padding:10px 14px;display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn-pdf" id="btn-salvar-ficha" onclick="salvarFicha()">💾 Salvar no Sistema</button>
+        <button class="btn-pdf" onclick="toast('PDF gerado com sucesso.')">📥 Gerar PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ AÇÕES ════════════════════════════ -->
+<div class="screen" id="s-acoes">
+  <div style="padding:20px;max-width:900px">
+    <h2 style="font-family:'Source Serif 4',serif;font-size:18px;color:var(--green);margin-bottom:16px">Ações da Escola</h2>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+      <label style="font-size:13px;font-weight:600;color:var(--gray-700)">Período:</label>
+      <input type="date" id="dtInicio" value="2025-01-01" style="padding:5px 9px;border:1px solid var(--gray-300);font-size:13px;outline:none">
+      <span style="font-size:13px;color:var(--gray-500)">à</span>
+      <input type="date" id="dtFim" style="padding:5px 9px;border:1px solid var(--gray-300);font-size:13px;outline:none">
+    </div>
+    <fieldset class="tipo-acoes-box">
+      <legend>Tipo de Ação</legend>
+      <div class="tipo-acoes-row">
+        <label class="tipo-cb"><input type="checkbox" checked> Inclusão</label>
+        <label class="tipo-cb"><input type="checkbox" checked> Alteração</label>
+        <label class="tipo-cb"><input type="checkbox" checked> Exclusão</label>
+      </div>
+    </fieldset>
+    <button class="btn-pesquisar" onclick="pesquisarAcoes()">Pesquisar</button>
+    <div style="margin-top:14px">
+      <div id="acoes-count" style="font-size:13px;color:var(--gray-600);margin-bottom:8px"></div>
+      <ul id="acoes-list" style="list-style:none;padding:0"></ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ CONTA ════════════════════════════ -->
+<div class="screen" id="s-conta">
+  <div style="padding:20px">
+    <div class="conta-box">
+      <div class="conta-title">🔑 Alterar Senha</div>
+      <div class="fg2">
+        <label>Senha atual</label><input type="password" placeholder="••••••••">
+        <label>Nova senha</label><input type="password" id="newSenha" placeholder="Mínimo 8 caracteres">
+        <label>Confirmar nova senha</label><input type="password" placeholder="Repita a nova senha">
+        <button class="btn-g" onclick="alterarSenha()">Salvar Senha</button>
+      </div>
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--gray-200)">
+        <div class="conta-title" style="font-size:14px;margin-bottom:10px">👤 Dados do Usuário</div>
+        <div id="conta-dados"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CLOUDINARY ──────────────────────────────────────────────────
+const CLOUD_NAME    = 'dfqowayda';
+const UPLOAD_PRESET = 'sisppe_docs';
+const CL_URL        = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`;
+
+// ── FIREBASE ────────────────────────────────────────────────────
+firebase.initializeApp({
+  apiKey           : "AIzaSyBCoQxXZKIz_e8wH75QV00k6maHejuEWio",
+  authDomain       : "sisppe-comep.firebaseapp.com",
+  projectId        : "sisppe-comep",
+  storageBucket    : "sisppe-comep.firebasestorage.app",
+  messagingSenderId: "186342537977",
+  appId            : "1:186342537977:web:28cbd98684d5dd549fc028"
+});
+const db = firebase.firestore();
+
+// ── ESCOLAS ─────────────────────────────────────────────────────
+const USERS={
+"100.000.001-01":{inep:"23138378",nome:"Escola Antônio Pinheiro Maia",parecer:"0621/2024",validade:"31/12/2027",endereco:"Sítio Cidade — Zona Rural",rural:"SIM",senha:"Dir@2025#01",perfil:"Diretor(a)"},
+"200.000.001-01":{inep:"23138378",nome:"Escola Antônio Pinheiro Maia",parecer:"0621/2024",validade:"31/12/2027",endereco:"Sítio Cidade — Zona Rural",rural:"SIM",senha:"Sec@2025#01",perfil:"Secretário(a) Escolar"},
+"100.000.002-02":{inep:"23138408",nome:"Escola Cândido José Nogueira",parecer:"0305/2025",validade:"31/12/2030",endereco:"Rua Raimundo Barbosa de Lima — Crioulas",rural:"NÃO",senha:"Dir@2025#02",perfil:"Diretor(a)"},
+"200.000.002-02":{inep:"23138408",nome:"Escola Cândido José Nogueira",parecer:"0305/2025",validade:"31/12/2030",endereco:"Rua Raimundo Barbosa de Lima — Crioulas",rural:"NÃO",senha:"Sec@2025#02",perfil:"Secretário(a) Escolar"},
+"100.000.003-03":{inep:"23219254",nome:"Escola Cleonice Freire de Queiroz",parecer:"0305/2025",validade:"31/12/2030",endereco:"Rua Nel Queiroz, 257 — Centro",rural:"NÃO",senha:"Dir@2025#03",perfil:"Diretor(a)"},
+"200.000.003-03":{inep:"23219254",nome:"Escola Cleonice Freire de Queiroz",parecer:"0305/2025",validade:"31/12/2030",endereco:"Rua Nel Queiroz, 257 — Centro",rural:"NÃO",senha:"Sec@2025#03",perfil:"Secretário(a) Escolar"},
+"100.000.004-04":{inep:"23274778",nome:"Escola Francisca Nogueira de Sousa",parecer:"0278/2025",validade:"31/12/2028",endereco:"Rua João Batista de Carvalho, 121 — São Bento",rural:"NÃO",senha:"Dir@2025#04",perfil:"Diretor(a)"},
+"200.000.004-04":{inep:"23274778",nome:"Escola Francisca Nogueira de Sousa",parecer:"0278/2025",validade:"31/12/2028",endereco:"Rua João Batista de Carvalho, 121 — São Bento",rural:"NÃO",senha:"Sec@2025#04",perfil:"Secretário(a) Escolar"},
+"100.000.005-05":{inep:"23238483",nome:"Escola Francisco das Chagas de Aquino",parecer:"0303/2025",validade:"31/12/2028",endereco:"Sítio Lagoa dos Marinheiros — Zona Rural",rural:"SIM",senha:"Dir@2025#05",perfil:"Diretor(a)"},
+"200.000.005-05":{inep:"23238483",nome:"Escola Francisco das Chagas de Aquino",parecer:"0303/2025",validade:"31/12/2028",endereco:"Sítio Lagoa dos Marinheiros — Zona Rural",rural:"SIM",senha:"Sec@2025#05",perfil:"Secretário(a) Escolar"},
+"100.000.006-06":{inep:"23283467",nome:"Escola João Nogueira de Sousa",parecer:"0346/2025",validade:"31/12/2028",endereco:"Sítio Lagoa Nova — Zona Rural",rural:"SIM",senha:"Dir@2025#06",perfil:"Diretor(a)"},
+"200.000.006-06":{inep:"23283467",nome:"Escola João Nogueira de Sousa",parecer:"0346/2025",validade:"31/12/2028",endereco:"Sítio Lagoa Nova — Zona Rural",rural:"SIM",senha:"Sec@2025#06",perfil:"Secretário(a) Escolar"},
+"100.000.007-07":{inep:"23138777",nome:"Escola José Matias de Sousa",parecer:"0305/2025",validade:"31/12/2030",endereco:"Sítio Caetano — Zona Rural",rural:"SIM",senha:"Dir@2025#07",perfil:"Diretor(a)"},
+"200.000.007-07":{inep:"23138777",nome:"Escola José Matias de Sousa",parecer:"0305/2025",validade:"31/12/2030",endereco:"Sítio Caetano — Zona Rural",rural:"SIM",senha:"Sec@2025#07",perfil:"Secretário(a) Escolar"},
+"100.000.008-08":{inep:"23178370",nome:"Escola José Nilson Bezerra",parecer:"0621/2024",validade:"31/12/2027",endereco:"Sítio São Paulo — Zona Rural",rural:"SIM",senha:"Dir@2025#08",perfil:"Diretor(a)"},
+"200.000.008-08":{inep:"23178370",nome:"Escola José Nilson Bezerra",parecer:"0621/2024",validade:"31/12/2027",endereco:"Sítio São Paulo — Zona Rural",rural:"SIM",senha:"Sec@2025#08",perfil:"Secretário(a) Escolar"},
+"100.000.009-09":{inep:"23138670",nome:"Escola Maria das Graças Nogueira",parecer:"0305/2025",validade:"31/12/2030",endereco:"Sítio Lagoa Nova — Zona Rural",rural:"SIM",senha:"Dir@2025#09",perfil:"Diretor(a)"},
+"200.000.009-09":{inep:"23138670",nome:"Escola Maria das Graças Nogueira",parecer:"0305/2025",validade:"31/12/2030",endereco:"Sítio Lagoa Nova — Zona Rural",rural:"SIM",senha:"Sec@2025#09",perfil:"Secretário(a) Escolar"},
+"100.000.010-10":{inep:"23138688",nome:"Escola Maria Nazaré de Jesus",parecer:"0894/2024",validade:"31/12/2026",endereco:"Sítio Varrelo — Zona Rural",rural:"SIM",senha:"Dir@2025#10",perfil:"Diretor(a)"},
+"200.000.010-10":{inep:"23138688",nome:"Escola Maria Nazaré de Jesus",parecer:"0894/2024",validade:"31/12/2026",endereco:"Sítio Varrelo — Zona Rural",rural:"SIM",senha:"Sec@2025#10",perfil:"Secretário(a) Escolar"},
+"100.000.011-11":{inep:"23138742",nome:"Escola Miguel Antônio da Rocha",parecer:"098/2025",validade:"31/12/2027",endereco:"Sítio Chabocão — Zona Rural",rural:"SIM",senha:"Dir@2025#11",perfil:"Diretor(a)"},
+"200.000.011-11":{inep:"23138742",nome:"Escola Miguel Antônio da Rocha",parecer:"098/2025",validade:"31/12/2027",endereco:"Sítio Chabocão — Zona Rural",rural:"SIM",senha:"Sec@2025#11",perfil:"Secretário(a) Escolar"},
+"100.000.012-12":{inep:"23138530",nome:"Escola Nossa Senhora das Graças",parecer:"0304/2025",validade:"31/12/2028",endereco:"Sítio Grossos — Zona Rural",rural:"SIM",senha:"Dir@2025#12",perfil:"Diretor(a)"},
+"200.000.012-12":{inep:"23138530",nome:"Escola Nossa Senhora das Graças",parecer:"0304/2025",validade:"31/12/2028",endereco:"Sítio Grossos — Zona Rural",rural:"SIM",senha:"Sec@2025#12",perfil:"Secretário(a) Escolar"},
+"100.000.013-13":{inep:"23138793",nome:"Escola Pedro Gomes de Lima",parecer:"0894/2024",validade:"31/12/2026",endereco:"Sítio Pedro Gomes — Zona Rural",rural:"SIM",senha:"Dir@2025#13",perfil:"Diretor(a)"},
+"200.000.013-13":{inep:"23138793",nome:"Escola Pedro Gomes de Lima",parecer:"0894/2024",validade:"31/12/2026",endereco:"Sítio Pedro Gomes — Zona Rural",rural:"SIM",senha:"Sec@2025#13",perfil:"Secretário(a) Escolar"},
+"100.000.014-14":{inep:"23178280",nome:"Escola Pequeno Príncipe",parecer:"0304/2025",validade:"31/12/2028",endereco:"Rua Joaquim Nogueira — Crioulas",rural:"NÃO",senha:"Dir@2025#14",perfil:"Diretor(a)"},
+"200.000.014-14":{inep:"23178280",nome:"Escola Pequeno Príncipe",parecer:"0304/2025",validade:"31/12/2028",endereco:"Rua Joaquim Nogueira — Crioulas",rural:"NÃO",senha:"Sec@2025#14",perfil:"Secretário(a) Escolar"},
+"100.000.015-15":{inep:"23138815",nome:"Escola Pingo de Gente",parecer:"0304/2025",validade:"31/12/2028",endereco:"Rua Nel Queiroz — Centro",rural:"NÃO",senha:"Dir@2025#15",perfil:"Diretor(a)"},
+"200.000.015-15":{inep:"23138815",nome:"Escola Pingo de Gente",parecer:"0304/2025",validade:"31/12/2028",endereco:"Rua Nel Queiroz — Centro",rural:"NÃO",senha:"Sec@2025#15",perfil:"Secretário(a) Escolar"},
+"100.000.016-16":{inep:"23258829",nome:"Escola Semeando o Saber",parecer:"0112/2025",validade:"31/12/2026",endereco:"Sítio Lagoa Nova — Zona Rural",rural:"SIM",senha:"Dir@2025#16",perfil:"Diretor(a)"},
+"200.000.016-16":{inep:"23258829",nome:"Escola Semeando o Saber",parecer:"0112/2025",validade:"31/12/2026",endereco:"Sítio Lagoa Nova — Zona Rural",rural:"SIM",senha:"Sec@2025#16",perfil:"Secretário(a) Escolar"},
+"100.000.017-17":{inep:"00000017",nome:"Escola Luiz Gonçalves de Lima",parecer:"—",validade:"—",endereco:"Sítio Lagoa Nova — Zona Rural",rural:"SIM",senha:"Dir@2025#17",perfil:"Diretor(a)"},
+"200.000.017-17":{inep:"00000017",nome:"Escola Luiz Gonçalves de Lima",parecer:"—",validade:"—",endereco:"Sítio Lagoa Nova — Zona Rural",rural:"SIM",senha:"Sec@2025#17",perfil:"Secretário(a) Escolar"},
+"100.000.018-18":{inep:"00000018",nome:"Escola Municipal 18 — A Cadastrar",parecer:"—",validade:"—",endereco:"A confirmar",rural:"—",senha:"Dir@2025#18",perfil:"Diretor(a)"},
+"200.000.018-18":{inep:"00000018",nome:"Escola Municipal 18 — A Cadastrar",parecer:"—",validade:"—",endereco:"A confirmar",rural:"—",senha:"Sec@2025#18",perfil:"Secretário(a) Escolar"}
+};
+
+const DOCS_OBRIG=['ATO DE CRIAÇÃO','COMPROVANTE DO CENSO ESCOLAR','COMPROVANTE DO RELATÓRIO ANUAL','FOTO FACHADA DO PRÉDIO','FOTOS DAS DEPENDÊNCIAS','REQUERIMENTO / OFÍCIO'];
+let current=null, acoesLog=[], isBloqueado=false, situacao='ativa';
+
+// ── MÁSCARA CPF ─────────────────────────────────────────────────
+function maskCpf(el){let v=el.value.replace(/\D/g,'');if(v.length>11)v=v.slice(0,11);v=v.replace(/(\d{3})(\d)/,'$1.$2');v=v.replace(/(\d{3})(\d)/,'$1.$2');v=v.replace(/(\d{3})(\d{1,2})$/,'$1-$2');el.value=v;}
+
+// ── LOGIN ────────────────────────────────────────────────────────
+async function doLogin(){
+  const cpf=document.getElementById('inpCpf').value.trim();
+  const pw=document.getElementById('inpSenha').value.trim();
+  if(!document.getElementById('chkTerms').checked){alert('Aceite os Termos de Uso.');return;}
+  const u=USERS[cpf];
+  if(!u||u.senha!==pw){document.getElementById('errMsg').style.display='block';return;}
+  document.getElementById('errMsg').style.display='none';
+  current={...u,cpf};
+
+  // Verificar status no Firestore
+  try{
+    const snap=await db.collection('escolas').doc(u.inep).get();
+    if(snap.exists){
+      const d=snap.data();
+      isBloqueado=d.bloqueado===true;
+      situacao=d.situacao||'ativa';
+    }
+  }catch(e){/* ignora */}
+
+  // Mostrar banners conforme status
+  document.getElementById('banner-bloqueio').classList.toggle('show', isBloqueado);
+  document.getElementById('banner-analise').classList.toggle('show', !isBloqueado && situacao==='em_analise');
+
+  // Desabilitar ações se bloqueado
+  const disabled=isBloqueado;
+  ['btn-upload','btn-salvar-ficha'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.disabled=disabled;
+  });
+
+  document.getElementById('schoolBar').classList.add('show');
+  document.getElementById('schoolBarName').textContent=u.nome;
+  document.getElementById('perfilBadge').textContent=u.perfil;
+  document.getElementById('dtFim').value=new Date().toISOString().split('T')[0];
+  acoesLog=[{data:new Date(),usuario:cpf+' ('+u.perfil+')',acao:'INCLUSÃO',entidade:'LogAcessoInstituicao'}];
+  document.getElementById('conta-dados').innerHTML=`
+    <div class="dados-line"><strong>CPF:</strong> ${cpf}</div>
+    <div class="dados-line"><strong>Escola:</strong> ${u.nome}</div>
+    <div class="dados-line"><strong>INEP:</strong> ${u.inep}</div>
+    <div class="dados-line"><strong>Perfil:</strong> <span class="perfil-tag ${u.perfil.includes('Dir')?'perfil-dir':'perfil-sec'}">${u.perfil}</span></div>
+    <div class="dados-line"><strong>Status:</strong> <span style="color:${isBloqueado?'var(--red)':situacao==='em_analise'?'var(--amber)':'var(--green)'}">${isBloqueado?'⛔ Bloqueado':situacao==='em_analise'?'🔍 Em Análise':'✅ Ativa'}</span></div>`;
+  populateHome();
+  showScreen('home');
+}
+
+function doLogout(){
+  current=null;acoesLog=[];isBloqueado=false;situacao='ativa';
+  document.getElementById('schoolBar').classList.remove('show');
+  document.getElementById('banner-bloqueio').classList.remove('show');
+  document.getElementById('banner-analise').classList.remove('show');
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show'));
+  document.getElementById('s-login').classList.add('show');
+  document.getElementById('inpSenha').value='';
+  document.getElementById('inpCpf').value='';
+  document.getElementById('errMsg').style.display='none';
+}
+
+function showTermos(){alert('Termos de Uso do SISPPe\n\n• As informações inseridas são verídicas e de responsabilidade da instituição.\n• Os documentos enviados são autênticos.\n• O acesso é pessoal e intransferível.\n• O uso indevido pode acarretar sanções administrativas.');}
+
+// ── HOME ─────────────────────────────────────────────────────────
+function populateHome(){
+  const e=current;
+  document.getElementById('statusRow').innerHTML=`<tr>
+    <td>${e.inep}</td><td>${e.nome.replace('Escola ','').toUpperCase()}</td>
+    <td>${e.validade}</td><td>PARECER ${e.parecer}</td>
+    <td class="status-active">${e.validade!=='—'?'Credenciamento Ativo':'A Regularizar'}</td><td>📄</td>
+  </tr>`;
+  const hoje=new Date().toLocaleDateString('pt-BR');
+  const spu='SPPe'+e.inep.slice(-4)+'/'+new Date().getFullYear();
+  document.getElementById('cred-line').textContent='Data: '+hoje+' | Nº: '+spu;
+  document.getElementById('cred-inc').textContent=hoje;
+  document.getElementById('cred-spu').textContent=spu;
+  document.getElementById('cred-dp').textContent=hoje;
+  document.getElementById('hist-body').innerHTML=`
+    <div class="process-item">
+      <div class="pi-hd" onclick="togglePi('hist-pi1')">
+        <div class="pi-num">1</div>
+        <span style="font-size:12.5px;color:var(--gray-600)">Data: ${hoje} | Nº: ${spu}</span>
+        <span style="margin-left:auto;font-size:10px;color:var(--gray-400)">▸ detalhes</span>
+      </div>
+      <div class="pi-body" id="hist-pi1">
+        <div class="pi-row"><span class="pi-lbl">Data da Inclusão</span><span>${hoje}</span></div>
+        <div class="pi-row"><span class="pi-lbl">Nº SPU</span><span>${spu}</span></div>
+        <div class="pi-row"><span class="pi-lbl">Processo com</span><span>Arquivo digital</span></div>
+      </div>
+    </div>`;
+  atualizarStatusHome();
+}
+
+async function atualizarStatusHome(){
+  if(!current)return;
+  try{
+    const snap=await db.collection('escolas').doc(current.inep).collection('documentos').get();
+    const tipos=new Set();snap.forEach(d=>tipos.add(d.data().tipo));
+    const pend=DOCS_OBRIG.filter(t=>!tipos.has(t)).length;
+    const el=document.getElementById('comprovante-status');
+    if(el)el.innerHTML=pend>0
+      ?`<span style="color:var(--red)">⚠️ ${pend} documento(s) obrigatório(s) pendentes</span>`
+      :`<span style="color:var(--green)">✅ Todos os documentos obrigatórios enviados</span>`;
+  }catch(e){}
+}
+
+// ── NAVEGAÇÃO ────────────────────────────────────────────────────
+function showScreen(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show'));
+  document.getElementById('s-'+n).classList.add('show');
+  document.querySelectorAll('.snav-btn').forEach(b=>b.classList.remove('active'));
+  const nb=document.getElementById('btn-'+n);if(nb)nb.classList.add('active');
+  if(n==='docs')carregarDocumentos();
+}
+function toggleEl(id){const el=document.getElementById(id);if(el)el.style.display=(el.style.display==='none'||!el.style.display)?'block':'none';}
+function togglePi(id){const el=document.getElementById(id);if(el)el.classList.toggle('open');}
+
+// ── DOCUMENTOS ───────────────────────────────────────────────────
+async function carregarDocumentos(){
+  if(!current)return;
+  const tbody=document.getElementById('tbl-docs');
+  tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--gray-400)">🔄 Carregando...</td></tr>';
+  try{
+    const snap=await db.collection('escolas').doc(current.inep).collection('documentos').orderBy('criadoEm','desc').get();
+    const env={};snap.forEach(d=>{const data=d.data();if(!env[data.tipo])env[data.tipo]=data;});
+    let rows='',idx=1;
+    DOCS_OBRIG.forEach(tipo=>{
+      const doc=env[tipo];
+      if(doc){
+        const dt=doc.criadoEm?new Date(doc.criadoEm).toLocaleString('pt-BR'):'—';
+        const dlUrl=doc.url.replace('/upload/','/upload/fl_attachment/');
+        rows+=`<tr><td>${idx++}</td><td>${tipo}</td><td><span class="tag-ok">✔ Enviado</span></td><td style="font-size:11px;color:var(--gray-500)">${dt}</td><td><a href="${dlUrl}" target="_blank" rel="noopener" style="font-size:12px">📥 Baixar</a></td></tr>`;
+      }else{
+        rows+=`<tr><td>${idx++}</td><td>${tipo}</td><td><span class="tag-pend">⚠ Pendente</span></td><td>—</td><td>${isBloqueado?'<span style="color:var(--gray-400);font-size:11px">Bloqueado</span>':`<button class="btn-g btn-g-sm" style="margin-top:0" onclick="preencherTipo('${tipo}')">Enviar</button>`}</td></tr>`;
+      }
+    });
+    Object.keys(env).forEach(tipo=>{
+      if(!DOCS_OBRIG.includes(tipo)){
+        const doc=env[tipo];const dt=doc.criadoEm?new Date(doc.criadoEm).toLocaleString('pt-BR'):'—';
+        const dlUrl=doc.url.replace('/upload/','/upload/fl_attachment/');
+        rows+=`<tr><td>+</td><td>${tipo}</td><td><span class="tag-ok">✔ Enviado</span></td><td style="font-size:11px;color:var(--gray-500)">${dt}</td><td><a href="${dlUrl}" target="_blank" rel="noopener" style="font-size:12px">📥 Baixar</a></td></tr>`;
+      }
+    });
+    tbody.innerHTML=rows||'<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--gray-400)">Nenhum documento enviado ainda.</td></tr>';
+  }catch(e){
+    tbody.innerHTML=`<tr><td colspan="5" style="text-align:center;padding:16px;color:var(--red)">❌ Erro ao carregar. Verifique a conexão.</td></tr>`;
+    console.error(e);
+  }
+}
+
+function preencherTipo(tipo){document.getElementById('sel-tipo-doc').value=tipo;document.getElementById('upload-zone').scrollIntoView({behavior:'smooth'});}
+function onArquivoSelecionado(input){const f=input.files[0];if(f)document.getElementById('uz-text').textContent='📄 '+f.name+' ('+(f.size/1024/1024).toFixed(2)+' MB)';}
+function onDrop(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f){document.getElementById('inp-arquivo').files=e.dataTransfer.files;onArquivoSelecionado(document.getElementById('inp-arquivo'));}}
+
+async function uploadDocumento(){
+  if(!current){toast('Faça login primeiro.');return;}
+  if(isBloqueado){toast('⛔ Acesso bloqueado. Não é possível enviar documentos.');return;}
+  const tipo=document.getElementById('sel-tipo-doc').value.trim();
+  const fileEl=document.getElementById('inp-arquivo');
+  const arquivo=fileEl.files[0];
+  if(!tipo){toast('⚠️ Selecione o tipo de documento.');return;}
+  if(!arquivo){toast('⚠️ Selecione um arquivo.');return;}
+  if(arquivo.size>10*1024*1024){toast('⚠️ Arquivo excede 10 MB.');return;}
+  const ext=arquivo.name.split('.').pop().toLowerCase();
+  if(!['pdf','jpg','jpeg'].includes(ext)){toast('⚠️ Use PDF ou JPG.');return;}
+
+  const btn=document.getElementById('btn-upload');
+  btn.disabled=true;btn.textContent='Enviando...';
+  document.getElementById('progress-wrap').style.display='block';
+  document.getElementById('progress-fill').style.width='10%';
+  document.getElementById('progress-status').textContent='Conectando...';
+  document.getElementById('progress-pct').textContent='10%';
+
+  try{
+    const fd=new FormData();
+    fd.append('file',arquivo);
+    fd.append('upload_preset',UPLOAD_PRESET);
+    fd.append('folder','sisppe/'+current.inep);
+    fd.append('public_id',current.inep+'/'+tipo.replace(/[^a-zA-Z0-9]/g,'-').toLowerCase()+'_'+Date.now());
+
+    document.getElementById('progress-fill').style.width='40%';
+    document.getElementById('progress-status').textContent='Enviando arquivo...';
+    document.getElementById('progress-pct').textContent='40%';
+
+    const resp=await fetch(CL_URL,{method:'POST',body:fd});
+    if(!resp.ok)throw new Error('Cloudinary erro '+resp.status+': '+(await resp.text()));
+    const data=await resp.json();
+    const url=data.secure_url;
+
+    document.getElementById('progress-fill').style.width='75%';
+    document.getElementById('progress-status').textContent='Salvando metadados...';
+    document.getElementById('progress-pct').textContent='75%';
+
+    const docId=tipo.replace(/[^a-zA-Z0-9]/g,'-').toLowerCase()+'_'+Date.now();
+    await db.collection('escolas').doc(current.inep).collection('documentos').doc(docId).set({
+      tipo,url,
+      publicId:data.public_id,
+      formato:data.format,
+      tamanhoBytes:data.bytes,
+      uploadedBy:current.cpf,
+      perfil:current.perfil,
+      escola:current.nome,
+      inep:current.inep,
+      criadoEm:new Date().toISOString()
+    });
+
+    document.getElementById('progress-fill').style.width='100%';
+    document.getElementById('progress-status').textContent='✅ Enviado com sucesso!';
+    document.getElementById('progress-pct').textContent='100%';
+    toast('✅ Documento enviado: '+tipo);
+    acoesLog.unshift({data:new Date(),usuario:current.cpf+' ('+current.perfil+')',acao:'INCLUSÃO',entidade:'Documento: '+tipo});
+
+    document.getElementById('sel-tipo-doc').value='';
+    fileEl.value='';
+    document.getElementById('uz-text').textContent='Clique aqui ou arraste o arquivo';
+
+    setTimeout(()=>{
+      document.getElementById('progress-wrap').style.display='none';
+      document.getElementById('progress-fill').style.width='0%';
+      carregarDocumentos();
+      atualizarStatusHome();
+    },2500);
+  }catch(err){
+    document.getElementById('progress-status').textContent='❌ Erro: '+err.message;
+    toast('❌ '+err.message);
+    console.error(err);
+  }finally{
+    btn.disabled=isBloqueado;btn.textContent='📤 Enviar Documento';
+  }
+}
+
+// ── FICHA ────────────────────────────────────────────────────────
+const allF=['f-inst','f-mant','f-dep','f-laud','f-mob','f-escr','f-instg','f-dir','f-sec','f-prof','f-dem','f-org','f-ate','f-bib','f-ddoc'];
+function toggleTodos(el){allF.forEach(id=>{document.getElementById(id).checked=el.checked;});}
+function syncTodos(){document.getElementById('f-todos').checked=allF.every(id=>document.getElementById(id).checked);}
+
+function renderFicha(){
+  if(!allF.some(id=>document.getElementById(id).checked)){toast('Selecione pelo menos um filtro.');return;}
+  const e=current;
+  document.getElementById('fEmissao').textContent='Emissão: '+new Date().toLocaleDateString('pt-BR');
+  document.getElementById('fi-censo').textContent=e.inep;
+  document.getElementById('fi-nome').textContent=e.nome.replace('Escola ','').toUpperCase();
+  document.getElementById('fi-end').textContent=e.endereco.toUpperCase();
+  document.getElementById('fi-rural').textContent=e.rural;
+  const map={'f-inst':'fs-inst','f-mant':'fs-mant','f-laud':'fs-laud','f-dir':'fs-dir','f-sec':'fs-sec','f-ddoc':'fs-ddoc'};
+  Object.entries(map).forEach(([cb,sec])=>{const el=document.getElementById(sec);if(el)el.style.display=document.getElementById(cb).checked?'block':'none';});
+  document.getElementById('fichaDoc').style.display='block';
+  document.getElementById('fichaDoc').scrollIntoView({behavior:'smooth'});
+}
+
+async function salvarFicha(){
+  if(!current){toast('Faça login primeiro.');return;}
+  if(isBloqueado){toast('⛔ Acesso bloqueado. Não é possível salvar a ficha.');return;}
+  try{
+    await db.collection('escolas').doc(current.inep).set({
+      inep:current.inep,nome:current.nome,endereco:current.endereco,rural:current.rural,
+      parecer:current.parecer,validade:current.validade,
+      atualizadoPor:current.cpf,perfil:current.perfil,
+      atualizadoEm:new Date().toISOString()
+    },{merge:true});
+    toast('✅ Ficha salva no sistema com sucesso!');
+    acoesLog.unshift({data:new Date(),usuario:current.cpf+' ('+current.perfil+')',acao:'ALTERAÇÃO',entidade:'FichaEscolar'});
+  }catch(e){toast('❌ Erro: '+e.message);console.error(e);}
+}
+
+// ── AÇÕES ────────────────────────────────────────────────────────
+function pesquisarAcoes(){
+  document.getElementById('acoes-count').textContent='Registros encontrados: '+acoesLog.length;
+  document.getElementById('acoes-list').innerHTML=acoesLog.map((a,i)=>`
+    <li class="acoes-item">
+      <div class="ai-hd" onclick="this.nextElementSibling.classList.toggle('open')">
+        <div class="ai-num">${i+1}</div>
+        <span style="font-size:12.5px;color:var(--gray-600)">
+          <strong>${a.data.toLocaleDateString('pt-BR')}</strong> &nbsp;
+          ${a.usuario} &nbsp;
+          <span class="action-badge ${a.acao==='INCLUSÃO'?'ab-inc':'ab-alt'}">${a.acao}</span> &nbsp;
+          ${a.entidade}
+        </span>
+      </div>
+      <div class="ai-body"><strong>Data/Hora:</strong> ${a.data.toLocaleString('pt-BR')}<br><strong>Sistema:</strong> SISPPe v1.3.0</div>
+    </li>`).join('');
+}
+
+// ── CONTA ────────────────────────────────────────────────────────
+function alterarSenha(){const n=document.getElementById('newSenha').value;if(n.length<8){toast('⚠️ Mínimo 8 caracteres.');return;}toast('✅ Senha alterada com sucesso!');}
+
+// ── TOAST ────────────────────────────────────────────────────────
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',4000);}
+
+// ── INIT ─────────────────────────────────────────────────────────
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('s-login').classList.contains('show'))doLogin();});
+window.addEventListener('DOMContentLoaded',()=>{document.getElementById('dtFim').value=new Date().toISOString().split('T')[0];});
+</script>
+</body>
+</html>
