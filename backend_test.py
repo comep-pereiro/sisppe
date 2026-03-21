@@ -306,6 +306,86 @@ class COMEPAPITester:
         
         return True
 
+    def test_new_dashboard_apis(self):
+        """Test new dashboard evolution APIs"""
+        if not self.admin_token:
+            print("❌ Skipping dashboard evolution tests - no token")
+            return False
+            
+        print("\n" + "="*50)
+        print("TESTING NEW DASHBOARD EVOLUTION APIs")
+        print("="*50)
+        
+        # Test dashboard evolution endpoint
+        success, response = self.run_test("Get Dashboard Evolution", "GET", "dashboard/evolucao", 200, token=self.admin_token)
+        if success:
+            print("✅ Dashboard evolution data retrieved successfully")
+            if 'evolucao_mensal' in response:
+                print(f"   Found {len(response['evolucao_mensal'])} months of data")
+            if 'distribuicao_modalidades' in response:
+                print(f"   Found {len(response['distribuicao_modalidades'])} modalidades")
+            if 'distribuicao_vinculos' in response:
+                print(f"   Found {len(response['distribuicao_vinculos'])} vinculos")
+        
+        return True
+
+    def test_notifications_apis(self):
+        """Test notifications APIs"""
+        if not self.admin_token:
+            print("❌ Skipping notifications tests - no token")
+            return False
+            
+        print("\n" + "="*50)
+        print("TESTING NOTIFICATIONS APIs")
+        print("="*50)
+        
+        # Test outdated schools endpoint
+        success, response = self.run_test("Get Outdated Schools", "GET", "notificacoes/escolas-desatualizadas", 200, token=self.admin_token)
+        if success:
+            print("✅ Outdated schools data retrieved successfully")
+            if 'total' in response:
+                print(f"   Found {response['total']} outdated schools")
+        
+        # Test notification history
+        success, response = self.run_test("Get Notification History", "GET", "notificacoes/historico", 200, token=self.admin_token)
+        if success:
+            print("✅ Notification history retrieved successfully")
+            print(f"   Found {len(response)} notifications in history")
+        
+        # Test send reminders (this might fail if no email API key, but should return proper response)
+        success, response = self.run_test("Send Reminders", "POST", "notificacoes/enviar-lembretes", 200, token=self.admin_token)
+        if success:
+            print("✅ Send reminders endpoint working")
+            if 'enviados' in response:
+                print(f"   Sent: {response['enviados']}, Errors: {response.get('erros', 0)}")
+        
+        return True
+
+    def test_reports_apis(self):
+        """Test PDF reports APIs"""
+        if not self.admin_token:
+            print("❌ Skipping reports tests - no token")
+            return False
+            
+        print("\n" + "="*50)
+        print("TESTING PDF REPORTS APIs")
+        print("="*50)
+        
+        # Test general schools PDF report
+        success, response = self.run_test("Download General Schools PDF", "GET", "relatorios/escolas/pdf", 200, token=self.admin_token)
+        if success:
+            print("✅ General schools PDF report generated successfully")
+        
+        # Test individual school PDF report (using escola_id if available)
+        if self.escola_id:
+            success, response = self.run_test("Download Individual School PDF", "GET", f"relatorios/escola/{self.escola_id}/pdf", 200, token=self.admin_token)
+            if success:
+                print("✅ Individual school PDF report generated successfully")
+        else:
+            print("⚠️  Skipping individual school PDF test - no escola_id available")
+        
+        return True
+
     def test_solicitacao_cadastro(self):
         """Test solicitação de cadastro flow"""
         print("\n" + "="*50)
@@ -393,6 +473,9 @@ class COMEPAPITester:
         # Admin functionality tests
         if admin_login_success:
             self.test_admin_endpoints()
+            self.test_new_dashboard_apis()
+            self.test_notifications_apis()
+            self.test_reports_apis()
         
         # Public endpoint tests
         self.test_solicitacao_cadastro()

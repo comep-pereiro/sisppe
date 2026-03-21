@@ -5,6 +5,8 @@ import { dashboardAPI, seedAPI } from '@/services/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import axios from 'axios';
 import { 
   School, 
   Users, 
@@ -20,8 +22,12 @@ import {
   AlertTriangle,
   CheckCircle,
   Clock,
-  Shield
+  Shield,
+  Bell,
+  TrendingUp
 } from 'lucide-react';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 // Sidebar Component
 const Sidebar = ({ isOpen, onClose }) => {
@@ -33,6 +39,8 @@ const Sidebar = ({ isOpen, onClose }) => {
     { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/admin/escolas', icon: School, label: 'Escolas' },
     { path: '/admin/solicitacoes', icon: ClipboardList, label: 'Solicitações' },
+    { path: '/admin/relatorios', icon: FileText, label: 'Relatórios' },
+    { path: '/admin/notificacoes', icon: Bell, label: 'Notificações' },
   ];
 
   const handleLogout = () => {
@@ -158,10 +166,13 @@ const StatCard = ({ icon: Icon, label, value, color = 'teal', trend }) => {
 };
 
 export default function DashboardAdmin() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [stats, setStats] = useState(null);
+  const [evolucao, setEvolucao] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const CHART_COLORS = ['#0F766E', '#3B82F6', '#F59E0B', '#10B981', '#8B5CF6'];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -175,6 +186,18 @@ export default function DashboardAdmin() {
         
         const response = await dashboardAPI.getAdminStats();
         setStats(response.data);
+
+        // Fetch evolution data
+        try {
+          const api = axios.create({
+            baseURL: `${BACKEND_URL}/api`,
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const evolucaoRes = await api.get('/dashboard/evolucao');
+          setEvolucao(evolucaoRes.data);
+        } catch (e) {
+          console.error('Error fetching evolution data:', e);
+        }
       } catch (error) {
         console.error('Error fetching stats:', error);
         toast.error('Erro ao carregar estatísticas');
@@ -183,7 +206,7 @@ export default function DashboardAdmin() {
       }
     };
     fetchData();
-  }, []);
+  }, [token]);
 
   return (
     <div className="min-h-screen bg-slate-50" data-testid="dashboard-admin">
@@ -342,18 +365,114 @@ export default function DashboardAdmin() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <Button 
-                        variant="outline" 
-                        className="w-full justify-between group"
-                        disabled
-                        data-testid="btn-relatorios"
-                      >
-                        Em breve
-                        <ChevronRight className="w-4 h-4" />
-                      </Button>
+                      <Link to="/admin/relatorios">
+                        <Button 
+                          variant="outline" 
+                          className="w-full justify-between group"
+                          data-testid="btn-relatorios"
+                        >
+                          Gerar Relatórios
+                          <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </Button>
+                      </Link>
                     </CardContent>
                   </Card>
                 </div>
+
+                {/* Charts */}
+                {evolucao && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Evolution Chart */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <TrendingUp className="w-5 h-5 text-teal-600" />
+                          Evolução Mensal
+                        </CardTitle>
+                        <CardDescription>
+                          Crescimento de escolas e docentes nos últimos 6 meses
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="h-64">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={evolucao.evolucao_mensal}>
+                              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                              <XAxis dataKey="mes" stroke="#64748b" fontSize={12} />
+                              <YAxis stroke="#64748b" fontSize={12} />
+                              <Tooltip 
+                                contentStyle={{ 
+                                  backgroundColor: '#fff', 
+                                  border: '1px solid #e2e8f0',
+                                  borderRadius: '8px'
+                                }}
+                              />
+                              <Line 
+                                type="monotone" 
+                                dataKey="escolas" 
+                                stroke="#0F766E" 
+                                strokeWidth={2}
+                                dot={{ fill: '#0F766E', strokeWidth: 2 }}
+                                name="Escolas"
+                              />
+                              <Line 
+                                type="monotone" 
+                                dataKey="docentes" 
+                                stroke="#3B82F6" 
+                                strokeWidth={2}
+                                dot={{ fill: '#3B82F6', strokeWidth: 2 }}
+                                name="Docentes"
+                              />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Distribution Charts */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Users className="w-5 h-5 text-blue-600" />
+                          Distribuição de Vínculos
+                        </CardTitle>
+                        <CardDescription>
+                          Tipo de vínculo dos docentes
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="h-64">
+                          {evolucao.distribuicao_vinculos?.length > 0 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                              <PieChart>
+                                <Pie
+                                  data={evolucao.distribuicao_vinculos}
+                                  cx="50%"
+                                  cy="50%"
+                                  innerRadius={50}
+                                  outerRadius={80}
+                                  paddingAngle={5}
+                                  dataKey="value"
+                                  label={({ name, value }) => `${name}: ${value}`}
+                                >
+                                  {evolucao.distribuicao_vinculos.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                                  ))}
+                                </Pie>
+                                <Tooltip />
+                                <Legend />
+                              </PieChart>
+                            </ResponsiveContainer>
+                          ) : (
+                            <div className="flex items-center justify-center h-full text-slate-400">
+                              Sem dados disponíveis
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
 
                 {/* Info Card */}
                 <Card className="bg-teal-50 border-teal-200">

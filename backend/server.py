@@ -1,10 +1,12 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.responses import Response
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
+import asyncio
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
 from typing import List, Optional
@@ -12,6 +14,18 @@ import uuid
 from datetime import datetime, timezone, timedelta
 import jwt
 import bcrypt
+
+# Import services
+from services import (
+    send_email, 
+    get_password_recovery_email, 
+    get_escola_approved_email,
+    get_escola_rejected_email,
+    get_update_reminder_email,
+    get_notification_summary_email,
+    generate_escola_report_pdf,
+    generate_escolas_summary_pdf
+)
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -142,6 +156,10 @@ class RecuperarSenhaRequest(BaseModel):
     email: str
     tipo: str  # escola ou admin
 
+class RedefinirSenhaRequest(BaseModel):
+    token: str
+    nova_senha: str
+
 class DashboardStats(BaseModel):
     total_escolas: int
     escolas_ativas: int
@@ -237,18 +255,74 @@ async def login_admin(data: AdminLogin):
 
 @api_router.post("/auth/recuperar-senha")
 async def recuperar_senha(data: RecuperarSenhaRequest):
-    # In production, this would send an email
+    """Send password recovery email"""
     if data.tipo == "escola":
         user = await db.escolas.find_one({"email": data.email}, {"_id": 0})
+        nome = user.get("nome") if user else None
     else:
         user = await db.admins.find_one({"email": data.email}, {"_id": 0})
+        nome = user.get("nome") if user else None
     
-    if not user:
-        # Don't reveal if email exists
-        return {"message": "Se o email estiver cadastrado, você receberá instruções para recuperação de senha"}
+    if user:
+        # Generate recovery token
+        recovery_token = str(uuid.uuid4())
+        expiry = datetime.now(timezone.utc) + timedelta(hours=2)
+        
+        # Save token to database
+        await db.password_recovery.insert_one({
+            "token": recovery_token,
+            "email": data.email,
+            "tipo": data.tipo,
+            "user_id": user.get("id"),
+            "expiry": expiry.isoformat(),
+            "used": False
+        })
+        
+        # Send email
+        base_url = os.environ.get('FRONTEND_URL', 'https://rede-educacao.preview.emergentagent.com')
+        html_content = get_password_recovery_email(nome, recovery_token, base_url)
+        await send_email(data.email, "COMEP - Recuperação de Senha", html_content)
     
-    # In production: generate token, save to DB, send email
+    # Always return same message for security
     return {"message": "Se o email estiver cadastrado, você receberá instruções para recuperação de senha"}
+
+@api_router.post("/auth/redefinir-senha")
+async def redefinir_senha(data: RedefinirSenhaRequest):
+    """Reset password using recovery token"""
+    recovery = await db.password_recovery.find_one({
+        "token": data.token,
+        "used": False
+    }, {"_id": 0})
+    
+    if not recovery:
+        raise HTTPException(status_code=400, detail="Token inválido ou expirado")
+    
+    # Check expiry
+    expiry = datetime.fromisoformat(recovery["expiry"])
+    if datetime.now(timezone.utc) > expiry:
+        raise HTTPException(status_code=400, detail="Token expirado")
+    
+    # Update password
+    senha_hash = hash_password(data.nova_senha)
+    
+    if recovery["tipo"] == "escola":
+        await db.escolas.update_one(
+            {"id": recovery["user_id"]},
+            {"$set": {"senha_hash": senha_hash}}
+        )
+    else:
+        await db.admins.update_one(
+            {"id": recovery["user_id"]},
+            {"$set": {"senha_hash": senha_hash}}
+        )
+    
+    # Mark token as used
+    await db.password_recovery.update_one(
+        {"token": data.token},
+        {"$set": {"used": True}}
+    )
+    
+    return {"message": "Senha alterada com sucesso"}
 
 # ======================== SOLICITAÇÃO CADASTRO ========================
 
@@ -324,6 +398,19 @@ async def aprovar_solicitacao(solicitacao_id: str, senha_inicial: str, current_a
         {"$set": {"status": "aprovada", "data_analise": now}}
     )
     
+    # Send approval email
+    if solicitacao.get("email_responsavel"):
+        html_content = get_escola_approved_email(
+            solicitacao["nome_escola"],
+            solicitacao["codigo_censo"],
+            senha_inicial
+        )
+        await send_email(
+            solicitacao["email_responsavel"],
+            "COMEP - Cadastro Aprovado!",
+            html_content
+        )
+    
     return {"message": "Solicitação aprovada e escola cadastrada com sucesso"}
 
 @api_router.put("/solicitacoes/{solicitacao_id}/rejeitar")
@@ -338,6 +425,18 @@ async def rejeitar_solicitacao(solicitacao_id: str, observacao: str, current_adm
         {"id": solicitacao_id},
         {"$set": {"status": "rejeitada", "data_analise": now, "observacao_analise": observacao}}
     )
+    
+    # Send rejection email
+    if solicitacao.get("email_responsavel"):
+        html_content = get_escola_rejected_email(
+            solicitacao["nome_escola"],
+            observacao
+        )
+        await send_email(
+            solicitacao["email_responsavel"],
+            "COMEP - Solicitação de Cadastro",
+            html_content
+        )
     
     return {"message": "Solicitação rejeitada"}
 
@@ -698,6 +797,226 @@ async def root():
 @api_router.get("/health")
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}
+
+# ======================== REPORTS (PDF) ========================
+
+@api_router.get("/relatorios/escola/{escola_id}/pdf")
+async def download_escola_report(escola_id: str, current_user: dict = Depends(get_current_user)):
+    """Generate PDF report for a specific school"""
+    # Check permissions
+    if current_user.get("type") == "escola" and current_user["sub"] != escola_id:
+        raise HTTPException(status_code=403, detail="Acesso negado")
+    
+    escola = await db.escolas.find_one({"id": escola_id}, {"_id": 0, "senha_hash": 0})
+    if not escola:
+        raise HTTPException(status_code=404, detail="Escola não encontrada")
+    
+    docentes = await db.docentes.find({"escola_id": escola_id, "ativo": True}, {"_id": 0}).to_list(1000)
+    quadro_admin = await db.quadro_admin.find({"escola_id": escola_id, "ativo": True}, {"_id": 0}).to_list(100)
+    
+    pdf_bytes = generate_escola_report_pdf(escola, docentes, quadro_admin)
+    
+    filename = f"relatorio_escola_{escola['codigo_censo']}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+@api_router.get("/relatorios/escolas/pdf")
+async def download_escolas_summary_report(current_admin: dict = Depends(get_current_admin)):
+    """Generate PDF summary report of all schools"""
+    escolas = await db.escolas.find({}, {"_id": 0, "senha_hash": 0}).sort("nome", 1).to_list(1000)
+    
+    # Get stats
+    total_escolas = len(escolas)
+    escolas_ativas = len([e for e in escolas if e.get("situacao") == "ativa"])
+    escolas_em_analise = len([e for e in escolas if e.get("situacao") == "em_analise"])
+    total_docentes = await db.docentes.count_documents({"ativo": True})
+    solicitacoes_pendentes = await db.solicitacoes.count_documents({"status": "pendente"})
+    
+    stats = {
+        "total_escolas": total_escolas,
+        "escolas_ativas": escolas_ativas,
+        "escolas_em_analise": escolas_em_analise,
+        "total_docentes": total_docentes,
+        "total_alunos_estimado": total_docentes * 25,
+        "solicitacoes_pendentes": solicitacoes_pendentes
+    }
+    
+    pdf_bytes = generate_escolas_summary_pdf(escolas, stats)
+    
+    filename = f"relatorio_geral_escolas_{datetime.now().strftime('%Y%m%d')}.pdf"
+    
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+# ======================== NOTIFICATIONS ========================
+
+@api_router.get("/notificacoes/escolas-desatualizadas")
+async def get_escolas_desatualizadas(current_admin: dict = Depends(get_current_admin)):
+    """Get list of schools with outdated data (more than 90 days without update)"""
+    limite = datetime.now(timezone.utc) - timedelta(days=90)
+    
+    escolas = await db.escolas.find({"situacao": "ativa"}, {"_id": 0, "senha_hash": 0}).to_list(1000)
+    
+    desatualizadas = []
+    for escola in escolas:
+        data_atualizacao = escola.get("data_atualizacao")
+        if data_atualizacao:
+            try:
+                dt = datetime.fromisoformat(data_atualizacao.replace('Z', '+00:00'))
+                dias_sem_atualizar = (datetime.now(timezone.utc) - dt).days
+                if dias_sem_atualizar >= 90:
+                    desatualizadas.append({
+                        "id": escola["id"],
+                        "nome": escola["nome"],
+                        "codigo_censo": escola["codigo_censo"],
+                        "email": escola.get("email"),
+                        "dias_sem_atualizar": dias_sem_atualizar,
+                        "data_atualizacao": data_atualizacao
+                    })
+            except:
+                pass
+    
+    # Sort by days without update (descending)
+    desatualizadas.sort(key=lambda x: x["dias_sem_atualizar"], reverse=True)
+    
+    return {
+        "total": len(desatualizadas),
+        "escolas": desatualizadas
+    }
+
+@api_router.post("/notificacoes/enviar-lembretes")
+async def enviar_lembretes_atualizacao(current_admin: dict = Depends(get_current_admin)):
+    """Send update reminder emails to schools with outdated data"""
+    limite = datetime.now(timezone.utc) - timedelta(days=90)
+    
+    escolas = await db.escolas.find({"situacao": "ativa"}, {"_id": 0, "senha_hash": 0}).to_list(1000)
+    
+    enviados = []
+    erros = []
+    
+    for escola in escolas:
+        data_atualizacao = escola.get("data_atualizacao")
+        if data_atualizacao and escola.get("email"):
+            try:
+                dt = datetime.fromisoformat(data_atualizacao.replace('Z', '+00:00'))
+                dias_sem_atualizar = (datetime.now(timezone.utc) - dt).days
+                
+                if dias_sem_atualizar >= 90:
+                    html_content = get_update_reminder_email(escola["nome"], dias_sem_atualizar)
+                    result = await send_email(
+                        escola["email"],
+                        "COMEP - Lembrete de Atualização de Dados",
+                        html_content
+                    )
+                    
+                    if result.get("status") == "success":
+                        enviados.append({
+                            "escola": escola["nome"],
+                            "email": escola["email"],
+                            "dias": dias_sem_atualizar
+                        })
+                        
+                        # Log notification
+                        await db.notificacoes.insert_one({
+                            "id": str(uuid.uuid4()),
+                            "tipo": "lembrete_atualizacao",
+                            "escola_id": escola["id"],
+                            "escola_nome": escola["nome"],
+                            "email": escola["email"],
+                            "dias_sem_atualizar": dias_sem_atualizar,
+                            "data_envio": datetime.now(timezone.utc).isoformat(),
+                            "status": "enviado"
+                        })
+                    else:
+                        erros.append({
+                            "escola": escola["nome"],
+                            "erro": result.get("message", "Erro desconhecido")
+                        })
+            except Exception as e:
+                erros.append({
+                    "escola": escola["nome"],
+                    "erro": str(e)
+                })
+    
+    return {
+        "enviados": len(enviados),
+        "erros": len(erros),
+        "detalhes_enviados": enviados,
+        "detalhes_erros": erros
+    }
+
+@api_router.get("/notificacoes/historico")
+async def get_historico_notificacoes(current_admin: dict = Depends(get_current_admin)):
+    """Get notification history"""
+    notificacoes = await db.notificacoes.find({}, {"_id": 0}).sort("data_envio", -1).to_list(100)
+    return notificacoes
+
+# ======================== DASHBOARD EVOLUTION ========================
+
+@api_router.get("/dashboard/evolucao")
+async def get_dashboard_evolucao(current_admin: dict = Depends(get_current_admin)):
+    """Get evolution data for charts"""
+    # Get monthly stats for the last 6 months
+    now = datetime.now(timezone.utc)
+    meses = []
+    
+    for i in range(5, -1, -1):
+        mes_ref = now - timedelta(days=30*i)
+        mes_nome = mes_ref.strftime("%b/%y")
+        mes_inicio = mes_ref.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        
+        if i > 0:
+            mes_fim = (mes_inicio + timedelta(days=32)).replace(day=1)
+        else:
+            mes_fim = now
+        
+        # Count escolas registered up to that month
+        escolas_count = await db.escolas.count_documents({
+            "data_cadastro": {"$lte": mes_fim.isoformat()}
+        })
+        
+        # Count docentes
+        docentes_count = await db.docentes.count_documents({
+            "data_cadastro": {"$lte": mes_fim.isoformat()},
+            "ativo": True
+        })
+        
+        meses.append({
+            "mes": mes_nome,
+            "escolas": escolas_count,
+            "docentes": docentes_count
+        })
+    
+    # Get distribution by modalidade
+    escolas = await db.escolas.find({"situacao": "ativa"}, {"_id": 0, "modalidades": 1}).to_list(1000)
+    modalidades_count = {}
+    for escola in escolas:
+        for mod in escola.get("modalidades", []):
+            modalidades_count[mod] = modalidades_count.get(mod, 0) + 1
+    
+    modalidades = [{"name": k, "value": v} for k, v in modalidades_count.items()]
+    
+    # Get distribution by vinculo docente
+    docentes = await db.docentes.find({"ativo": True}, {"_id": 0, "vinculo": 1}).to_list(1000)
+    vinculo_count = {}
+    for doc in docentes:
+        vinculo = doc.get("vinculo", "Outros")
+        vinculo_count[vinculo] = vinculo_count.get(vinculo, 0) + 1
+    
+    vinculos = [{"name": k, "value": v} for k, v in vinculo_count.items()]
+    
+    return {
+        "evolucao_mensal": meses,
+        "distribuicao_modalidades": modalidades,
+        "distribuicao_vinculos": vinculos
+    }
 
 # Include the router
 app.include_router(api_router)

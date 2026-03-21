@@ -14,6 +14,8 @@ import GestaoQuadroAdmin from "@/pages/GestaoQuadroAdmin";
 import EscolasLista from "@/pages/EscolasLista";
 import EscolaDetalhes from "@/pages/EscolaDetalhes";
 import SolicitacoesLista from "@/pages/SolicitacoesLista";
+import RelatoriosPage from "@/pages/RelatoriosPage";
+import NotificacoesPage from "@/pages/NotificacoesPage";
 
 // Context
 import { AuthProvider, useAuth } from "@/context/AuthContext";
@@ -93,6 +95,16 @@ function AppRoutes() {
       <Route path="/admin/solicitacoes" element={
         <ProtectedAdminRoute>
           <SolicitacoesLista />
+        </ProtectedAdminRoute>
+      } />
+      <Route path="/admin/relatorios" element={
+        <ProtectedAdminRoute>
+          <RelatoriosPage />
+        </ProtectedAdminRoute>
+      } />
+      <Route path="/admin/notificacoes" element={
+        <ProtectedAdminRoute>
+          <NotificacoesPage />
         </ProtectedAdminRoute>
       } />
       
