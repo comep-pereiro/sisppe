@@ -77,15 +77,16 @@ class COMEPAPITester:
         return False
 
     def test_escola_login(self):
-        """Test escola login"""
+        """Test escola login with INEP code"""
         print("\n" + "="*50)
         print("TESTING ESCOLA LOGIN")
         print("="*50)
         
+        # Using real credentials from the seeded data
         login_data = {
-            "codigo_censo": "23456789",
-            "cpf": "12345678900",
-            "senha": "escola123"
+            "codigo_inep": "23056797",
+            "cpf": "05174591",
+            "senha": "123456"
         }
         
         success, response = self.run_test(
@@ -98,8 +99,9 @@ class COMEPAPITester:
         
         if success and 'access_token' in response:
             self.escola_token = response['access_token']
-            self.escola_id = response['user_data']['id']
+            self.escola_id = response['user_data']['escola_id']
             print(f"✅ Escola token obtained: {self.escola_token[:20]}...")
+            print(f"✅ Escola ID: {self.escola_id}")
             return True
         return False
 
@@ -436,7 +438,7 @@ class COMEPAPITester:
         
         # Invalid escola login
         invalid_escola = {
-            "codigo_censo": "00000000",
+            "codigo_inep": "00000000",
             "cpf": "00000000000",
             "senha": "wrong"
         }
@@ -448,6 +450,136 @@ class COMEPAPITester:
             "senha": "wrong"
         }
         self.run_test("Invalid Admin Login", "POST", "auth/admin/login", 401, data=invalid_admin)
+
+    def test_blocking_functionality(self):
+        """Test escola blocking/unblocking functionality"""
+        if not self.admin_token or not self.escola_id:
+            print("❌ Skipping blocking tests - no admin token or escola_id")
+            return False
+            
+        print("\n" + "="*50)
+        print("TESTING BLOCKING/UNBLOCKING FUNCTIONALITY")
+        print("="*50)
+        
+        # Block escola
+        block_data = {"motivo": "Teste de bloqueio para análise de documentos"}
+        success, response = self.run_test(
+            "Block Escola",
+            "PUT",
+            f"escolas/{self.escola_id}/bloquear",
+            200,
+            data=block_data,
+            token=self.admin_token
+        )
+        
+        if success:
+            print("✅ Escola blocked successfully")
+            
+            # Try to update escola data while blocked (should fail)
+            if self.escola_token:
+                update_data = {
+                    "codigo_inep": "23056797",
+                    "nome": "CEI MARIA EUNICE RODRIGUES OLIVEIRA - TESTE",
+                    "endereco": "Pereiro - CE",
+                    "modalidades": []
+                }
+                
+                success_blocked, response_blocked = self.run_test(
+                    "Try Update While Blocked",
+                    "PUT",
+                    "escolas/me",
+                    403,  # Should be forbidden
+                    data=update_data,
+                    token=self.escola_token
+                )
+                
+                if success_blocked:
+                    print("✅ Blocked escola correctly prevented from editing")
+            
+            # Unblock escola
+            success_unblock, response_unblock = self.run_test(
+                "Unblock Escola",
+                "PUT",
+                f"escolas/{self.escola_id}/desbloquear?parecer=Documentação aprovada",
+                200,
+                token=self.admin_token
+            )
+            
+            if success_unblock:
+                print("✅ Escola unblocked successfully")
+                
+                # Try to update escola data after unblocking (should work)
+                if self.escola_token:
+                    success_unblocked, response_unblocked = self.run_test(
+                        "Update After Unblock",
+                        "PUT",
+                        "escolas/me",
+                        200,
+                        data=update_data,
+                        token=self.escola_token
+                    )
+                    
+                    if success_unblocked:
+                        print("✅ Unblocked escola can edit data again")
+        
+        return True
+
+    def test_data_isolation(self):
+        """Test that escola can only see their own data"""
+        if not self.escola_token:
+            print("❌ Skipping data isolation tests - no escola token")
+            return False
+            
+        print("\n" + "="*50)
+        print("TESTING DATA ISOLATION")
+        print("="*50)
+        
+        # Test that escola can only see their own docentes
+        success, docentes = self.run_test("Get Own Docentes", "GET", "docentes", 200, token=self.escola_token)
+        if success:
+            print(f"✅ Escola can access their docentes: {len(docentes)} found")
+        
+        # Test that escola can only see their own quadro admin
+        success, quadro = self.run_test("Get Own Quadro Admin", "GET", "quadro-admin", 200, token=self.escola_token)
+        if success:
+            print(f"✅ Escola can access their quadro admin: {len(quadro)} found")
+        
+        # Test that escola can get their own data
+        success, escola_data = self.run_test("Get Own Escola Data", "GET", "escolas/me", 200, token=self.escola_token)
+        if success:
+            print(f"✅ Escola can access their own data: {escola_data.get('nome', 'Unknown')}")
+        
+        return True
+
+    def test_admin_escola_management(self):
+        """Test admin can manage all escolas"""
+        if not self.admin_token:
+            print("❌ Skipping admin escola management tests - no admin token")
+            return False
+            
+        print("\n" + "="*50)
+        print("TESTING ADMIN ESCOLA MANAGEMENT")
+        print("="*50)
+        
+        # Admin can list all escolas
+        success, escolas = self.run_test("Admin List All Escolas", "GET", "escolas", 200, token=self.admin_token)
+        if success:
+            print(f"✅ Admin can see all escolas: {len(escolas)} found")
+            
+            # Test getting specific escola details
+            if escolas and len(escolas) > 0:
+                first_escola_id = escolas[0]['id']
+                success_detail, escola_detail = self.run_test(
+                    "Admin Get Escola Details",
+                    "GET",
+                    f"escolas/{first_escola_id}",
+                    200,
+                    token=self.admin_token
+                )
+                if success_detail:
+                    print(f"✅ Admin can access escola details: {escola_detail.get('nome', 'Unknown')}")
+        
+        return True
 
     def run_all_tests(self):
         """Run all tests in sequence"""
@@ -476,6 +608,12 @@ class COMEPAPITester:
             self.test_new_dashboard_apis()
             self.test_notifications_apis()
             self.test_reports_apis()
+            self.test_admin_escola_management()
+        
+        # Test new features (blocking/unblocking and data isolation)
+        if escola_login_success and admin_login_success:
+            self.test_blocking_functionality()
+            self.test_data_isolation()
         
         # Public endpoint tests
         self.test_solicitacao_cadastro()

@@ -13,7 +13,7 @@ export default function LoginEscola() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
-    codigo_censo: '',
+    codigo_inep: '',
     cpf: '',
     senha: '',
   });
@@ -84,19 +84,19 @@ export default function LoginEscola() {
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="codigo_censo" className="text-sm font-medium text-slate-700">
-                Código de Censo
+              <Label htmlFor="codigo_inep" className="text-sm font-medium text-slate-700">
+                Código INEP
               </Label>
               <Input
-                id="codigo_censo"
-                name="codigo_censo"
+                id="codigo_inep"
+                name="codigo_inep"
                 type="text"
-                placeholder="Digite o código de censo"
-                value={formData.codigo_censo}
+                placeholder="Digite o código INEP da escola"
+                value={formData.codigo_inep}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
                 required
-                data-testid="input-codigo-censo"
+                data-testid="input-codigo-inep"
                 className="h-12 border-slate-300 focus:border-teal-500 focus:ring-teal-500"
               />
             </div>
@@ -109,7 +109,7 @@ export default function LoginEscola() {
                 id="cpf"
                 name="cpf"
                 type="text"
-                placeholder="Digite o CPF do responsável"
+                placeholder="Digite seu CPF"
                 value={formData.cpf}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}

@@ -47,6 +47,9 @@ export const escolasAPI = {
   getMinhaEscola: () => api.get('/escolas/me'),
   atualizar: (data) => api.put('/escolas/me', data),
   atualizarSituacao: (id, situacao) => api.put(`/escolas/${id}/situacao`, null, { params: { situacao } }),
+  bloquear: (id, motivo) => api.put(`/escolas/${id}/bloquear`, { motivo }),
+  desbloquear: (id, parecer) => api.put(`/escolas/${id}/desbloquear`, null, { params: { parecer } }),
+  listarUsuarios: (id) => api.get(`/escolas/${id}/usuarios`),
 };
 
 // Solicitações APIs

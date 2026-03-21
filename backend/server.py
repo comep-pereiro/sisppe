@@ -24,7 +24,8 @@ from services import (
     get_update_reminder_email,
     get_notification_summary_email,
     generate_escola_report_pdf,
-    generate_escolas_summary_pdf
+    generate_escolas_summary_pdf,
+    get_email_template
 )
 
 ROOT_DIR = Path(__file__).parent
@@ -46,8 +47,25 @@ security = HTTPBearer()
 
 # ======================== MODELS ========================
 
+class UsuarioEscolaBase(BaseModel):
+    nome: str
+    cpf: str
+    email: Optional[EmailStr] = None
+    telefone: Optional[str] = None
+    cargo: str  # Diretor, Secretário Escolar
+
+class UsuarioEscolaCreate(UsuarioEscolaBase):
+    escola_id: str
+    senha: str
+
+class UsuarioEscolaResponse(UsuarioEscolaBase):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    escola_id: str
+    ativo: bool = True
+
 class EscolaBase(BaseModel):
-    codigo_censo: str
+    codigo_inep: str  # Changed from codigo_censo to codigo_inep
     nome: str
     endereco: str
     telefone: Optional[str] = None
@@ -56,18 +74,16 @@ class EscolaBase(BaseModel):
     situacao: str = "ativa"  # ativa, inativa, em_analise
 
 class EscolaCreate(EscolaBase):
-    cpf_responsavel: str
-    senha: str
+    pass
 
 class EscolaResponse(EscolaBase):
     model_config = ConfigDict(extra="ignore")
     id: str
-    cpf_responsavel: str
     data_cadastro: str
     data_atualizacao: str
 
 class EscolaLogin(BaseModel):
-    codigo_censo: str
+    codigo_inep: str
     cpf: str
     senha: str
 
@@ -214,25 +230,59 @@ async def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(
 
 @api_router.post("/auth/escola/login", response_model=TokenResponse)
 async def login_escola(data: EscolaLogin):
-    escola = await db.escolas.find_one({
-        "codigo_censo": data.codigo_censo,
-        "cpf_responsavel": data.cpf
-    }, {"_id": 0})
+    """Login for school users (Director or Secretary)"""
+    # Find school by INEP code
+    escola = await db.escolas.find_one({"codigo_inep": data.codigo_inep}, {"_id": 0})
     
-    if not escola or not verify_password(data.senha, escola.get("senha_hash", "")):
-        raise HTTPException(status_code=401, detail="Credenciais inválidas")
+    if not escola:
+        raise HTTPException(status_code=401, detail="Código INEP não encontrado")
     
     if escola.get("situacao") != "ativa":
         raise HTTPException(status_code=403, detail="Escola não está ativa no sistema")
     
-    token = create_token(escola["id"], "escola")
-    escola_data = {k: v for k, v in escola.items() if k != "senha_hash"}
+    # Find user by CPF linked to this school
+    usuario = await db.usuarios_escola.find_one({
+        "escola_id": escola["id"],
+        "cpf": data.cpf.replace(".", "").replace("-", ""),
+        "ativo": True
+    }, {"_id": 0})
+    
+    if not usuario or not verify_password(data.senha, usuario.get("senha_hash", "")):
+        raise HTTPException(status_code=401, detail="CPF ou senha inválidos")
+    
+    # Create token with user ID and escola ID
+    token = create_token(usuario["id"], "escola")
+    
+    # Return user data with escola info
+    user_data = {
+        "id": usuario["id"],
+        "nome": usuario["nome"],
+        "cpf": usuario["cpf"],
+        "cargo": usuario["cargo"],
+        "email": usuario.get("email"),
+        "escola_id": escola["id"],
+        "escola_nome": escola["nome"],
+        "escola_codigo_inep": escola["codigo_inep"]
+    }
     
     return TokenResponse(
         access_token=token,
         user_type="escola",
-        user_data=escola_data
+        user_data=user_data
     )
+
+async def get_current_escola_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Get current logged in school user with escola_id"""
+    payload = decode_token(credentials.credentials)
+    if payload.get("type") != "escola":
+        raise HTTPException(status_code=403, detail="Acesso restrito a usuários de escolas")
+    
+    # Get user details to get escola_id
+    usuario = await db.usuarios_escola.find_one({"id": payload["sub"]}, {"_id": 0})
+    if not usuario:
+        raise HTTPException(status_code=401, detail="Usuário não encontrado")
+    
+    return {**payload, "escola_id": usuario["escola_id"], "usuario": usuario}
 
 @api_router.post("/auth/admin/login", response_model=TokenResponse)
 async def login_admin(data: AdminLogin):
@@ -448,22 +498,30 @@ async def listar_escolas(situacao: Optional[str] = None, current_admin: dict = D
     if situacao:
         query["situacao"] = situacao
     
-    escolas = await db.escolas.find(query, {"_id": 0, "senha_hash": 0}).sort("nome", 1).to_list(1000)
+    escolas = await db.escolas.find(query, {"_id": 0}).sort("nome", 1).to_list(1000)
     return [EscolaResponse(**e) for e in escolas]
 
 @api_router.get("/escolas/me", response_model=EscolaResponse)
-async def get_minha_escola(current_escola: dict = Depends(get_current_escola)):
-    escola = await db.escolas.find_one({"id": current_escola["sub"]}, {"_id": 0, "senha_hash": 0})
+async def get_minha_escola(current_user: dict = Depends(get_current_escola_user)):
+    escola = await db.escolas.find_one({"id": current_user["escola_id"]}, {"_id": 0})
     if not escola:
         raise HTTPException(status_code=404, detail="Escola não encontrada")
     return EscolaResponse(**escola)
 
 @api_router.put("/escolas/me")
-async def atualizar_minha_escola(data: EscolaBase, current_escola: dict = Depends(get_current_escola)):
+async def atualizar_minha_escola(data: EscolaBase, current_user: dict = Depends(get_current_escola_user)):
+    # Check if escola is blocked
+    escola = await db.escolas.find_one({"id": current_user["escola_id"]}, {"_id": 0})
+    if escola and escola.get("bloqueado"):
+        raise HTTPException(
+            status_code=403, 
+            detail=f"Escola bloqueada para análise. Motivo: {escola.get('motivo_bloqueio', 'Em análise pelo COMEP')}"
+        )
+    
     now = datetime.now(timezone.utc).isoformat()
     
     await db.escolas.update_one(
-        {"id": current_escola["sub"]},
+        {"id": current_user["escola_id"]},
         {"$set": {**data.model_dump(), "data_atualizacao": now}}
     )
     
@@ -471,7 +529,7 @@ async def atualizar_minha_escola(data: EscolaBase, current_escola: dict = Depend
 
 @api_router.get("/escolas/{escola_id}", response_model=EscolaResponse)
 async def get_escola(escola_id: str, current_admin: dict = Depends(get_current_admin)):
-    escola = await db.escolas.find_one({"id": escola_id}, {"_id": 0, "senha_hash": 0})
+    escola = await db.escolas.find_one({"id": escola_id}, {"_id": 0})
     if not escola:
         raise HTTPException(status_code=404, detail="Escola não encontrada")
     return EscolaResponse(**escola)
@@ -494,11 +552,36 @@ async def atualizar_situacao_escola(escola_id: str, situacao: str, current_admin
 
 # ======================== DOCENTES ========================
 
+async def get_escola_id_from_user(current_user: dict) -> str:
+    """Helper to get escola_id from current user"""
+    if current_user.get("type") == "admin":
+        return None
+    # For escola users, get escola_id from usuarios_escola
+    usuario = await db.usuarios_escola.find_one({"id": current_user["sub"]}, {"_id": 0})
+    if usuario:
+        return usuario["escola_id"]
+    return None
+
+async def check_escola_bloqueada(escola_id: str):
+    """Check if escola is blocked and raise exception if so"""
+    escola = await db.escolas.find_one({"id": escola_id}, {"_id": 0})
+    if escola and escola.get("bloqueado"):
+        raise HTTPException(
+            status_code=403, 
+            detail=f"Escola bloqueada para análise. Motivo: {escola.get('motivo_bloqueio', 'Em análise pelo COMEP')}"
+        )
+
 @api_router.post("/docentes", response_model=DocenteResponse)
 async def criar_docente(data: DocenteCreate, current_user: dict = Depends(get_current_user)):
+    # Get escola_id for escola users
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
     # Escola can only add to their own, admin can add to any
-    if current_user.get("type") == "escola" and data.escola_id != current_user["sub"]:
-        raise HTTPException(status_code=403, detail="Você só pode adicionar docentes à sua própria escola")
+    if current_user.get("type") == "escola":
+        if data.escola_id != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode adicionar docentes à sua própria escola")
+        # Check if blocked
+        await check_escola_bloqueada(user_escola_id)
     
     now = datetime.now(timezone.utc).isoformat()
     docente = {
@@ -515,9 +598,14 @@ async def criar_docente(data: DocenteCreate, current_user: dict = Depends(get_cu
 async def listar_docentes(escola_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
     query = {"ativo": True}
     
+    # Get escola_id for escola users
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
     if current_user.get("type") == "escola":
-        query["escola_id"] = current_user["sub"]
+        # Escola users can only see their own docentes
+        query["escola_id"] = user_escola_id
     elif escola_id:
+        # Admin can filter by escola_id
         query["escola_id"] = escola_id
     
     docentes = await db.docentes.find(query, {"_id": 0}).sort("nome", 1).to_list(1000)
@@ -529,8 +617,12 @@ async def atualizar_docente(docente_id: str, data: DocenteBase, current_user: di
     if not docente:
         raise HTTPException(status_code=404, detail="Docente não encontrado")
     
-    if current_user.get("type") == "escola" and docente["escola_id"] != current_user["sub"]:
-        raise HTTPException(status_code=403, detail="Você só pode editar docentes da sua própria escola")
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if docente["escola_id"] != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode editar docentes da sua própria escola")
+        await check_escola_bloqueada(user_escola_id)
     
     await db.docentes.update_one(
         {"id": docente_id},
@@ -545,8 +637,12 @@ async def remover_docente(docente_id: str, current_user: dict = Depends(get_curr
     if not docente:
         raise HTTPException(status_code=404, detail="Docente não encontrado")
     
-    if current_user.get("type") == "escola" and docente["escola_id"] != current_user["sub"]:
-        raise HTTPException(status_code=403, detail="Você só pode remover docentes da sua própria escola")
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if docente["escola_id"] != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode remover docentes da sua própria escola")
+        await check_escola_bloqueada(user_escola_id)
     
     await db.docentes.update_one({"id": docente_id}, {"$set": {"ativo": False}})
     return {"message": "Docente removido com sucesso"}
@@ -555,8 +651,12 @@ async def remover_docente(docente_id: str, current_user: dict = Depends(get_curr
 
 @api_router.post("/quadro-admin", response_model=QuadroAdminResponse)
 async def criar_quadro_admin(data: QuadroAdminCreate, current_user: dict = Depends(get_current_user)):
-    if current_user.get("type") == "escola" and data.escola_id != current_user["sub"]:
-        raise HTTPException(status_code=403, detail="Você só pode adicionar membros à sua própria escola")
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if data.escola_id != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode adicionar membros à sua própria escola")
+        await check_escola_bloqueada(user_escola_id)
     
     now = datetime.now(timezone.utc).isoformat()
     membro = {
@@ -573,8 +673,11 @@ async def criar_quadro_admin(data: QuadroAdminCreate, current_user: dict = Depen
 async def listar_quadro_admin(escola_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
     query = {"ativo": True}
     
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
     if current_user.get("type") == "escola":
-        query["escola_id"] = current_user["sub"]
+        # Escola users can only see their own quadro
+        query["escola_id"] = user_escola_id
     elif escola_id:
         query["escola_id"] = escola_id
     
@@ -587,8 +690,12 @@ async def atualizar_quadro_admin(membro_id: str, data: QuadroAdminBase, current_
     if not membro:
         raise HTTPException(status_code=404, detail="Membro não encontrado")
     
-    if current_user.get("type") == "escola" and membro["escola_id"] != current_user["sub"]:
-        raise HTTPException(status_code=403, detail="Você só pode editar membros da sua própria escola")
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if membro["escola_id"] != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode editar membros da sua própria escola")
+        await check_escola_bloqueada(user_escola_id)
     
     await db.quadro_admin.update_one(
         {"id": membro_id},
@@ -603,8 +710,12 @@ async def remover_quadro_admin(membro_id: str, current_user: dict = Depends(get_
     if not membro:
         raise HTTPException(status_code=404, detail="Membro não encontrado")
     
-    if current_user.get("type") == "escola" and membro["escola_id"] != current_user["sub"]:
-        raise HTTPException(status_code=403, detail="Você só pode remover membros da sua própria escola")
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if membro["escola_id"] != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode remover membros da sua própria escola")
+        await check_escola_bloqueada(user_escola_id)
     
     await db.quadro_admin.update_one({"id": membro_id}, {"$set": {"ativo": False}})
     return {"message": "Membro removido com sucesso"}
@@ -659,8 +770,8 @@ async def get_dashboard_stats(current_admin: dict = Depends(get_current_admin)):
     )
 
 @api_router.get("/dashboard/escola/stats")
-async def get_escola_stats(current_escola: dict = Depends(get_current_escola)):
-    escola_id = current_escola["sub"]
+async def get_escola_stats(current_user: dict = Depends(get_current_escola_user)):
+    escola_id = current_user["escola_id"]
     
     total_docentes = await db.docentes.count_documents({"escola_id": escola_id, "ativo": True})
     total_quadro = await db.quadro_admin.count_documents({"escola_id": escola_id, "ativo": True})
@@ -674,7 +785,7 @@ async def get_escola_stats(current_escola: dict = Depends(get_current_escola)):
 
 @api_router.post("/seed")
 async def seed_database():
-    """Create initial admin user and sample data for testing"""
+    """Create initial admin user and all 18 schools with real data"""
     
     # Check if admin already exists
     existing_admin = await db.admins.find_one({"email": "admin@comep.gov.br"}, {"_id": 0})
@@ -695,98 +806,217 @@ async def seed_database():
     }
     await db.admins.insert_one(admin)
     
-    # Create sample escola
-    escola_id = str(uuid.uuid4())
-    escola = {
-        "id": escola_id,
-        "codigo_censo": "23456789",
-        "nome": "Escola Municipal José de Alencar",
-        "endereco": "Rua Principal, 123, Centro, Pereiro-CE",
-        "telefone": "(88) 99999-1234",
-        "email": "josealencar@escola.edu.br",
-        "cpf_responsavel": "12345678900",
-        "senha_hash": hash_password("escola123"),
-        "modalidades": ["Educação Infantil", "Ensino Fundamental"],
-        "situacao": "ativa",
-        "data_cadastro": now,
-        "data_atualizacao": now
-    }
-    await db.escolas.insert_one(escola)
-    
-    # Create sample docentes
-    docentes = [
-        {
-            "id": str(uuid.uuid4()),
-            "escola_id": escola_id,
-            "nome": "Maria Silva Santos",
-            "cpf": "11122233344",
-            "email": "maria.silva@escola.edu.br",
-            "telefone": "(88) 99999-1111",
-            "formacao": "Especialização",
-            "disciplinas": ["Português", "Literatura"],
-            "carga_horaria": 40,
-            "vinculo": "Efetivo",
-            "data_cadastro": now,
-            "ativo": True
-        },
-        {
-            "id": str(uuid.uuid4()),
-            "escola_id": escola_id,
-            "nome": "João Pereira Lima",
-            "cpf": "22233344455",
-            "email": "joao.lima@escola.edu.br",
-            "telefone": "(88) 99999-2222",
-            "formacao": "Mestrado",
-            "disciplinas": ["Matemática", "Física"],
-            "carga_horaria": 40,
-            "vinculo": "Efetivo",
-            "data_cadastro": now,
-            "ativo": True
-        }
+    # Real school data from Pereiro-CE
+    escolas_data = [
+        {"inep": "23056797", "nome": "CEI MARIA EUNICE RODRIGUES OLIVEIRA", "diretor": "JOSE DIONES RODRIGUES FERREIRA", "cpf": "05174aborto591", "email": "josediones.rf@gmail.com", "telefone": "88996141507"},
+        {"inep": "23249714", "nome": "CEI MARIA JOSÉ RODRIGUES", "diretor": "MARIA LUCIA FERREIRA DA SILVA", "cpf": "02570783373", "email": "luciaferreira1015@gmail.com", "telefone": "88997302570"},
+        {"inep": "23056789", "nome": "CEI MARIA ZILDA RODRIGUES ARAUJO", "diretor": "LUZINETE MARIA DO NASCIMENTO", "cpf": "87853523300", "email": "luzinetemarianascimento@gmail.com", "telefone": "88994050562"},
+        {"inep": "23249722", "nome": "CEI RAIMUNDO RIBEIRO SOBRINHO", "diretor": "MARIA ECILVÂNIA XAVIER FERREIRA", "cpf": "05078489303", "email": "ecilvaniaferreira@gmail.com", "telefone": "88999265930"},
+        {"inep": "23249757", "nome": "CEI MARIA LINDALVA FERREIRA", "diretor": "MARIA LINDACI DA SILVA", "cpf": "02600897317", "email": "lindacisilva05@gmail.com", "telefone": "88994246706"},
+        {"inep": "23056827", "nome": "EEIEF ANTONIO ALVES PEREIRA", "diretor": "ANTONIA IVONETE ALVES DE ARAUJO", "cpf": "53269705387", "email": "netaalvesgo@gmail.com", "telefone": "88992078795"},
+        {"inep": "23249730", "nome": "EEIEF JOAQUIM JOSE DE SOUSA", "diretor": "FRANCIVANDA FERREIRA NUNES", "cpf": "90717694304", "email": "francivandaferreira2018@gmail.com", "telefone": "88999717614"},
+        {"inep": "23056843", "nome": "EEIEF JOSE ALVES FERREIRA", "diretor": "ZENILDA FERREIRA DE SOUSA", "cpf": "96757949320", "email": "zenildaferreiradesousa1979@gmail.com", "telefone": "88996308580"},
+        {"inep": "23056819", "nome": "EEIEF JOSE MENDES DA CRUZ", "diretor": "CICERA FERREIRA DA SILVA SOUSA", "cpf": "01270540302", "email": "cicerasilvasousa2016@gmail.com", "telefone": "88999410566"},
+        {"inep": "23056851", "nome": "EEIEF MANOEL ALVES DE ARAUJO", "diretor": "MARIA FRANCINEIDE FERREIRA DA SILVA", "cpf": "01223390321", "email": "francileide.ferreira2019@gmail.com", "telefone": "88999693331"},
+        {"inep": "23056770", "nome": "EEIEF MARIA RIBEIRO DA CONCEICAO", "diretor": "MARIA LINDINALVA SANTOS RODRIGUES", "cpf": "94963037320", "email": "lindinalvasanto@gmail.com", "telefone": "88999418562"},
+        {"inep": "23249749", "nome": "EEIEF RAIMUNDO RODRIGUES DA SILVA", "diretor": "MARIA LUCINEIDE XAVIER DA SILVA", "cpf": "93547676372", "email": "lucimeidexavier2015@gmail.com", "telefone": "88981258827"},
+        {"inep": "23056860", "nome": "EEIEF ANTONIO VIEIRA DA SILVA", "diretor": "MARIA DASDORES DE OLIVEIRA", "cpf": "01153817393", "email": "mariadasdoresoliveira85@gmail.com", "telefone": "88999024763"},
+        {"inep": "23173688", "nome": "EEIEF FRANCISCO FERREIRA FILHO", "diretor": "MARIA FRANCILEIDE ALVES DE ARAÚJO", "cpf": "03216082371", "email": "franciaalvesaraujo@gmail.com", "telefone": "88999673091"},
+        {"inep": "23056916", "nome": "EEIEF FRANCISCO ALVES DA SILVA", "diretor": "MARIA ECILENE XAVIER FERREIRA", "cpf": "88556556368", "email": "ecilene.xavier@gmail.com", "telefone": "88999275930"},
+        {"inep": "23056835", "nome": "EEIEF JOSE FERREIRA LEITE", "diretor": "MARIA ZÉLIA FERREIRA DA SILVA", "cpf": "88556580320", "email": "zeliaferreiras@gmail.com", "telefone": "88999563423"},
+        {"inep": "23056878", "nome": "EMEF CASIMIRO GONCALVES DE ARAUJO", "diretor": "RAIMUNDO NONATO ALVES DE OLIVEIRA", "cpf": "53269845315", "email": "nonatoalves1968@gmail.com", "telefone": "88994171754"},
+        {"inep": "23056886", "nome": "EMEF MANOEL DE PAULA MEIRELES", "diretor": "MARIA ZENIRA FERREIRA DA SILVA", "cpf": "63773570391", "email": "mariazenirasilva33@gmail.com", "telefone": "88996308582"},
     ]
-    await db.docentes.insert_many(docentes)
     
-    # Create sample quadro administrativo
-    quadro = [
-        {
+    for escola_data in escolas_data:
+        escola_id = str(uuid.uuid4())
+        
+        # Clean CPF (remove any non-numeric characters)
+        cpf_limpo = ''.join(filter(str.isdigit, escola_data["cpf"]))
+        
+        # Create escola
+        escola = {
+            "id": escola_id,
+            "codigo_inep": escola_data["inep"],
+            "nome": escola_data["nome"],
+            "endereco": f"Pereiro - CE",
+            "telefone": escola_data.get("telefone"),
+            "email": escola_data.get("email"),
+            "modalidades": [],
+            "situacao": "ativa",
+            "bloqueado": False,
+            "motivo_bloqueio": None,
+            "data_cadastro": now,
+            "data_atualizacao": now
+        }
+        await db.escolas.insert_one(escola)
+        
+        # Create diretor user
+        diretor_user = {
             "id": str(uuid.uuid4()),
             "escola_id": escola_id,
-            "nome": "Ana Clara Oliveira",
-            "cpf": "33344455566",
+            "nome": escola_data["diretor"],
+            "cpf": cpf_limpo,
+            "email": escola_data.get("email"),
+            "telefone": escola_data.get("telefone"),
             "cargo": "Diretor",
-            "email": "ana.oliveira@escola.edu.br",
-            "telefone": "(88) 99999-3333",
-            "formacao": "Mestrado em Gestão Educacional",
-            "data_cadastro": now,
-            "ativo": True
-        },
-        {
-            "id": str(uuid.uuid4()),
-            "escola_id": escola_id,
-            "nome": "Carlos Eduardo Souza",
-            "cpf": "44455566677",
-            "cargo": "Secretário",
-            "email": "carlos.souza@escola.edu.br",
-            "telefone": "(88) 99999-4444",
-            "formacao": "Graduação em Pedagogia",
-            "data_cadastro": now,
+            "senha_hash": hash_password("123456"),  # Senha padrão inicial
             "ativo": True
         }
-    ]
-    await db.quadro_admin.insert_many(quadro)
+        await db.usuarios_escola.insert_one(diretor_user)
+        
+        # Create secretario user (fictício por enquanto)
+        secretario_user = {
+            "id": str(uuid.uuid4()),
+            "escola_id": escola_id,
+            "nome": f"Secretário(a) - {escola_data['nome'][:30]}",
+            "cpf": f"00000000{escola_data['inep'][-3:]}",  # CPF fictício baseado no INEP
+            "email": None,
+            "telefone": None,
+            "cargo": "Secretário Escolar",
+            "senha_hash": hash_password("123456"),  # Senha padrão inicial
+            "ativo": True
+        }
+        await db.usuarios_escola.insert_one(secretario_user)
     
     return {
-        "message": "Database seeded successfully",
+        "message": "Database seeded with 18 schools and users",
         "admin_credentials": {
             "email": "admin@comep.gov.br",
             "senha": "admin123"
         },
         "escola_credentials": {
-            "codigo_censo": "23456789",
-            "cpf": "12345678900",
-            "senha": "escola123"
+            "info": "Use o código INEP + CPF do diretor + senha '123456'",
+            "exemplo": {
+                "codigo_inep": "23056797",
+                "cpf": "05174591",
+                "senha": "123456"
+            }
         }
     }
+
+# ======================== BLOQUEIO/DESBLOQUEIO ========================
+
+class BloqueioRequest(BaseModel):
+    motivo: str
+
+@api_router.put("/escolas/{escola_id}/bloquear")
+async def bloquear_escola(escola_id: str, data: BloqueioRequest, current_admin: dict = Depends(get_current_admin)):
+    """Block a school from editing data (for COMEP analysis)"""
+    now = datetime.now(timezone.utc).isoformat()
+    
+    result = await db.escolas.update_one(
+        {"id": escola_id},
+        {"$set": {
+            "bloqueado": True,
+            "motivo_bloqueio": data.motivo,
+            "data_bloqueio": now,
+            "bloqueado_por": current_admin["sub"]
+        }}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Escola não encontrada")
+    
+    # Get escola email to notify
+    escola = await db.escolas.find_one({"id": escola_id}, {"_id": 0})
+    if escola and escola.get("email"):
+        html_content = get_email_template(
+            "Painel Temporariamente Bloqueado",
+            f"""
+            <p>Prezado(a) Gestor(a) da <strong>{escola['nome']}</strong>,</p>
+            <p>Informamos que o painel da sua escola foi <strong>bloqueado temporariamente</strong> para análise de documentos pelo COMEP.</p>
+            <p><strong>Motivo:</strong> {data.motivo}</p>
+            <p>Durante este período, não será possível realizar edições nos dados cadastrados.</p>
+            <p>Você será notificado assim que a análise for concluída e o painel for liberado.</p>
+            <p>Em caso de dúvidas, entre em contato conosco.</p>
+            """
+        )
+        await send_email(escola["email"], "COMEP - Painel Bloqueado para Análise", html_content)
+    
+    return {"message": "Escola bloqueada com sucesso"}
+
+@api_router.put("/escolas/{escola_id}/desbloquear")
+async def desbloquear_escola(escola_id: str, parecer: Optional[str] = None, current_admin: dict = Depends(get_current_admin)):
+    """Unblock a school after COMEP analysis"""
+    now = datetime.now(timezone.utc).isoformat()
+    
+    result = await db.escolas.update_one(
+        {"id": escola_id},
+        {"$set": {
+            "bloqueado": False,
+            "motivo_bloqueio": None,
+            "data_desbloqueio": now,
+            "parecer_liberacao": parecer
+        }}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Escola não encontrada")
+    
+    # Get escola email to notify
+    escola = await db.escolas.find_one({"id": escola_id}, {"_id": 0})
+    if escola and escola.get("email"):
+        parecer_text = f"<p><strong>Parecer:</strong> {parecer}</p>" if parecer else ""
+        html_content = get_email_template(
+            "Painel Liberado!",
+            f"""
+            <p>Prezado(a) Gestor(a) da <strong>{escola['nome']}</strong>,</p>
+            <p>Informamos que a análise foi concluída e o painel da sua escola foi <strong>liberado</strong>!</p>
+            {parecer_text}
+            <p>Você já pode acessar o sistema e realizar as atualizações necessárias.</p>
+            <p style="text-align: center; margin: 30px 0;">
+                <a href="https://rede-educacao.preview.emergentagent.com" style="background-color: #0F766E; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                    Acessar Sistema
+                </a>
+            </p>
+            """
+        )
+        await send_email(escola["email"], "COMEP - Painel Liberado!", html_content)
+    
+    return {"message": "Escola desbloqueada com sucesso"}
+
+# ======================== USUARIOS ESCOLA (Admin) ========================
+
+@api_router.get("/escolas/{escola_id}/usuarios", response_model=List[UsuarioEscolaResponse])
+async def listar_usuarios_escola(escola_id: str, current_admin: dict = Depends(get_current_admin)):
+    """List all users of a school (admin only)"""
+    usuarios = await db.usuarios_escola.find(
+        {"escola_id": escola_id, "ativo": True}, 
+        {"_id": 0, "senha_hash": 0}
+    ).to_list(100)
+    return [UsuarioEscolaResponse(**u) for u in usuarios]
+
+@api_router.post("/escolas/{escola_id}/usuarios", response_model=UsuarioEscolaResponse)
+async def criar_usuario_escola(escola_id: str, data: UsuarioEscolaCreate, current_admin: dict = Depends(get_current_admin)):
+    """Create a new user for a school (admin only)"""
+    # Check if escola exists
+    escola = await db.escolas.find_one({"id": escola_id}, {"_id": 0})
+    if not escola:
+        raise HTTPException(status_code=404, detail="Escola não encontrada")
+    
+    # Check if CPF already exists for this school
+    existing = await db.usuarios_escola.find_one({
+        "escola_id": escola_id,
+        "cpf": data.cpf.replace(".", "").replace("-", "")
+    }, {"_id": 0})
+    if existing:
+        raise HTTPException(status_code=400, detail="CPF já cadastrado para esta escola")
+    
+    usuario = {
+        "id": str(uuid.uuid4()),
+        "escola_id": escola_id,
+        "nome": data.nome,
+        "cpf": data.cpf.replace(".", "").replace("-", ""),
+        "email": data.email,
+        "telefone": data.telefone,
+        "cargo": data.cargo,
+        "senha_hash": hash_password(data.senha),
+        "ativo": True
+    }
+    
+    await db.usuarios_escola.insert_one(usuario)
+    return UsuarioEscolaResponse(**{k: v for k, v in usuario.items() if k not in ["_id", "senha_hash"]})
 
 # ======================== HEALTH CHECK ========================
 

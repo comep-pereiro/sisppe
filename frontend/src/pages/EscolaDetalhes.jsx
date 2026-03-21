@@ -7,6 +7,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { 
   School, 
@@ -23,7 +27,11 @@ import {
   Phone,
   Mail,
   FileText,
-  Calendar
+  Calendar,
+  Lock,
+  Unlock,
+  Bell,
+  AlertTriangle
 } from 'lucide-react';
 
 // Admin Sidebar
@@ -36,6 +44,8 @@ const Sidebar = ({ isOpen, onClose }) => {
     { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/admin/escolas', icon: School, label: 'Escolas' },
     { path: '/admin/solicitacoes', icon: ClipboardList, label: 'Solicitações' },
+    { path: '/admin/relatorios', icon: FileText, label: 'Relatórios' },
+    { path: '/admin/notificacoes', icon: Bell, label: 'Notificações' },
   ];
 
   const handleLogout = () => {
@@ -120,7 +130,13 @@ export default function EscolaDetalhes() {
   const [escola, setEscola] = useState(null);
   const [docentes, setDocentes] = useState([]);
   const [quadroAdmin, setQuadroAdmin] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showBlockModal, setShowBlockModal] = useState(false);
+  const [showUnblockModal, setShowUnblockModal] = useState(false);
+  const [motivo, setMotivo] = useState('');
+  const [parecer, setParecer] = useState('');
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -128,14 +144,16 @@ export default function EscolaDetalhes() {
 
   const fetchData = async () => {
     try {
-      const [escolaRes, docentesRes, quadroRes] = await Promise.all([
+      const [escolaRes, docentesRes, quadroRes, usuariosRes] = await Promise.all([
         escolasAPI.getById(escolaId),
         docentesAPI.listar(escolaId),
-        quadroAdminAPI.listar(escolaId)
+        quadroAdminAPI.listar(escolaId),
+        escolasAPI.listarUsuarios(escolaId)
       ]);
       setEscola(escolaRes.data);
       setDocentes(docentesRes.data);
       setQuadroAdmin(quadroRes.data);
+      setUsuarios(usuariosRes.data);
     } catch (error) {
       toast.error('Erro ao carregar dados da escola');
       navigate('/admin/escolas');
@@ -151,6 +169,40 @@ export default function EscolaDetalhes() {
       toast.success('Situação atualizada com sucesso!');
     } catch (error) {
       toast.error('Erro ao atualizar situação');
+    }
+  };
+
+  const handleBloquear = async () => {
+    if (!motivo.trim()) {
+      toast.error('Informe o motivo do bloqueio');
+      return;
+    }
+    setProcessing(true);
+    try {
+      await escolasAPI.bloquear(escolaId, motivo);
+      setEscola({ ...escola, bloqueado: true, motivo_bloqueio: motivo });
+      toast.success('Escola bloqueada com sucesso!');
+      setShowBlockModal(false);
+      setMotivo('');
+    } catch (error) {
+      toast.error('Erro ao bloquear escola');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleDesbloquear = async () => {
+    setProcessing(true);
+    try {
+      await escolasAPI.desbloquear(escolaId, parecer || null);
+      setEscola({ ...escola, bloqueado: false, motivo_bloqueio: null });
+      toast.success('Escola desbloqueada com sucesso!');
+      setShowUnblockModal(false);
+      setParecer('');
+    } catch (error) {
+      toast.error('Erro ao desbloquear escola');
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -184,14 +236,41 @@ export default function EscolaDetalhes() {
                   <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div>
-                  <h1 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Manrope' }}>
-                    {escola?.nome}
-                  </h1>
-                  <p className="text-sm text-slate-500">Código: {escola?.codigo_censo}</p>
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Manrope' }}>
+                      {escola?.nome}
+                    </h1>
+                    {escola?.bloqueado && (
+                      <span className="flex items-center gap-1 px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
+                        <Lock className="w-3 h-3" />
+                        Bloqueado
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-slate-500">INEP: {escola?.codigo_inep}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-sm text-slate-500">Situação:</span>
+                {escola?.bloqueado ? (
+                  <Button
+                    onClick={() => setShowUnblockModal(true)}
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                    data-testid="btn-desbloquear"
+                  >
+                    <Unlock className="w-4 h-4 mr-2" />
+                    Desbloquear
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => setShowBlockModal(true)}
+                    variant="outline"
+                    className="border-red-300 text-red-600 hover:bg-red-50"
+                    data-testid="btn-bloquear"
+                  >
+                    <Lock className="w-4 h-4 mr-2" />
+                    Bloquear para Análise
+                  </Button>
+                )}
                 <Select value={escola?.situacao} onValueChange={handleSituacaoChange}>
                   <SelectTrigger className="w-36" data-testid="select-situacao">
                     <SelectValue />
@@ -260,7 +339,7 @@ export default function EscolaDetalhes() {
 
               {/* Tabs */}
               <Tabs defaultValue="docentes" className="w-full">
-                <TabsList className="grid w-full max-w-md grid-cols-2">
+                <TabsList className="grid w-full max-w-xl grid-cols-3">
                   <TabsTrigger value="docentes" className="flex items-center gap-2">
                     <GraduationCap className="w-4 h-4" />
                     Docentes ({docentes.length})
@@ -268,6 +347,10 @@ export default function EscolaDetalhes() {
                   <TabsTrigger value="quadro" className="flex items-center gap-2">
                     <Users className="w-4 h-4" />
                     Quadro Admin ({quadroAdmin.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="usuarios" className="flex items-center gap-2">
+                    <Shield className="w-4 h-4" />
+                    Usuários ({usuarios.length})
                   </TabsTrigger>
                 </TabsList>
 
@@ -374,7 +457,74 @@ export default function EscolaDetalhes() {
                     </CardContent>
                   </Card>
                 </TabsContent>
+
+                <TabsContent value="usuarios" className="mt-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Usuários com Acesso</CardTitle>
+                      <CardDescription>Diretores e secretários com acesso ao sistema</CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      {usuarios.length === 0 ? (
+                        <div className="text-center py-8">
+                          <Users className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+                          <p className="text-slate-500">Nenhum usuário cadastrado</p>
+                        </div>
+                      ) : (
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Nome</TableHead>
+                              <TableHead>CPF</TableHead>
+                              <TableHead>Cargo</TableHead>
+                              <TableHead>Email</TableHead>
+                              <TableHead>Telefone</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {usuarios.map((user) => (
+                              <TableRow key={user.id}>
+                                <TableCell className="font-medium">{user.nome}</TableCell>
+                                <TableCell>{user.cpf}</TableCell>
+                                <TableCell>
+                                  <span className={`px-2 py-1 rounded text-xs font-medium ${
+                                    user.cargo === 'Diretor' ? 'bg-teal-100 text-teal-800' :
+                                    'bg-blue-100 text-blue-800'
+                                  }`}>
+                                    {user.cargo}
+                                  </span>
+                                </TableCell>
+                                <TableCell>{user.email || '-'}</TableCell>
+                                <TableCell>{user.telefone || '-'}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
               </Tabs>
+
+              {/* Bloqueio Alert */}
+              {escola?.bloqueado && (
+                <Card className="bg-red-50 border-red-200">
+                  <CardContent className="p-4 flex items-start gap-4">
+                    <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <AlertTriangle className="w-5 h-5 text-red-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-red-900">Escola Bloqueada para Análise</h3>
+                      <p className="text-sm text-red-700 mt-1">
+                        <strong>Motivo:</strong> {escola.motivo_bloqueio}
+                      </p>
+                      <p className="text-xs text-red-600 mt-2">
+                        A escola não pode fazer alterações enquanto estiver bloqueada.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Modalidades */}
               {escola?.modalidades?.length > 0 && (
@@ -400,6 +550,98 @@ export default function EscolaDetalhes() {
           </div>
         </main>
       </div>
+
+      {/* Block Modal */}
+      <Dialog open={showBlockModal} onOpenChange={setShowBlockModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2" style={{ fontFamily: 'Manrope' }}>
+              <Lock className="w-5 h-5 text-red-600" />
+              Bloquear Escola para Análise
+            </DialogTitle>
+            <DialogDescription>
+              A escola não poderá fazer edições enquanto estiver bloqueada.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-slate-600 mb-2">
+                Escola: <strong>{escola?.nome}</strong>
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="motivo">Motivo do Bloqueio *</Label>
+              <Textarea
+                id="motivo"
+                value={motivo}
+                onChange={(e) => setMotivo(e.target.value)}
+                placeholder="Ex: Análise de documentação para regularização..."
+                rows={3}
+                data-testid="input-motivo-bloqueio"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowBlockModal(false)}>
+              Cancelar
+            </Button>
+            <Button 
+              onClick={handleBloquear} 
+              disabled={processing}
+              className="bg-red-600 hover:bg-red-700"
+              data-testid="btn-confirmar-bloqueio"
+            >
+              {processing ? 'Bloqueando...' : 'Bloquear'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Unblock Modal */}
+      <Dialog open={showUnblockModal} onOpenChange={setShowUnblockModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2" style={{ fontFamily: 'Manrope' }}>
+              <Unlock className="w-5 h-5 text-emerald-600" />
+              Desbloquear Escola
+            </DialogTitle>
+            <DialogDescription>
+              A escola poderá fazer edições novamente após o desbloqueio.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-slate-600 mb-2">
+                Escola: <strong>{escola?.nome}</strong>
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="parecer">Parecer (opcional)</Label>
+              <Textarea
+                id="parecer"
+                value={parecer}
+                onChange={(e) => setParecer(e.target.value)}
+                placeholder="Ex: Documentação aprovada. Escola regularizada..."
+                rows={3}
+                data-testid="input-parecer"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowUnblockModal(false)}>
+              Cancelar
+            </Button>
+            <Button 
+              onClick={handleDesbloquear} 
+              disabled={processing}
+              className="bg-emerald-600 hover:bg-emerald-700"
+              data-testid="btn-confirmar-desbloqueio"
+            >
+              {processing ? 'Desbloqueando...' : 'Desbloquear'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
