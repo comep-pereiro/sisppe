@@ -133,7 +133,7 @@ export default function EscolasLista() {
 
   const filteredEscolas = escolas.filter(e => 
     e.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    e.codigo_censo.includes(searchTerm)
+    (e.codigo_inep && e.codigo_inep.includes(searchTerm))
   );
 
   return (
@@ -167,7 +167,7 @@ export default function EscolasLista() {
               <div className="relative flex-1 max-w-md">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input
-                  placeholder="Buscar por nome ou código de censo..."
+                  placeholder="Buscar por nome ou código INEP..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   data-testid="input-search-escola"
@@ -206,7 +206,7 @@ export default function EscolasLista() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Código Censo</TableHead>
+                        <TableHead>Código INEP</TableHead>
                         <TableHead>Nome</TableHead>
                         <TableHead>Endereço</TableHead>
                         <TableHead>Situação</TableHead>
@@ -217,7 +217,7 @@ export default function EscolasLista() {
                     <TableBody>
                       {filteredEscolas.map((escola) => (
                         <TableRow key={escola.id} data-testid={`escola-row-${escola.id}`}>
-                          <TableCell className="font-mono text-sm">{escola.codigo_censo}</TableCell>
+                          <TableCell className="font-mono text-sm">{escola.codigo_inep}</TableCell>
                           <TableCell className="font-medium">{escola.nome}</TableCell>
                           <TableCell className="text-slate-600 max-w-xs truncate">
                             {escola.endereco}

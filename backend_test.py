@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 class COMEPAPITester:
-    def __init__(self, base_url="https://rede-educacao.preview.emergentagent.com"):
+    def __init__(self, base_url="https://pereiro-escolas.preview.emergentagent.com"):
         self.base_url = base_url
         self.escola_token = None
         self.admin_token = None

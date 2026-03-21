@@ -65,7 +65,7 @@ class UsuarioEscolaResponse(UsuarioEscolaBase):
     ativo: bool = True
 
 class EscolaBase(BaseModel):
-    codigo_inep: str  # Changed from codigo_censo to codigo_inep
+    codigo_inep: str  # Código INEP da escola
     nome: str
     endereco: str
     telefone: Optional[str] = None
@@ -76,9 +76,18 @@ class EscolaBase(BaseModel):
 class EscolaCreate(EscolaBase):
     pass
 
-class EscolaResponse(EscolaBase):
+class EscolaResponse(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str
+    codigo_inep: str
+    nome: str
+    endereco: str
+    telefone: Optional[str] = None
+    email: Optional[EmailStr] = None
+    modalidades: List[str] = []
+    situacao: str = "ativa"
+    bloqueado: bool = False
+    motivo_bloqueio: Optional[str] = None
     data_cadastro: str
     data_atualizacao: str
 
@@ -329,7 +338,7 @@ async def recuperar_senha(data: RecuperarSenhaRequest):
         })
         
         # Send email
-        base_url = os.environ.get('FRONTEND_URL', 'https://rede-educacao.preview.emergentagent.com')
+        base_url = os.environ.get('FRONTEND_URL', 'https://pereiro-escolas.preview.emergentagent.com')
         html_content = get_password_recovery_email(nome, recovery_token, base_url)
         await send_email(data.email, "COMEP - Recuperação de Senha", html_content)
     
@@ -966,7 +975,7 @@ async def desbloquear_escola(escola_id: str, parecer: Optional[str] = None, curr
             {parecer_text}
             <p>Você já pode acessar o sistema e realizar as atualizações necessárias.</p>
             <p style="text-align: center; margin: 30px 0;">
-                <a href="https://rede-educacao.preview.emergentagent.com" style="background-color: #0F766E; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                <a href="https://pereiro-escolas.preview.emergentagent.com" style="background-color: #0F766E; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
                     Acessar Sistema
                 </a>
             </p>
@@ -1046,7 +1055,7 @@ async def download_escola_report(escola_id: str, current_user: dict = Depends(ge
     
     pdf_bytes = generate_escola_report_pdf(escola, docentes, quadro_admin)
     
-    filename = f"relatorio_escola_{escola['codigo_censo']}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    filename = f"relatorio_escola_{escola['codigo_inep']}_{datetime.now().strftime('%Y%m%d')}.pdf"
     
     return Response(
         content=pdf_bytes,
@@ -1105,7 +1114,7 @@ async def get_escolas_desatualizadas(current_admin: dict = Depends(get_current_a
                     desatualizadas.append({
                         "id": escola["id"],
                         "nome": escola["nome"],
-                        "codigo_censo": escola["codigo_censo"],
+                        "codigo_inep": escola.get("codigo_inep", "-"),
                         "email": escola.get("email"),
                         "dias_sem_atualizar": dias_sem_atualizar,
                         "data_atualizacao": data_atualizacao

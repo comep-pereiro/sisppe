@@ -125,7 +125,7 @@ def get_password_recovery_email(nome: str, token: str, base_url: str) -> str:
     """
     return get_email_template("Recuperação de Senha", content)
 
-def get_escola_approved_email(nome_escola: str, codigo_censo: str, senha_inicial: str) -> str:
+def get_escola_approved_email(nome_escola: str, codigo_inep: str, senha_inicial: str) -> str:
     """Generate school approval notification email"""
     content = f"""
         <p>A escola <strong>{nome_escola}</strong> foi aprovada no sistema COMEP!</p>
@@ -133,7 +133,7 @@ def get_escola_approved_email(nome_escola: str, codigo_censo: str, senha_inicial
         <table style="background-color: #f1f5f9; padding: 20px; border-radius: 6px; width: 100%; margin: 20px 0;">
             <tr>
                 <td style="padding: 10px 0;">
-                    <strong>Código de Censo:</strong> {codigo_censo}
+                    <strong>Código INEP:</strong> {codigo_inep}
                 </td>
             </tr>
             <tr>
@@ -145,7 +145,7 @@ def get_escola_approved_email(nome_escola: str, codigo_censo: str, senha_inicial
         <p style="color: #ef4444; font-size: 14px;">
             <strong>Importante:</strong> Por segurança, recomendamos que você altere a senha no primeiro acesso.
         </p>
-        <p>Acesse o sistema em: <a href="https://rede-educacao.preview.emergentagent.com" style="color: #0F766E;">Sistema COMEP</a></p>
+        <p>Acesse o sistema em: <a href="https://pereiro-escolas.preview.emergentagent.com" style="color: #0F766E;">Sistema COMEP</a></p>
     """
     return get_email_template("Cadastro Aprovado!", content)
 
@@ -173,7 +173,7 @@ def get_update_reminder_email(nome_escola: str, dias_sem_atualizar: int) -> str:
             <li>Atualização de dados cadastrais</li>
         </ul>
         <p style="text-align: center; margin: 30px 0;">
-            <a href="https://rede-educacao.preview.emergentagent.com" style="background-color: #0F766E; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+            <a href="https://pereiro-escolas.preview.emergentagent.com" style="background-color: #0F766E; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
                 Atualizar Dados
             </a>
         </p>
@@ -238,7 +238,7 @@ def generate_escola_report_pdf(escola: dict, docentes: list, quadro_admin: list)
     
     escola_data = [
         ['Nome:', escola.get('nome', '-')],
-        ['Código de Censo:', escola.get('codigo_censo', '-')],
+        ['Código INEP:', escola.get('codigo_inep', '-')],
         ['Endereço:', escola.get('endereco', '-')],
         ['Telefone:', escola.get('telefone', '-') or '-'],
         ['Email:', escola.get('email', '-') or '-'],
@@ -386,11 +386,11 @@ def generate_escolas_summary_pdf(escolas: list, stats: dict) -> bytes:
     story.append(Paragraph("Lista de Escolas", styles['SectionTitle']))
     
     if escolas:
-        escola_data = [['Código', 'Nome', 'Situação', 'Última Atualização']]
+        escola_data = [['Código INEP', 'Nome', 'Situação', 'Última Atualização']]
         for e in escolas:
             situacao_map = {'ativa': 'Ativa', 'inativa': 'Inativa', 'em_analise': 'Em Análise'}
             escola_data.append([
-                e.get('codigo_censo', '-'),
+                e.get('codigo_inep', '-'),
                 e.get('nome', '-')[:40],
                 situacao_map.get(e.get('situacao', ''), '-'),
                 e.get('data_atualizacao', '-')[:10] if e.get('data_atualizacao') else '-'

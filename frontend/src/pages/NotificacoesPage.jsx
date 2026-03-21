@@ -256,7 +256,7 @@ export default function NotificacoesPage() {
                         <TableHeader>
                           <TableRow>
                             <TableHead>Escola</TableHead>
-                            <TableHead>Código Censo</TableHead>
+                            <TableHead>Código INEP</TableHead>
                             <TableHead>Email</TableHead>
                             <TableHead>Dias sem Atualizar</TableHead>
                             <TableHead>Última Atualização</TableHead>
@@ -266,7 +266,7 @@ export default function NotificacoesPage() {
                           {escolasDesatualizadas.map((escola) => (
                             <TableRow key={escola.id}>
                               <TableCell className="font-medium">{escola.nome}</TableCell>
-                              <TableCell>{escola.codigo_censo}</TableCell>
+                              <TableCell>{escola.codigo_inep}</TableCell>
                               <TableCell>{escola.email || '-'}</TableCell>
                               <TableCell>
                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${

@@ -246,8 +246,8 @@ export default function DashboardEscola() {
                   />
                   <StatCard 
                     icon={FileText} 
-                    label="Código Censo" 
-                    value={escola?.codigo_censo || '-'}
+                    label="Código INEP" 
+                    value={escola?.codigo_inep || '-'}
                     color="amber"
                   />
                   <div className="md:col-span-1">
