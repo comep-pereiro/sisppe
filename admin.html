@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SISPPe — Painel COMEP</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{
+  --navy:#0f172a;--navy2:#1e293b;--navy3:#334155;
+  --green:#15803d;--green2:#16a34a;--green-pale:#dcfce7;
+  --red:#b91c1c;--red-pale:#fee2e2;
+  --amber:#d97706;--amber-pale:#fef3c7;
+  --blue:#1d4ed8;--blue-pale:#dbeafe;
+  --gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;
+  --gray-300:#cbd5e1;--gray-400:#94a3b8;--gray-500:#64748b;
+  --gray-600:#475569;--gray-700:#334155;--gray-800:#1e293b;
+  --white:#fff;
+  --shadow:0 1px 3px rgba(0,0,0,.12);--shadow-md:0 4px 16px rgba(0,0,0,.14);
+  --sidebar-w:220px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size:13.5px;color:var(--gray-700)}
+
+/* ── LOGIN ── */
+#page-login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy) 0%,#1a3a5c 60%,#1e4d3a 100%);z-index:1000;transition:opacity .35s,transform .35s}
+#page-login.hide{opacity:0;pointer-events:none;transform:scale(1.04)}
+.login-card{background:var(--white);border-radius:14px;box-shadow:var(--shadow-md);width:380px;padding:36px 40px}
+.login-logo{text-align:center;margin-bottom:24px}
+.login-logo-title{font-family:'Source Serif 4',serif;font-size:26px;font-weight:700;color:var(--navy);letter-spacing:.03em}
+.login-logo-sub{font-size:11px;color:var(--gray-500);margin-top:4px}
+.lf-group{margin-bottom:16px}
+.lf-group label{display:block;font-size:12px;font-weight:600;color:var(--gray-600);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.lf-group input{width:100%;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:14px;color:var(--gray-700);outline:none;transition:border-color .2s}
+.lf-group input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(21,128,61,.12)}
+.btn-enter{width:100%;padding:11px;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;box-shadow:0 3px 10px rgba(21,128,61,.3);transition:opacity .2s}
+.btn-enter:hover{opacity:.9}
+.login-err{display:none;margin-bottom:14px;padding:9px 12px;background:var(--red-pale);border:1px solid #fca5a5;border-radius:6px;font-size:12px;color:var(--red)}
+.login-hint{margin-top:14px;font-size:11px;color:var(--gray-400);text-align:center}
+
+/* ── APP ── */
+#page-app{position:fixed;inset:0;display:none;flex-direction:row}
+#page-app.show{display:flex}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sb-header{padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-brand{font-family:'Source Serif 4',serif;font-size:19px;font-weight:700;color:#fff;letter-spacing:.04em}
+.sb-sub{font-size:9.5px;color:rgba(255,255,255,.45);margin-top:2px}
+.sb-user{padding:12px 16px;background:rgba(255,255,255,.06);margin:10px 12px;border-radius:8px;font-size:11.5px;color:rgba(255,255,255,.7)}
+.sb-user strong{color:#fff;display:block;font-size:12px;margin-bottom:2px}
+.sb-nav{padding:8px 0;flex:1}
+.sb-section{padding:8px 16px 3px;font-size:9.5px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em}
+.sb-item{display:flex;align-items:center;gap:9px;padding:9px 16px;cursor:pointer;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.65);border-left:3px solid transparent;transition:all .15s;user-select:none}
+.sb-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.sb-item.active{background:rgba(255,255,255,.1);color:#fff;border-left-color:var(--green2)}
+.sb-item .ico{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.sb-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);font-size:10px;color:rgba(255,255,255,.3)}
+.sb-logout{padding:8px 16px;cursor:pointer;font-size:12px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:8px;transition:color .15s}
+.sb-logout:hover{color:#fff}
+
+/* ── MAIN ── */
+.main{flex:1;overflow-y:auto;background:var(--gray-100)}
+.view{display:none;padding:24px}
+.view.active{display:block}
+.page-title{font-family:'Source Serif 4',serif;font-size:21px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--gray-500);margin-bottom:20px}
+
+/* ── CARDS ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px}
+.kpi{background:var(--white);border-radius:10px;padding:16px 18px;box-shadow:var(--shadow);border:1px solid var(--gray-200)}
+.kpi-label{font-size:11px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.kpi-value{font-size:26px;font-weight:700;color:var(--navy)}
+.kpi-sub{font-size:11px;color:var(--gray-500);margin-top:3px}
+
+/* ── PANELS ── */
+.panel{background:var(--white);border-radius:10px;box-shadow:var(--shadow);border:1px solid var(--gray-200);margin-bottom:16px}
+.panel-header{padding:13px 18px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-size:14px;font-weight:700;color:var(--navy)}
+.panel-body{padding:18px}
+
+/* ── TABLE ── */
+.data-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.data-table th{background:var(--gray-50);padding:8px 12px;text-align:left;font-weight:700;font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--gray-200)}
+.data-table td{padding:9px 12px;border-bottom:1px solid var(--gray-100);vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--gray-50)}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-green{background:var(--green-pale);color:var(--green)}
+.badge-red{background:var(--red-pale);color:var(--red)}
+.badge-amber{background:var(--amber-pale);color:var(--amber)}
+.badge-blue{background:var(--blue-pale);color:var(--blue)}
+.badge-gray{background:var(--gray-100);color:var(--gray-600)}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;border:none}
+.btn-primary{background:var(--green);color:#fff}
+.btn-primary:hover{background:var(--green2)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-danger:hover{background:#991b1b}
+.btn-secondary{background:var(--gray-100);color:var(--gray-700);border:1px solid var(--gray-200)}
+.btn-secondary:hover{background:var(--gray-200)}
+.btn-sm{padding:4px 10px;font-size:11.5px}
+
+/* ── ALERTAS ── */
+.alerta-item{border-radius:8px;padding:12px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;font-size:12.5px}
+.alerta-critico{background:#fef2f2;border-left:4px solid var(--red)}
+.alerta-urgente{background:#fff7ed;border-left:4px solid #f97316}
+.alerta-atencao{background:var(--amber-pale);border-left:4px solid var(--amber)}
+.alerta-info{background:var(--blue-pale);border-left:4px solid var(--blue)}
+.alerta-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.alerta-text strong{display:block;font-weight:700;margin-bottom:2px;font-size:13px}
+.alerta-text span{color:var(--gray-600)}
+
+/* ── PROGRESS BAR ── */
+.prog-wrap{background:var(--gray-100);border-radius:4px;height:8px;overflow:hidden;margin-top:5px}
+.prog-fill{height:100%;border-radius:4px;transition:width .4s}
+.prog-green{background:var(--green2)}
+.prog-amber{background:var(--amber)}
+.prog-red{background:var(--red)}
+
+/* ── FILTROS ── */
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.filter-btn{padding:5px 12px;border-radius:20px;border:1px solid var(--gray-300);background:var(--white);font-size:12px;cursor:pointer;color:var(--gray-600);transition:all .15s}
+.filter-btn:hover,.filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* ── MODAL BLOQUEIO ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--white);border-radius:12px;padding:28px;width:420px;box-shadow:var(--shadow-md)}
+.modal-title{font-family:'Source Serif 4',serif;font-size:17px;font-weight:700;color:var(--navy);margin-bottom:12px}
+.modal-input{width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:7px;font-size:13px;outline:none;margin-bottom:14px}
+.modal-input:focus{border-color:var(--green)}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--navy2);color:#fff;padding:11px 18px;font-size:13px;border-radius:8px;box-shadow:var(--shadow-md);z-index:9999;display:none;border-left:4px solid var(--green2);max-width:340px;animation:fadein .25s ease}
+@keyframes fadein{from{transform:translateX(16px);opacity:0}to{transform:translateX(0);opacity:1}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ LOGIN ════════════════════════════ -->
+<div id="page-login">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-title">SISPPe</div>
+      <div class="login-logo-sub">Painel Administrativo — COMEP Pereiro/CE</div>
+    </div>
+    <div class="login-err" id="loginErr">⚠️ Usuário ou senha inválidos.</div>
+    <div class="lf-group">
+      <label>Usuário</label>
+      <input type="text" id="admUser" placeholder="comep">
+    </div>
+    <div class="lf-group">
+      <label>Senha</label>
+      <input type="password" id="admPass" placeholder="••••••••">
+    </div>
+    <button class="btn-enter" onclick="doAdminLogin()">Entrar no Painel</button>
+    <div class="login-hint">Acesso restrito aos membros do COMEP</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ APP ════════════════════════════════ -->
+<div id="page-app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-header">
+      <div class="sb-brand">SISPPe</div>
+      <div class="sb-sub">Painel Administrativo</div>
+    </div>
+    <div class="sb-user">
+      <strong id="sb-usuario">COMEP</strong>
+      Conselho Municipal de Educação
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Principal</div>
+      <div class="sb-item active" onclick="navAdmin('dashboard')" id="nav-dashboard"><span class="ico">🏠</span> Dashboard</div>
+      <div class="sb-item" onclick="navAdmin('alertas')" id="nav-alertas"><span class="ico">🔔</span> Central de Alertas</div>
+      <div class="sb-section">Escolas</div>
+      <div class="sb-item" onclick="navAdmin('escolas')" id="nav-escolas"><span class="ico">🏫</span> Todas as Escolas</div>
+      <div class="sb-item" onclick="navAdmin('documentos')" id="nav-documentos"><span class="ico">📁</span> Documentos</div>
+      <div class="sb-item" onclick="navAdmin('pendencias')" id="nav-pendencias"><span class="ico">⏳</span> Pendências</div>
+      <div class="sb-section">Análise</div>
+      <div class="sb-item" onclick="navAdmin('habilitacao')" id="nav-habilitacao"><span class="ico">🎓</span> Habilitação Docente</div>
+      <div class="sb-item" onclick="navAdmin('infraestrutura')" id="nav-infraestrutura"><span class="ico">🏗</span> Infraestrutura</div>
+      <div class="sb-item" onclick="navAdmin('relatorio')" id="nav-relatorio"><span class="ico">📊</span> Relatório Geral</div>
+    </nav>
+    <div class="sb-logout" onclick="doAdminLogout()">🚪 Sair do Painel</div>
+    <div class="sb-footer">COMEP Pereiro/CE · 2025</div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ── DASHBOARD ── -->
+    <div class="view active" id="view-dashboard">
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub" id="dash-time">Carregando...</div>
+
+      <div class="kpi-grid" id="kpi-grid">
+        <div class="kpi"><div class="kpi-label">Total Escolas</div><div class="kpi-value" id="kpi-total">18</div><div class="kpi-sub">cadastradas no sistema</div></div>
+        <div class="kpi"><div class="kpi-label">Docs Completos</div><div class="kpi-value" id="kpi-docs">—</div><div class="kpi-sub">com 6/6 docs enviados</div></div>
+        <div class="kpi"><div class="kpi-label">Fichas Preenchidas</div><div class="kpi-value" id="kpi-fichas">—</div><div class="kpi-sub">com dados no Firestore</div></div>
+        <div class="kpi"><div class="kpi-label">Em Análise</div><div class="kpi-value" id="kpi-analise" style="color:var(--amber)">—</div><div class="kpi-sub">processos em avaliação</div></div>
+        <div class="kpi"><div class="kpi-label">Vencendo 2026</div><div class="kpi-value" id="kpi-venc" style="color:var(--red)">3</div><div class="kpi-sub">precisam renovar urgente</div></div>
+        <div class="kpi"><div class="kpi-label">Bloqueadas</div><div class="kpi-value" id="kpi-bloq" style="color:var(--red)">—</div><div class="kpi-sub">com acesso suspenso</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">⚡ Alertas Prioritários</span></div>
+          <div class="panel-body" id="dash-alertas-body">Carregando...</div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">🏫 Progresso por Escola</span><button class="btn btn-secondary btn-sm" onclick="navAdmin('escolas')">Ver todas</button></div>
+          <div class="panel-body" id="dash-progresso-body" style="max-height:320px;overflow-y:auto">Carregando...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ALERTAS ── -->
+    <div class="view" id="view-alertas">
+      <div class="page-title">Central de Alertas</div>
+      <div class="page-sub">Monitoramento de prazos e pendências de todas as escolas.</div>
+      <div id="alertas-body">Carregando...</div>
+    </div>
+
+    <!-- ── ESCOLAS ── -->
+    <div class="view" id="view-escolas">
+      <div class="page-title">Todas as Escolas</div>
+      <div class="page-sub">Gestão completa das 18 unidades municipais de Pereiro/CE.</div>
+      <div class="filter-row" id="escola-filters">
+        <button class="filter-btn active" onclick="filtrarEscolas('todas',this)">Todas</button>
+        <button class="filter-btn" onclick="filtrarEscolas('pendentes',this)">Pendentes</button>
+        <button class="filter-btn" onclick="filtrarEscolas('completas',this)">Completas</button>
+        <button class="filter-btn" onclick="filtrarEscolas('venc2026',this)">Vencendo 2026</button>
+        <button class="filter-btn" onclick="filtrarEscolas('rural',this)">Rural</button>
+        <button class="filter-btn" onclick="filtrarEscolas('urbana',this)">Urbana</button>
+        <button class="filter-btn" onclick="filtrarEscolas('bloqueadas',this)">Bloqueadas</button>
+      </div>
+      <div class="panel">
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table class="data-table" id="tbl-escolas">
+            <thead>
+              <tr>
+                <th>INEP</th><th>Escola</th><th>Validade</th><th>Zona</th>
+                <th>Docs</th><th>Ficha</th><th>Status</th><th>Ação</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-escolas">
+              <tr><td colspan="8" style="text-align:center;padding:24px;color:var(--gray-400)">🔄 Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DOCUMENTOS ── -->
+    <div class="view" id="view-documentos">
+      <div class="page-title">Documentos Recebidos</div>
+      <div class="page-sub">Visão consolidada dos documentos enviados por todas as escolas.</div>
+      <div class="panel">
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Escola</th>
+                <th>ATO CRIAÇÃO</th>
+                <th>CENSO</th>
+                <th>REL. ANUAL</th>
+                <th>FACHADA</th>
+                <th>DEPENDÊNCIAS</th>
+                <th>REQUERIMENTO</th>
+                <th>% Completo</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-docs">
+              <tr><td colspan="8" style="text-align:center;padding:24px;color:var(--gray-400)">🔄 Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PENDÊNCIAS ── -->
+    <div class="view" id="view-pendencias">
+      <div class="page-title">Pendências</div>
+      <div class="page-sub">Escolas com documentos obrigatórios em aberto.</div>
+      <div id="pend-body">Carregando...</div>
+    </div>
+
+    <!-- ── HABILITAÇÃO ── -->
+    <div class="view" id="view-habilitacao">
+      <div class="page-title">🎓 Habilitação Docente</div>
+      <div class="page-sub">Compilação de professores e habilitações por escola — dados da Ficha Escolar.</div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Resumo de Habilitações</span></div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+            <div class="kpi" style="border-color:var(--green-pale)"><div class="kpi-label">Taxa Geral</div><div class="kpi-value" id="hab-taxa" style="color:var(--green)">—</div><div class="kpi-sub">professores habilitados</div></div>
+            <div class="kpi"><div class="kpi-label">Habilitados</div><div class="kpi-value" id="hab-sim" style="color:var(--green)">—</div></div>
+            <div class="kpi"><div class="kpi-label">Não Habilitados</div><div class="kpi-value" id="hab-nao" style="color:var(--red)">—</div></div>
+          </div>
+          <div style="margin-top:20px;font-size:12.5px;color:var(--gray-500)">
+            ℹ️ Os dados de habilitação dependem do preenchimento da Ficha da Escola pelas unidades escolares. Escolas sem professores cadastrados aparecerão como "sem dados".
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Por Escola</span></div>
+        <div class="panel-body" style="padding:0">
+          <table class="data-table">
+            <thead><tr><th>Escola</th><th>Total Profs.</th><th>Habilitados</th><th>Não Hab.</th><th>Taxa</th></tr></thead>
+            <tbody id="tbody-hab">
+              <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── INFRAESTRUTURA ── -->
+    <div class="view" id="view-infraestrutura">
+      <div class="page-title">🏗 Infraestrutura</div>
+      <div class="page-sub">Instrumentos de gestão, funcionários e escrituração das escolas.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Instrumentos de Gestão</span></div>
+          <div class="panel-body" id="infra-instrumentos">Carregando...</div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Funcionários por Função</span></div>
+          <div class="panel-body" id="infra-funcionarios">Carregando...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RELATÓRIO ── -->
+    <div class="view" id="view-relatorio">
+      <div class="page-title">📊 Relatório Geral</div>
+      <div class="page-sub">Visão consolidada do sistema para prestação de contas.</div>
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <button class="btn btn-primary" onclick="gerarRelatorioCSV()">📥 Exportar CSV</button>
+        <button class="btn btn-secondary" onclick="window.print()">🖨️ Imprimir</button>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Situação Geral das Escolas</span></div>
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table class="data-table" id="tbl-relatorio">
+            <thead><tr><th>INEP</th><th>Escola</th><th>Rural</th><th>Validade</th><th>Parecer</th><th>Docs</th><th>Status</th></tr></thead>
+            <tbody id="tbody-relatorio">
+              <tr><td colspan="7" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Linha do Tempo — Vencimentos</span></div>
+        <div class="panel-body">
+          <div id="timeline-venc"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL BLOQUEIO -->
+<div class="modal-overlay" id="modal-bloqueio">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title">Bloquear Escola</div>
+    <p style="font-size:12.5px;color:var(--gray-600);margin-bottom:14px" id="modal-desc"></p>
+    <textarea class="modal-input" id="modal-motivo" rows="3" placeholder="Motivo do bloqueio (opcional)..."></textarea>
+    <div class="modal-btns">
+      <button class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-danger" id="modal-confirm-btn" onclick="confirmarBloqueio()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL STATUS -->
+<div class="modal-overlay" id="modal-status">
+  <div class="modal-box">
+    <div class="modal-title">Alterar Status da Escola</div>
+    <p style="font-size:12.5px;color:var(--gray-600);margin-bottom:14px" id="modal-status-desc"></p>
+    <select class="modal-input" id="modal-status-sel">
+      <option value="ativa">✅ Ativa</option>
+      <option value="em_analise">🔍 Em Análise</option>
+      <option value="bloqueada">⛔ Bloqueada</option>
+    </select>
+    <textarea class="modal-input" id="modal-status-obs" rows="2" placeholder="Observação (opcional)..."></textarea>
+    <div class="modal-btns">
+      <button class="btn btn-secondary" onclick="fecharModalStatus()">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmarStatus()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="adminToast"></div>
+
+<script>
+// ── FIREBASE ─────────────────────────────────────────────────────
+firebase.initializeApp({
+  apiKey           : "AIzaSyBCoQxXZKIz_e8wH75QV00k6maHejuEWio",
+  authDomain       : "sisppe-comep.firebaseapp.com",
+  projectId        : "sisppe-comep",
+  storageBucket    : "sisppe-comep.firebasestorage.app",
+  messagingSenderId: "186342537977",
+  appId            : "1:186342537977:web:28cbd98684d5dd549fc028"
+});
+const db = firebase.firestore();
+
+// ── DADOS ESTÁTICOS ───────────────────────────────────────────────
+const ESCOLAS = [
+  {inep:"23138378",nome:"Antônio Pinheiro Maia",    validade:"31/12/2027",parecer:"0621/2024",rural:"SIM"},
+  {inep:"23138408",nome:"Cândido José Nogueira",    validade:"31/12/2030",parecer:"0305/2025",rural:"NÃO"},
+  {inep:"23219254",nome:"Cleonice Freire de Queiroz",validade:"31/12/2030",parecer:"0305/2025",rural:"NÃO"},
+  {inep:"23274778",nome:"Francisca Nogueira de Sousa",validade:"31/12/2028",parecer:"0278/2025",rural:"NÃO"},
+  {inep:"23238483",nome:"Francisco das Chagas de Aquino",validade:"31/12/2028",parecer:"0303/2025",rural:"SIM"},
+  {inep:"23283467",nome:"João Nogueira de Sousa",   validade:"31/12/2028",parecer:"0346/2025",rural:"SIM"},
+  {inep:"23138777",nome:"José Matias de Sousa",     validade:"31/12/2030",parecer:"0305/2025",rural:"SIM"},
+  {inep:"23178370",nome:"José Nilson Bezerra",      validade:"31/12/2027",parecer:"0621/2024",rural:"SIM"},
+  {inep:"23138670",nome:"Maria das Graças Nogueira",validade:"31/12/2030",parecer:"0305/2025",rural:"SIM"},
+  {inep:"23138688",nome:"Maria Nazaré de Jesus",    validade:"31/12/2026",parecer:"0894/2024",rural:"SIM"},
+  {inep:"23138742",nome:"Miguel Antônio da Rocha",  validade:"31/12/2027",parecer:"098/2025", rural:"SIM"},
+  {inep:"23138530",nome:"Nossa Senhora das Graças", validade:"31/12/2028",parecer:"0304/2025",rural:"SIM"},
+  {inep:"23138793",nome:"Pedro Gomes de Lima",      validade:"31/12/2026",parecer:"0894/2024",rural:"SIM"},
+  {inep:"23178280",nome:"Pequeno Príncipe",         validade:"31/12/2028",parecer:"0304/2025",rural:"NÃO"},
+  {inep:"23138815",nome:"Pingo de Gente",           validade:"31/12/2028",parecer:"0304/2025",rural:"NÃO"},
+  {inep:"23258829",nome:"Semeando o Saber",         validade:"31/12/2026",parecer:"0112/2025",rural:"SIM"},
+  {inep:"00000017",nome:"Luiz Gonçalves de Lima",   validade:"—",         parecer:"—",        rural:"SIM"},
+  {inep:"00000018",nome:"Municipal 18 — A Cadastrar",validade:"—",        parecer:"—",        rural:"—"}
+];
+const DOCS_OBRIG=['ATO DE CRIAÇÃO','COMPROVANTE DO CENSO ESCOLAR','COMPROVANTE DO RELATÓRIO ANUAL','FOTO FACHADA DO PRÉDIO','FOTOS DAS DEPENDÊNCIAS','REQUERIMENTO / OFÍCIO'];
+const ADMIN_USERS={comep:'comep@2025',admin:'COMEP@admin#2025'};
+
+let adminUser=null, docsCache={}, fichasCache={}, statusCache={}, filtroAtual='todas';
+let modalInep=null;
+
+// ── LOGIN ─────────────────────────────────────────────────────────
+function doAdminLogin(){
+  const u=document.getElementById('admUser').value.trim();
+  const p=document.getElementById('admPass').value.trim();
+  if(!ADMIN_USERS[u]||ADMIN_USERS[u]!==p){
+    document.getElementById('loginErr').style.display='block';return;
+  }
+  document.getElementById('loginErr').style.display='none';
+  adminUser=u;
+  document.getElementById('sb-usuario').textContent=u.toUpperCase()+' — COMEP';
+  document.getElementById('page-login').classList.add('hide');
+  setTimeout(()=>{
+    document.getElementById('page-app').classList.add('show');
+    navAdmin('dashboard');
+    carregarTodosDados();
+  },350);
+}
+
+function doAdminLogout(){
+  adminUser=null;
+  document.getElementById('page-app').classList.remove('show');
+  document.getElementById('page-login').classList.remove('hide');
+  document.getElementById('admPass').value='';
+}
+
+// ── NAVEGAÇÃO ─────────────────────────────────────────────────────
+function navAdmin(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  const ni=document.getElementById('nav-'+view);if(ni)ni.classList.add('active');
+  if(view==='escolas')renderEscolas();
+  else if(view==='documentos')renderDocumentos();
+  else if(view==='alertas')renderAlertas();
+  else if(view==='pendencias')renderPendencias();
+  else if(view==='habilitacao')renderHabilitacao();
+  else if(view==='infraestrutura')renderInfra();
+  else if(view==='relatorio')renderRelatorio();
+}
+
+// ── CARGA DE DADOS ────────────────────────────────────────────────
+async function carregarTodosDados(){
+  document.getElementById('dash-time').textContent='Carregando dados... '+new Date().toLocaleString('pt-BR');
+  const promises=ESCOLAS.map(async e=>{
+    try{
+      const [docsSnap,fichaSnap]=await Promise.all([
+        db.collection('escolas').doc(e.inep).collection('documentos').get(),
+        db.collection('escolas').doc(e.inep).get()
+      ]);
+      const tipos=new Set();
+      docsSnap.forEach(d=>tipos.add(d.data().tipo));
+      docsCache[e.inep]=tipos;
+      if(fichaSnap.exists){
+        fichasCache[e.inep]=fichaSnap.data();
+        statusCache[e.inep]={
+          bloqueado:fichaSnap.data().bloqueado||false,
+          situacao:fichaSnap.data().situacao||'ativa'
+        };
+      }else{
+        fichasCache[e.inep]=null;
+        statusCache[e.inep]={bloqueado:false,situacao:'ativa'};
+      }
+    }catch(err){docsCache[e.inep]=new Set();fichasCache[e.inep]=null;statusCache[e.inep]={bloqueado:false,situacao:'ativa'};}
+  });
+  await Promise.all(promises);
+  renderDashboard();
+}
+
+function docsCount(inep){return DOCS_OBRIG.filter(t=>docsCache[inep]&&docsCache[inep].has(t)).length;}
+function isCompleto(inep){return docsCount(inep)===6;}
+function isBloqueado(inep){return statusCache[inep]&&statusCache[inep].bloqueado;}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────
+function renderDashboard(){
+  document.getElementById('dash-time').textContent='Atualizado em: '+new Date().toLocaleString('pt-BR');
+
+  const completos=ESCOLAS.filter(e=>isCompleto(e.inep)).length;
+  const fichas=ESCOLAS.filter(e=>fichasCache[e.inep]!==null).length;
+  const bloqueadas=ESCOLAS.filter(e=>isBloqueado(e.inep)).length;
+  const emAnalise=ESCOLAS.filter(e=>statusCache[e.inep]&&statusCache[e.inep].situacao==='em_analise').length;
+
+  document.getElementById('kpi-docs').textContent=completos;
+  document.getElementById('kpi-fichas').textContent=fichas;
+  document.getElementById('kpi-bloq').textContent=bloqueadas;
+  document.getElementById('kpi-analise').textContent=emAnalise;
+
+  // Alertas
+  const alertasHtml=buildAlertasHtml(3);
+  document.getElementById('dash-alertas-body').innerHTML=alertasHtml;
+
+  // Progresso
+  let prog='';
+  ESCOLAS.slice(0,8).forEach(e=>{
+    const pct=Math.round(docsCount(e.inep)/6*100);
+    const cor=pct===100?'prog-green':pct>=50?'prog-amber':'prog-red';
+    prog+=`<div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+        <span style="color:var(--gray-700);font-weight:600">${e.nome.substring(0,30)}${e.nome.length>30?'…':''}</span>
+        <span style="color:var(--gray-500)">${pct}%</span>
+      </div>
+      <div class="prog-wrap"><div class="prog-fill ${cor}" style="width:${pct}%"></div></div>
+    </div>`;
+  });
+  document.getElementById('dash-progresso-body').innerHTML=prog;
+}
+
+function buildAlertasHtml(limit=99){
+  let html='';
+  const hoje=new Date();
+  const esc2026=ESCOLAS.filter(e=>e.validade==='31/12/2026');
+  const escSemDoc=ESCOLAS.filter(e=>docsCount(e.inep)<6);
+  const escBloq=ESCOLAS.filter(e=>isBloqueado(e.inep));
+
+  if(escBloq.length){
+    escBloq.slice(0,limit).forEach(e=>{
+      html+=`<div class="alerta-item alerta-critico"><div class="alerta-icon">⛔</div><div class="alerta-text"><strong>${e.nome}</strong><span>Escola bloqueada pelo COMEP.</span></div></div>`;
+    });
+  }
+  esc2026.slice(0,limit).forEach(e=>{
+    html+=`<div class="alerta-item alerta-urgente"><div class="alerta-icon">🔴</div><div class="alerta-text"><strong>${e.nome}</strong><span>Credenciamento vence em 31/12/2026 — renovação urgente.</span></div></div>`;
+  });
+  escSemDoc.slice(0,limit).forEach(e=>{
+    const pend=6-docsCount(e.inep);
+    html+=`<div class="alerta-item alerta-atencao"><div class="alerta-icon">📋</div><div class="alerta-text"><strong>${e.nome}</strong><span>${pend} documento(s) obrigatório(s) pendentes.</span></div></div>`;
+  });
+  if(!html)html='<div style="color:var(--green);font-size:13px">✅ Nenhum alerta crítico no momento.</div>';
+  return html;
+}
+
+// ── ESCOLAS ───────────────────────────────────────────────────────
+function filtrarEscolas(filtro,btn){
+  filtroAtual=filtro;
+  document.querySelectorAll('#escola-filters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderEscolas();
+}
+
+function renderEscolas(){
+  let lista=ESCOLAS;
+  if(filtroAtual==='pendentes')lista=lista.filter(e=>!isCompleto(e.inep));
+  else if(filtroAtual==='completas')lista=lista.filter(e=>isCompleto(e.inep));
+  else if(filtroAtual==='venc2026')lista=lista.filter(e=>e.validade==='31/12/2026');
+  else if(filtroAtual==='rural')lista=lista.filter(e=>e.rural==='SIM');
+  else if(filtroAtual==='urbana')lista=lista.filter(e=>e.rural==='NÃO');
+  else if(filtroAtual==='bloqueadas')lista=lista.filter(e=>isBloqueado(e.inep));
+
+  const rows=lista.map(e=>{
+    const qtd=docsCount(e.inep);
+    const pct=Math.round(qtd/6*100);
+    const temFicha=fichasCache[e.inep]!==null;
+    const bloq=isBloqueado(e.inep);
+    const sit=statusCache[e.inep]?.situacao||'ativa';
+    const vencBadge=e.validade==='31/12/2026'?'badge-red':e.validade==='31/12/2027'?'badge-amber':e.validade==='—'?'badge-gray':'badge-green';
+    const sitBadge=bloq?'badge-red':sit==='em_analise'?'badge-amber':'badge-green';
+    const sitLabel=bloq?'⛔ Bloqueada':sit==='em_analise'?'🔍 Em Análise':'✅ Ativa';
+    return `<tr>
+      <td style="font-size:11px;color:var(--gray-400)">${e.inep}</td>
+      <td style="font-weight:600">${e.nome}</td>
+      <td><span class="badge ${vencBadge}">${e.validade}</span></td>
+      <td><span class="badge ${e.rural==='SIM'?'badge-amber':'badge-blue'}">${e.rural}</span></td>
+      <td>
+        <span style="font-size:12px">${qtd}/6</span>
+        <div class="prog-wrap" style="width:80px"><div class="prog-fill ${pct===100?'prog-green':pct>=50?'prog-amber':'prog-red'}" style="width:${pct}%"></div></div>
+      </td>
+      <td><span class="badge ${temFicha?'badge-green':'badge-gray'}">${temFicha?'✔ Sim':'— Não'}</span></td>
+      <td><span class="badge ${sitBadge}">${sitLabel}</span></td>
+      <td>
+        <button class="btn btn-secondary btn-sm" onclick="abrirModalStatus('${e.inep}','${e.nome}')">Status</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('tbody-escolas').innerHTML=rows||'<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--gray-400)">Nenhuma escola encontrada com este filtro.</td></tr>';
+}
+
+// ── DOCUMENTOS ────────────────────────────────────────────────────
+function renderDocumentos(){
+  const rows=ESCOLAS.map(e=>{
+    const cols=DOCS_OBRIG.map(tipo=>
+      docsCache[e.inep]&&docsCache[e.inep].has(tipo)
+        ?`<td>✅</td>`
+        :`<td style="color:var(--red);font-weight:700">—</td>`
+    ).join('');
+    const pct=Math.round(docsCount(e.inep)/6*100);
+    return `<tr><td style="font-weight:600;font-size:12px">${e.nome.substring(0,25)}${e.nome.length>25?'…':''}</td>${cols}<td><span class="badge ${pct===100?'badge-green':pct>=50?'badge-amber':'badge-red'}">${pct}%</span></td></tr>`;
+  }).join('');
+  document.getElementById('tbody-docs').innerHTML=rows;
+}
+
+// ── ALERTAS ───────────────────────────────────────────────────────
+function renderAlertas(){
+  let html='<div style="margin-bottom:16px">';
+  html+='<div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px">⛔ Crítico — Bloqueadas</div>';
+  const bloq=ESCOLAS.filter(e=>isBloqueado(e.inep));
+  if(bloq.length)bloq.forEach(e=>{html+=`<div class="alerta-item alerta-critico"><div class="alerta-icon">⛔</div><div class="alerta-text"><strong>${e.nome}</strong><span>Escola bloqueada. Acesso suspenso pelo COMEP.</span></div></div>`;});
+  else html+='<div style="color:var(--gray-500);font-size:12.5px;padding:8px 0">Nenhuma escola bloqueada.</div>';
+
+  html+='</div><div style="margin-bottom:16px">';
+  html+='<div style="font-size:13px;font-weight:700;color:#f97316;margin-bottom:10px">🔴 Urgente — Vencendo 2026</div>';
+  const venc26=ESCOLAS.filter(e=>e.validade==='31/12/2026');
+  venc26.forEach(e=>{html+=`<div class="alerta-item alerta-urgente"><div class="alerta-icon">🔴</div><div class="alerta-text"><strong>${e.nome}</strong><span>Parecer ${e.parecer} · Vence em 31/12/2026. Solicitar recredenciamento até 01/10/2026.</span></div></div>`;});
+
+  html+='</div><div style="margin-bottom:16px">';
+  html+='<div style="font-size:13px;font-weight:700;color:var(--amber);margin-bottom:10px">🟡 Atenção — Vencendo 2027</div>';
+  ESCOLAS.filter(e=>e.validade==='31/12/2027').forEach(e=>{html+=`<div class="alerta-item alerta-atencao"><div class="alerta-icon">🟡</div><div class="alerta-text"><strong>${e.nome}</strong><span>Parecer ${e.parecer} · Vence em 31/12/2027. Monitorar para recredenciamento 2027.</span></div></div>`;});
+
+  html+='</div><div>';
+  html+='<div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:10px">📋 Pendências de Documentos</div>';
+  const pend=ESCOLAS.filter(e=>!isCompleto(e.inep));
+  pend.forEach(e=>{const n=6-docsCount(e.inep);html+=`<div class="alerta-item alerta-info"><div class="alerta-icon">📋</div><div class="alerta-text"><strong>${e.nome}</strong><span>${n} documento(s) obrigatório(s) pendentes de envio.</span></div></div>`;});
+  if(!pend.length)html+='<div style="color:var(--green);font-size:12.5px;padding:8px 0">✅ Todas as escolas enviaram os documentos obrigatórios.</div>';
+  html+='</div>';
+  document.getElementById('alertas-body').innerHTML=html;
+}
+
+// ── PENDÊNCIAS ────────────────────────────────────────────────────
+function renderPendencias(){
+  const pend=ESCOLAS.filter(e=>!isCompleto(e.inep));
+  if(!pend.length){document.getElementById('pend-body').innerHTML='<div style="color:var(--green);padding:20px;font-size:14px">✅ Todas as escolas estão com documentos completos.</div>';return;}
+  let html='<div class="panel"><div class="panel-body" style="padding:0"><table class="data-table"><thead><tr><th>Escola</th>';
+  DOCS_OBRIG.forEach(t=>html+=`<th style="font-size:10px">${t.substring(0,12)}…</th>`);
+  html+='</tr></thead><tbody>';
+  pend.forEach(e=>{
+    html+=`<tr><td style="font-weight:600;font-size:12px">${e.nome.substring(0,28)}</td>`;
+    DOCS_OBRIG.forEach(t=>{
+      html+=docsCache[e.inep]&&docsCache[e.inep].has(t)?`<td>✅</td>`:`<td style="color:var(--red)">❌</td>`;
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table></div></div>';
+  document.getElementById('pend-body').innerHTML=html;
+}
+
+// ── HABILITAÇÃO ───────────────────────────────────────────────────
+function renderHabilitacao(){
+  let habSim=0,habNao=0;
+  const rows=ESCOLAS.map(e=>{
+    const ficha=fichasCache[e.inep];
+    const profs=ficha?.professores||[];
+    const total=profs.length;
+    let sim=0,nao=0;
+    profs.forEach(p=>{
+      (p.formacoes||[]).forEach(f=>{if(f.parecer==='HABILITADO'||f.habilitado==='SIM')sim++;else if(f.parecer==='NÃO HABILITADO'||f.habilitado==='NÃO')nao++;});
+    });
+    habSim+=sim;habNao+=nao;
+    const taxa=sim+nao>0?Math.round(sim/(sim+nao)*100)+'%':'—';
+    return `<tr>
+      <td style="font-weight:600;font-size:12px">${e.nome.substring(0,30)}</td>
+      <td>${total||'—'}</td>
+      <td style="color:var(--green)">${sim||'—'}</td>
+      <td style="color:var(--red)">${nao||'—'}</td>
+      <td><span class="badge ${sim+nao>0?(sim/(sim+nao))>=.8?'badge-green':'badge-amber':'badge-gray'}">${taxa}</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('tbody-hab').innerHTML=rows;
+  const tot=habSim+habNao;
+  document.getElementById('hab-taxa').textContent=tot>0?Math.round(habSim/tot*100)+'%':'—';
+  document.getElementById('hab-sim').textContent=habSim||'—';
+  document.getElementById('hab-nao').textContent=habNao||'—';
+}
+
+// ── INFRAESTRUTURA ────────────────────────────────────────────────
+function renderInfra(){
+  const instDados={ppp:0,regimento:0,conselho:0,calendario:0};
+  ESCOLAS.forEach(e=>{
+    const f=fichasCache[e.inep];
+    if(!f)return;
+    if(f.ppp==='SIM')instDados.ppp++;
+    if(f.regimento==='SIM')instDados.regimento++;
+    if(f.conselho==='SIM')instDados.conselho++;
+    if(f.calendario==='SIM')instDados.calendario++;
+  });
+  const n=ESCOLAS.length;
+  document.getElementById('infra-instrumentos').innerHTML=
+    ['PPP','Regimento Escolar','Conselho Escolar','Calendário'].map((label,i)=>{
+      const key=Object.keys(instDados)[i];
+      const v=instDados[key];
+      const pct=Math.round(v/n*100);
+      return `<div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px">
+          <span style="font-weight:600">${label}</span>
+          <span style="color:var(--gray-500)">${v}/${n} (${pct}%)</span>
+        </div>
+        <div class="prog-wrap"><div class="prog-fill ${pct>=80?'prog-green':pct>=50?'prog-amber':'prog-red'}" style="width:${pct}%"></div></div>
+      </div>`;
+    }).join('');
+
+  const funcMap={};
+  ESCOLAS.forEach(e=>{
+    const f=fichasCache[e.inep];
+    (f?.funcionarios||[]).forEach(fn=>{
+      const func=fn.funcao||'Sem função';
+      funcMap[func]=(funcMap[func]||0)+1;
+    });
+  });
+  const funcHtml=Object.entries(funcMap).sort((a,b)=>b[1]-a[1]).map(([k,v])=>
+    `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--gray-100);font-size:12.5px"><span>${k}</span><span class="badge badge-blue">${v}</span></div>`
+  ).join('');
+  document.getElementById('infra-funcionarios').innerHTML=funcHtml||'<div style="color:var(--gray-400);font-size:12.5px">Nenhum funcionário cadastrado nas fichas.</div>';
+}
+
+// ── RELATÓRIO ─────────────────────────────────────────────────────
+function renderRelatorio(){
+  const rows=ESCOLAS.map(e=>{
+    const qtd=docsCount(e.inep);
+    const bloq=isBloqueado(e.inep);
+    const sit=statusCache[e.inep]?.situacao||'ativa';
+    const sitLabel=bloq?'⛔ Bloqueada':sit==='em_analise'?'🔍 Em Análise':'✅ Ativa';
+    return `<tr>
+      <td style="font-size:11px;color:var(--gray-400)">${e.inep}</td>
+      <td style="font-weight:600;font-size:12px">${e.nome}</td>
+      <td><span class="badge ${e.rural==='SIM'?'badge-amber':'badge-blue'}">${e.rural}</span></td>
+      <td>${e.validade}</td>
+      <td style="font-size:11px">${e.parecer}</td>
+      <td><span class="badge ${qtd===6?'badge-green':qtd>=3?'badge-amber':'badge-red'}">${qtd}/6</span></td>
+      <td>${sitLabel}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('tbody-relatorio').innerHTML=rows;
+
+  // Timeline de vencimentos
+  const grupos={'2026':[],'2027':[],'2028':[],'2030':[],'Indefinido':[]};
+  ESCOLAS.forEach(e=>{
+    const ano=e.validade==='—'?'Indefinido':e.validade.split('/')[2];
+    if(grupos[ano])grupos[ano].push(e.nome);
+    else grupos['Indefinido'].push(e.nome);
+  });
+  let timeline='';
+  Object.entries(grupos).forEach(([ano,lista])=>{
+    if(!lista.length)return;
+    const cor=ano==='2026'?'var(--red)':ano==='2027'?'var(--amber)':ano==='Indefinido'?'var(--gray-400)':'var(--green)';
+    timeline+=`<div style="margin-bottom:16px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:12px;height:12px;border-radius:50%;background:${cor};flex-shrink:0"></div><strong style="font-size:13px;color:var(--navy)">${ano}</strong><span style="font-size:12px;color:var(--gray-500)">(${lista.length} escola${lista.length>1?'s':''})</span></div><div style="padding-left:22px;font-size:12px;color:var(--gray-600)">${lista.join(' · ')}</div></div>`;
+  });
+  document.getElementById('timeline-venc').innerHTML=timeline;
+}
+
+function gerarRelatorioCSV(){
+  const header='INEP,Escola,Rural,Validade,Parecer,Docs,Status\n';
+  const rows=ESCOLAS.map(e=>{
+    const qtd=docsCount(e.inep);
+    const sit=isBloqueado(e.inep)?'Bloqueada':(statusCache[e.inep]?.situacao||'ativa');
+    return `${e.inep},"${e.nome}",${e.rural},${e.validade},${e.parecer},${qtd}/6,${sit}`;
+  }).join('\n');
+  const blob=new Blob(['\uFEFF'+header+rows],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='SISPPe_Relatorio_'+new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')+'.csv';a.click();
+  URL.revokeObjectURL(url);
+  adminToast('✅ CSV exportado com sucesso!');
+}
+
+// ── MODAL STATUS ──────────────────────────────────────────────────
+function abrirModalStatus(inep,nome){
+  modalInep=inep;
+  document.getElementById('modal-status-desc').textContent=nome;
+  const sit=statusCache[inep]?.situacao||'ativa';
+  document.getElementById('modal-status-sel').value=isBloqueado(inep)?'bloqueada':sit;
+  document.getElementById('modal-status-obs').value='';
+  document.getElementById('modal-status').classList.add('show');
+}
+function fecharModalStatus(){document.getElementById('modal-status').classList.remove('show');modalInep=null;}
+
+async function confirmarStatus(){
+  if(!modalInep)return;
+  const sit=document.getElementById('modal-status-sel').value;
+  const obs=document.getElementById('modal-status-obs').value.trim();
+  const bloq=sit==='bloqueada';
+  try{
+    await db.collection('escolas').doc(modalInep).set({
+      bloqueado:bloq,
+      situacao:sit,
+      ...(obs&&{motivo_bloqueio:obs}),
+      atualizadoPorComep:adminUser,
+      atualizadoEm:new Date().toISOString()
+    },{merge:true});
+    statusCache[modalInep]={bloqueado:bloq,situacao:sit};
+    fecharModalStatus();
+    renderEscolas();
+    renderDashboard();
+    adminToast(`✅ Status atualizado: ${sit}`);
+  }catch(e){adminToast('❌ Erro: '+e.message);}
+}
+
+function fecharModal(){document.getElementById('modal-bloqueio').classList.remove('show');modalInep=null;}
+async function confirmarBloqueio(){/* legacy — usar modal-status */fecharModal();}
+
+// ── TOAST ─────────────────────────────────────────────────────────
+function adminToast(msg){const t=document.getElementById('adminToast');t.textContent=msg;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',4000);}
+
+// ── INIT ──────────────────────────────────────────────────────────
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.getElementById('page-app').classList.contains('show'))doAdminLogin();});
+</script>
+</body>
+</html>
