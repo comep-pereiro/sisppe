@@ -16,6 +16,10 @@ import EscolaDetalhes from "@/pages/EscolaDetalhes";
 import SolicitacoesLista from "@/pages/SolicitacoesLista";
 import RelatoriosPage from "@/pages/RelatoriosPage";
 import NotificacoesPage from "@/pages/NotificacoesPage";
+import FichaEscolar from "@/pages/FichaEscolar";
+import DependenciasFisicas from "@/pages/DependenciasFisicas";
+import MobiliarioEquipamento from "@/pages/MobiliarioEquipamento";
+import Professores from "@/pages/Professores";
 
 // Context
 import { AuthProvider, useAuth } from "@/context/AuthContext";
@@ -73,6 +77,26 @@ function AppRoutes() {
       <Route path="/escola/quadro-administrativo" element={
         <ProtectedEscolaRoute>
           <GestaoQuadroAdmin />
+        </ProtectedEscolaRoute>
+      } />
+      <Route path="/escola/ficha-escolar" element={
+        <ProtectedEscolaRoute>
+          <FichaEscolar />
+        </ProtectedEscolaRoute>
+      } />
+      <Route path="/escola/dependencias" element={
+        <ProtectedEscolaRoute>
+          <DependenciasFisicas />
+        </ProtectedEscolaRoute>
+      } />
+      <Route path="/escola/mobiliario" element={
+        <ProtectedEscolaRoute>
+          <MobiliarioEquipamento />
+        </ProtectedEscolaRoute>
+      } />
+      <Route path="/escola/professores" element={
+        <ProtectedEscolaRoute>
+          <Professores />
         </ProtectedEscolaRoute>
       } />
       

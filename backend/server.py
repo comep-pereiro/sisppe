@@ -193,6 +193,156 @@ class DashboardStats(BaseModel):
     total_alunos_estimado: int
     solicitacoes_pendentes: int
 
+# ======================== NOVOS MODELOS - FICHA ESCOLAR ========================
+
+class DadosInstituicaoBase(BaseModel):
+    """Dados completos da instituição conforme formulário SISP"""
+    # Identificação
+    codigo_censo: Optional[str] = None
+    cnpj: Optional[str] = None
+    numero_ato_criacao: Optional[str] = None
+    data_ato_criacao: Optional[str] = None
+    escolas_nucleadas: Optional[str] = None
+    
+    # Endereço
+    cep: Optional[str] = None
+    endereco: Optional[str] = None
+    numero: Optional[str] = None
+    complemento: Optional[str] = None
+    bairro: Optional[str] = None
+    municipio: str = "PEREIRO"
+    estado: str = "CEARÁ"
+    crede: str = "11 - JAGUARIBE"
+    
+    # Contato
+    telefone: Optional[str] = None
+    fax: Optional[str] = None
+    email: Optional[str] = None
+    
+    # Características
+    acesso_internet: Optional[str] = None  # FIBRA ÓPTICA, ADSL, etc.
+    sistema_escrituracao_informatizado: bool = False
+    assentamento: bool = False
+    quilombola: bool = False
+    indigena: bool = False
+    rural: bool = False
+    
+    # Dados físicos
+    area_total_m2: Optional[float] = None
+    qtd_dias_letivos: int = 200
+    carga_horaria_semanal: int = 40
+    tipo_escola: str = "Educação Básica"
+    
+    # Mantenedora
+    mantenedora_cnpj: Optional[str] = None
+    mantenedora_razao_social: Optional[str] = None
+    mantenedora_nome_fantasia: Optional[str] = None
+    mantenedora_endereco: Optional[str] = None
+    mantenedora_telefone: Optional[str] = None
+    mantenedora_email: Optional[str] = None
+    tipo_mantenedora: str = "PÚBLICA"
+    natureza_juridica: Optional[str] = None
+    atividade_principal: Optional[str] = None
+
+class DependenciaFisicaBase(BaseModel):
+    """Dependências físicas da escola (salas, laboratórios, etc.)"""
+    tipo: str  # SALA DE AULA, BIBLIOTECA, LABORATÓRIO, etc.
+    quantidade: int = 1
+    area_m2: Optional[float] = None
+    anexo: Optional[int] = None
+    observacao: Optional[str] = None
+
+class DependenciaFisicaCreate(DependenciaFisicaBase):
+    escola_id: str
+
+class DependenciaFisicaResponse(DependenciaFisicaBase):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    escola_id: str
+
+class MobiliarioEquipamentoBase(BaseModel):
+    """Mobiliário e equipamentos da escola"""
+    tipo: str  # AR-CONDICIONADO, CADEIRA, MESA, COMPUTADOR, etc.
+    qtd_excelente: int = 0
+    qtd_bom: int = 0
+    qtd_regular: int = 0
+    qtd_pessimo: int = 0
+    observacao: Optional[str] = None
+
+class MobiliarioEquipamentoCreate(MobiliarioEquipamentoBase):
+    escola_id: str
+
+class MobiliarioEquipamentoResponse(MobiliarioEquipamentoBase):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    escola_id: str
+    qtd_total: int = 0
+
+class FormacaoDocente(BaseModel):
+    """Formação acadêmica do docente"""
+    tipo: str  # GRADUAÇÃO, ESPECIALIZAÇÃO, MESTRADO, DOUTORADO
+    curso: str
+    instituicao: str
+    ano_conclusao: Optional[int] = None
+    registro: Optional[str] = None
+    parecer: Optional[str] = None
+
+class AtribuicaoDocente(BaseModel):
+    """Atribuição de ensino do docente"""
+    etapa: str  # ENSINO FUNDAMENTAL, EDUCAÇÃO INFANTIL, EJA
+    turma: str  # 1° AO 5°, 6° AO 9°, etc.
+    disciplina: str
+    dias_semana: List[str] = []  # SEG, TER, QUA, QUI, SEX
+    carga_horaria: int = 0
+    habilitacao: str = "HABILITADO"  # HABILITADO, NÃO HABILITADO
+    autorizacao: Optional[str] = None
+
+class DocenteCompletoBase(BaseModel):
+    """Modelo completo de docente conforme formulário SISP"""
+    # Dados pessoais
+    nome: str
+    cpf: str
+    rg: Optional[str] = None
+    orgao_emissor: Optional[str] = None
+    data_nascimento: Optional[str] = None
+    sexo: Optional[str] = None
+    estado_civil: Optional[str] = None
+    naturalidade: Optional[str] = None
+    
+    # Contato
+    telefone: Optional[str] = None
+    celular: Optional[str] = None
+    email: Optional[str] = None
+    
+    # Endereço
+    cep: Optional[str] = None
+    endereco: Optional[str] = None
+    numero: Optional[str] = None
+    bairro: Optional[str] = None
+    municipio: Optional[str] = None
+    
+    # Dados profissionais
+    vinculo: str = "EFETIVO"  # EFETIVO, CONTRATADO, TEMPORÁRIO
+    funcao: str = "PROFESSOR"  # PROFESSOR, COORDENADOR, etc.
+    data_admissao: Optional[str] = None
+    carga_horaria_semanal: int = 40
+    
+    # Formações (lista)
+    formacoes: List[FormacaoDocente] = []
+    
+    # Atribuições (lista)
+    atribuicoes: List[AtribuicaoDocente] = []
+
+class DocenteCompletoCreate(DocenteCompletoBase):
+    escola_id: str
+
+class DocenteCompletoResponse(DocenteCompletoBase):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    escola_id: str
+    data_cadastro: str
+    ativo: bool = True
+
 # ======================== HELPERS ========================
 
 def hash_password(password: str) -> str:
@@ -728,6 +878,274 @@ async def remover_quadro_admin(membro_id: str, current_user: dict = Depends(get_
     
     await db.quadro_admin.update_one({"id": membro_id}, {"$set": {"ativo": False}})
     return {"message": "Membro removido com sucesso"}
+
+# ======================== DADOS DA INSTITUIÇÃO (FICHA ESCOLAR) ========================
+
+@api_router.get("/escola/dados-instituicao")
+async def get_dados_instituicao(current_user: dict = Depends(get_current_escola_user)):
+    """Retorna os dados completos da instituição para o formulário"""
+    escola = await db.escolas.find_one({"id": current_user["escola_id"]}, {"_id": 0})
+    if not escola:
+        raise HTTPException(status_code=404, detail="Escola não encontrada")
+    return escola
+
+@api_router.put("/escola/dados-instituicao")
+async def atualizar_dados_instituicao(data: DadosInstituicaoBase, current_user: dict = Depends(get_current_escola_user)):
+    """Atualiza os dados da instituição"""
+    await check_escola_bloqueada(current_user["escola_id"])
+    
+    now = datetime.now(timezone.utc).isoformat()
+    update_data = {**data.model_dump(exclude_none=True), "data_atualizacao": now}
+    
+    await db.escolas.update_one(
+        {"id": current_user["escola_id"]},
+        {"$set": update_data}
+    )
+    
+    return {"message": "Dados da instituição atualizados com sucesso"}
+
+# ======================== DEPENDÊNCIAS FÍSICAS ========================
+
+@api_router.get("/dependencias-fisicas", response_model=List[DependenciaFisicaResponse])
+async def listar_dependencias_fisicas(escola_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+    """Lista dependências físicas da escola"""
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        query = {"escola_id": user_escola_id}
+    elif escola_id:
+        query = {"escola_id": escola_id}
+    else:
+        query = {}
+    
+    dependencias = await db.dependencias_fisicas.find(query, {"_id": 0}).sort("tipo", 1).to_list(1000)
+    return [DependenciaFisicaResponse(**d) for d in dependencias]
+
+@api_router.post("/dependencias-fisicas", response_model=DependenciaFisicaResponse)
+async def criar_dependencia_fisica(data: DependenciaFisicaCreate, current_user: dict = Depends(get_current_user)):
+    """Cria uma nova dependência física"""
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if data.escola_id != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode adicionar dependências à sua própria escola")
+        await check_escola_bloqueada(user_escola_id)
+    
+    dependencia = {
+        "id": str(uuid.uuid4()),
+        **data.model_dump()
+    }
+    
+    await db.dependencias_fisicas.insert_one(dependencia)
+    return DependenciaFisicaResponse(**{k: v for k, v in dependencia.items() if k != "_id"})
+
+@api_router.put("/dependencias-fisicas/{dependencia_id}")
+async def atualizar_dependencia_fisica(dependencia_id: str, data: DependenciaFisicaBase, current_user: dict = Depends(get_current_user)):
+    """Atualiza uma dependência física"""
+    dependencia = await db.dependencias_fisicas.find_one({"id": dependencia_id}, {"_id": 0})
+    if not dependencia:
+        raise HTTPException(status_code=404, detail="Dependência não encontrada")
+    
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if dependencia["escola_id"] != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode editar dependências da sua própria escola")
+        await check_escola_bloqueada(user_escola_id)
+    
+    await db.dependencias_fisicas.update_one(
+        {"id": dependencia_id},
+        {"$set": data.model_dump()}
+    )
+    
+    return {"message": "Dependência atualizada com sucesso"}
+
+@api_router.delete("/dependencias-fisicas/{dependencia_id}")
+async def remover_dependencia_fisica(dependencia_id: str, current_user: dict = Depends(get_current_user)):
+    """Remove uma dependência física"""
+    dependencia = await db.dependencias_fisicas.find_one({"id": dependencia_id}, {"_id": 0})
+    if not dependencia:
+        raise HTTPException(status_code=404, detail="Dependência não encontrada")
+    
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if dependencia["escola_id"] != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode remover dependências da sua própria escola")
+        await check_escola_bloqueada(user_escola_id)
+    
+    await db.dependencias_fisicas.delete_one({"id": dependencia_id})
+    return {"message": "Dependência removida com sucesso"}
+
+# ======================== MOBILIÁRIO E EQUIPAMENTO ========================
+
+@api_router.get("/mobiliario-equipamento", response_model=List[MobiliarioEquipamentoResponse])
+async def listar_mobiliario_equipamento(escola_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+    """Lista mobiliário e equipamentos da escola"""
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        query = {"escola_id": user_escola_id}
+    elif escola_id:
+        query = {"escola_id": escola_id}
+    else:
+        query = {}
+    
+    items = await db.mobiliario_equipamento.find(query, {"_id": 0}).sort("tipo", 1).to_list(1000)
+    # Calcula o total
+    result = []
+    for item in items:
+        item["qtd_total"] = item.get("qtd_excelente", 0) + item.get("qtd_bom", 0) + item.get("qtd_regular", 0) + item.get("qtd_pessimo", 0)
+        result.append(MobiliarioEquipamentoResponse(**item))
+    return result
+
+@api_router.post("/mobiliario-equipamento", response_model=MobiliarioEquipamentoResponse)
+async def criar_mobiliario_equipamento(data: MobiliarioEquipamentoCreate, current_user: dict = Depends(get_current_user)):
+    """Cria um novo item de mobiliário/equipamento"""
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if data.escola_id != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode adicionar itens à sua própria escola")
+        await check_escola_bloqueada(user_escola_id)
+    
+    item_data = data.model_dump()
+    item = {
+        "id": str(uuid.uuid4()),
+        **item_data
+    }
+    
+    await db.mobiliario_equipamento.insert_one(item)
+    
+    item["qtd_total"] = item.get("qtd_excelente", 0) + item.get("qtd_bom", 0) + item.get("qtd_regular", 0) + item.get("qtd_pessimo", 0)
+    return MobiliarioEquipamentoResponse(**{k: v for k, v in item.items() if k != "_id"})
+
+@api_router.put("/mobiliario-equipamento/{item_id}")
+async def atualizar_mobiliario_equipamento(item_id: str, data: MobiliarioEquipamentoBase, current_user: dict = Depends(get_current_user)):
+    """Atualiza um item de mobiliário/equipamento"""
+    item = await db.mobiliario_equipamento.find_one({"id": item_id}, {"_id": 0})
+    if not item:
+        raise HTTPException(status_code=404, detail="Item não encontrado")
+    
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if item["escola_id"] != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode editar itens da sua própria escola")
+        await check_escola_bloqueada(user_escola_id)
+    
+    await db.mobiliario_equipamento.update_one(
+        {"id": item_id},
+        {"$set": data.model_dump()}
+    )
+    
+    return {"message": "Item atualizado com sucesso"}
+
+@api_router.delete("/mobiliario-equipamento/{item_id}")
+async def remover_mobiliario_equipamento(item_id: str, current_user: dict = Depends(get_current_user)):
+    """Remove um item de mobiliário/equipamento"""
+    item = await db.mobiliario_equipamento.find_one({"id": item_id}, {"_id": 0})
+    if not item:
+        raise HTTPException(status_code=404, detail="Item não encontrado")
+    
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if item["escola_id"] != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode remover itens da sua própria escola")
+        await check_escola_bloqueada(user_escola_id)
+    
+    await db.mobiliario_equipamento.delete_one({"id": item_id})
+    return {"message": "Item removido com sucesso"}
+
+# ======================== DOCENTES COMPLETOS ========================
+
+@api_router.get("/docentes-completos", response_model=List[DocenteCompletoResponse])
+async def listar_docentes_completos(escola_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+    """Lista docentes com dados completos"""
+    query = {"ativo": True}
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        query["escola_id"] = user_escola_id
+    elif escola_id:
+        query["escola_id"] = escola_id
+    
+    docentes = await db.docentes_completos.find(query, {"_id": 0}).sort("nome", 1).to_list(1000)
+    return [DocenteCompletoResponse(**d) for d in docentes]
+
+@api_router.get("/docentes-completos/{docente_id}", response_model=DocenteCompletoResponse)
+async def get_docente_completo(docente_id: str, current_user: dict = Depends(get_current_user)):
+    """Retorna um docente específico com dados completos"""
+    docente = await db.docentes_completos.find_one({"id": docente_id, "ativo": True}, {"_id": 0})
+    if not docente:
+        raise HTTPException(status_code=404, detail="Docente não encontrado")
+    
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola" and docente["escola_id"] != user_escola_id:
+        raise HTTPException(status_code=403, detail="Acesso negado")
+    
+    return DocenteCompletoResponse(**docente)
+
+@api_router.post("/docentes-completos", response_model=DocenteCompletoResponse)
+async def criar_docente_completo(data: DocenteCompletoCreate, current_user: dict = Depends(get_current_user)):
+    """Cria um novo docente com dados completos"""
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if data.escola_id != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode adicionar docentes à sua própria escola")
+        await check_escola_bloqueada(user_escola_id)
+    
+    now = datetime.now(timezone.utc).isoformat()
+    docente = {
+        "id": str(uuid.uuid4()),
+        **data.model_dump(),
+        "data_cadastro": now,
+        "ativo": True
+    }
+    
+    await db.docentes_completos.insert_one(docente)
+    return DocenteCompletoResponse(**{k: v for k, v in docente.items() if k != "_id"})
+
+@api_router.put("/docentes-completos/{docente_id}")
+async def atualizar_docente_completo(docente_id: str, data: DocenteCompletoBase, current_user: dict = Depends(get_current_user)):
+    """Atualiza um docente completo"""
+    docente = await db.docentes_completos.find_one({"id": docente_id}, {"_id": 0})
+    if not docente:
+        raise HTTPException(status_code=404, detail="Docente não encontrado")
+    
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if docente["escola_id"] != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode editar docentes da sua própria escola")
+        await check_escola_bloqueada(user_escola_id)
+    
+    await db.docentes_completos.update_one(
+        {"id": docente_id},
+        {"$set": data.model_dump()}
+    )
+    
+    return {"message": "Docente atualizado com sucesso"}
+
+@api_router.delete("/docentes-completos/{docente_id}")
+async def remover_docente_completo(docente_id: str, current_user: dict = Depends(get_current_user)):
+    """Remove um docente"""
+    docente = await db.docentes_completos.find_one({"id": docente_id}, {"_id": 0})
+    if not docente:
+        raise HTTPException(status_code=404, detail="Docente não encontrado")
+    
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if docente["escola_id"] != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode remover docentes da sua própria escola")
+        await check_escola_bloqueada(user_escola_id)
+    
+    await db.docentes_completos.update_one({"id": docente_id}, {"$set": {"ativo": False}})
+    return {"message": "Docente removido com sucesso"}
 
 # ======================== ADMINS (COMEP) ========================
 

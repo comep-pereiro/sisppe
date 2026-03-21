@@ -16,7 +16,9 @@ import {
   Menu,
   X,
   ChevronRight,
-  Building2
+  Building2,
+  Home,
+  Boxes
 } from 'lucide-react';
 
 // Sidebar Component
@@ -27,7 +29,10 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   const menuItems = [
     { path: '/escola/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/escola/docentes', icon: GraduationCap, label: 'Corpo Docente' },
+    { path: '/escola/ficha-escolar', icon: FileText, label: 'Ficha Escolar' },
+    { path: '/escola/dependencias', icon: Home, label: 'Dependências Físicas' },
+    { path: '/escola/mobiliario', icon: Boxes, label: 'Mobiliário/Equipamento' },
+    { path: '/escola/professores', icon: GraduationCap, label: 'Professores' },
     { path: '/escola/quadro-administrativo', icon: Users, label: 'Quadro Administrativo' },
   ];
 
