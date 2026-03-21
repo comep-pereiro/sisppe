@@ -1,0 +1,93 @@
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API_URL = `${BACKEND_URL}/api`;
+
+const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Add token to requests
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('comep_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Handle auth errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('comep_token');
+      localStorage.removeItem('comep_user');
+      localStorage.removeItem('comep_user_type');
+      window.location.href = '/';
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Auth APIs
+export const authAPI = {
+  loginEscola: (data) => api.post('/auth/escola/login', data),
+  loginAdmin: (data) => api.post('/auth/admin/login', data),
+  recuperarSenha: (data) => api.post('/auth/recuperar-senha', data),
+};
+
+// Escolas APIs
+export const escolasAPI = {
+  listar: (situacao) => api.get('/escolas', { params: { situacao } }),
+  getById: (id) => api.get(`/escolas/${id}`),
+  getMinhaEscola: () => api.get('/escolas/me'),
+  atualizar: (data) => api.put('/escolas/me', data),
+  atualizarSituacao: (id, situacao) => api.put(`/escolas/${id}/situacao`, null, { params: { situacao } }),
+};
+
+// Solicitações APIs
+export const solicitacoesAPI = {
+  criar: (data) => api.post('/solicitacoes', data),
+  listar: (status) => api.get('/solicitacoes', { params: { status } }),
+  aprovar: (id, senhaInicial) => api.put(`/solicitacoes/${id}/aprovar`, null, { params: { senha_inicial: senhaInicial } }),
+  rejeitar: (id, observacao) => api.put(`/solicitacoes/${id}/rejeitar`, null, { params: { observacao } }),
+};
+
+// Docentes APIs
+export const docentesAPI = {
+  criar: (data) => api.post('/docentes', data),
+  listar: (escolaId) => api.get('/docentes', { params: { escola_id: escolaId } }),
+  atualizar: (id, data) => api.put(`/docentes/${id}`, data),
+  remover: (id) => api.delete(`/docentes/${id}`),
+};
+
+// Quadro Administrativo APIs
+export const quadroAdminAPI = {
+  criar: (data) => api.post('/quadro-admin', data),
+  listar: (escolaId) => api.get('/quadro-admin', { params: { escola_id: escolaId } }),
+  atualizar: (id, data) => api.put(`/quadro-admin/${id}`, data),
+  remover: (id) => api.delete(`/quadro-admin/${id}`),
+};
+
+// Dashboard APIs
+export const dashboardAPI = {
+  getAdminStats: () => api.get('/dashboard/stats'),
+  getEscolaStats: () => api.get('/dashboard/escola/stats'),
+};
+
+// Admins APIs
+export const adminsAPI = {
+  criar: (data) => api.post('/admins', data),
+  listar: () => api.get('/admins'),
+};
+
+// Seed API (for testing)
+export const seedAPI = {
+  seed: () => api.post('/seed'),
+};
+
+export default api;
