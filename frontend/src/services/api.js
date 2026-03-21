@@ -8,27 +8,62 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 30000, // 30 segundos de timeout
 });
 
 // Add token to requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('comep_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('comep_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    console.error('Erro na requisição:', error);
+    return Promise.reject(error);
   }
-  return config;
-});
+);
 
-// Handle auth errors
+// Handle auth errors and network errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Erro de timeout
+    if (error.code === 'ECONNABORTED') {
+      console.error('Timeout na requisição');
+      error.message = 'A requisição demorou muito. Verifique sua conexão.';
+    }
+    
+    // Erro de rede
+    if (!error.response) {
+      console.error('Erro de rede:', error.message);
+      error.message = 'Erro de conexão com o servidor. Verifique sua internet.';
+      return Promise.reject(error);
+    }
+    
+    // Erro de autenticação
     if (error.response?.status === 401) {
       localStorage.removeItem('comep_token');
       localStorage.removeItem('comep_user');
       localStorage.removeItem('comep_user_type');
-      window.location.href = '/';
+      // Só redireciona se não estiver na página de login
+      if (!window.location.pathname.includes('/login') && window.location.pathname !== '/') {
+        window.location.href = '/';
+      }
     }
+    
+    // Erro de permissão (escola bloqueada)
+    if (error.response?.status === 403) {
+      console.warn('Acesso negado:', error.response.data?.detail);
+    }
+    
+    // Erro de validação
+    if (error.response?.status === 422) {
+      console.error('Erro de validação:', error.response.data?.detail);
+    }
+    
     return Promise.reject(error);
   }
 );

@@ -141,10 +141,34 @@ const ETAPAS = ['EDUCAÇÃO INFANTIL', 'ENSINO FUNDAMENTAL - ANOS INICIAIS', 'EN
 const HABILITACOES = ['HABILITADO', 'NÃO HABILITADO'];
 const DIAS_SEMANA = ['SEG', 'TER', 'QUA', 'QUI', 'SEX'];
 
+// Anos/Séries por etapa
+const ANOS_POR_ETAPA = {
+  'EDUCAÇÃO INFANTIL': ['CRECHE I', 'CRECHE II', 'CRECHE III', 'PRÉ I', 'PRÉ II'],
+  'ENSINO FUNDAMENTAL - ANOS INICIAIS': ['1º ANO', '2º ANO', '3º ANO', '4º ANO', '5º ANO'],
+  'ENSINO FUNDAMENTAL - ANOS FINAIS': ['6º ANO', '7º ANO', '8º ANO', '9º ANO'],
+  'EJA': ['EJA I', 'EJA II', 'EJA III', 'EJA IV']
+};
+
+// Turnos
+const TURNOS = ['MANHÃ', 'TARDE', 'NOITE', 'INTEGRAL'];
+
+// Turmas (letras)
+const TURMAS = ['A', 'B', 'C', 'D', 'E', 'ÚNICA'];
+
 const DISCIPLINAS = [
-  'PORTUGUÊS', 'MATEMÁTICA', 'HISTÓRIA', 'GEOGRAFIA', 'CIÊNCIAS', 
-  'ARTE', 'EDUCAÇÃO FÍSICA', 'INGLÊS', 'ENSINO RELIGIOSO',
-  'POLIVALENTE', 'LITERATURA', 'REDAÇÃO'
+  'POLIVALENTE',
+  'LÍNGUA PORTUGUESA', 
+  'MATEMÁTICA', 
+  'HISTÓRIA', 
+  'GEOGRAFIA', 
+  'CIÊNCIAS',
+  'ARTE', 
+  'EDUCAÇÃO FÍSICA', 
+  'LÍNGUA INGLESA', 
+  'ENSINO RELIGIOSO',
+  'LITERATURA', 
+  'REDAÇÃO',
+  'EDUCAÇÃO INFANTIL'
 ];
 
 export default function Professores() {
@@ -200,10 +224,12 @@ export default function Professores() {
     parecer: ''
   });
 
-  // Estado para atribuição temporária
+  // Estado para atribuição temporária (lotação)
   const [novaAtribuicao, setNovaAtribuicao] = useState({
     etapa: '',
-    turma: '',
+    ano_serie: '',       // Ano/Série (1º ANO, 2º ANO, etc.)
+    turma: '',           // Letra da turma (A, B, C)
+    turno: '',           // MANHÃ, TARDE, NOITE, INTEGRAL
     disciplina: '',
     dias_semana: [],
     carga_horaria: 0,
@@ -258,7 +284,7 @@ export default function Professores() {
       atribuicoes: []
     });
     setNovaFormacao({ tipo: '', curso: '', instituicao: '', ano_conclusao: '', registro: '', parecer: '' });
-    setNovaAtribuicao({ etapa: '', turma: '', disciplina: '', dias_semana: [], carga_horaria: 0, habilitacao: 'HABILITADO', autorizacao: '' });
+    setNovaAtribuicao({ etapa: '', ano_serie: '', turma: '', turno: '', disciplina: '', dias_semana: [], carga_horaria: 0, habilitacao: 'HABILITADO', autorizacao: '' });
     setEditingId(null);
   };
 
@@ -306,16 +332,16 @@ export default function Professores() {
   };
 
   const addAtribuicao = () => {
-    if (!novaAtribuicao.etapa || !novaAtribuicao.disciplina) {
-      toast.error('Preencha etapa e disciplina');
+    if (!novaAtribuicao.etapa || !novaAtribuicao.disciplina || !novaAtribuicao.turno) {
+      toast.error('Preencha etapa, disciplina e turno');
       return;
     }
     setFormData(prev => ({
       ...prev,
       atribuicoes: [...prev.atribuicoes, { ...novaAtribuicao }]
     }));
-    setNovaAtribuicao({ etapa: '', turma: '', disciplina: '', dias_semana: [], carga_horaria: 0, habilitacao: 'HABILITADO', autorizacao: '' });
-    toast.success('Atribuição adicionada');
+    setNovaAtribuicao({ etapa: '', ano_serie: '', turma: '', turno: '', disciplina: '', dias_semana: [], carga_horaria: 0, habilitacao: 'HABILITADO', autorizacao: '' });
+    toast.success('Lotação adicionada');
   };
 
   const removeAtribuicao = (index) => {
@@ -674,7 +700,7 @@ export default function Professores() {
               <TabsTrigger value="pessoais">Dados Pessoais</TabsTrigger>
               <TabsTrigger value="profissionais">Profissional</TabsTrigger>
               <TabsTrigger value="formacoes">Formações</TabsTrigger>
-              <TabsTrigger value="atribuicoes">Atribuições</TabsTrigger>
+              <TabsTrigger value="atribuicoes">Lotação</TabsTrigger>
             </TabsList>
 
             {/* Tab Dados Pessoais */}
@@ -988,15 +1014,15 @@ export default function Professores() {
               {/* Formulário para adicionar atribuição */}
               <Card className="bg-slate-50">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm">Adicionar Atribuição</CardTitle>
+                  <CardTitle className="text-sm">Adicionar Lotação em Sala de Aula</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label>Etapa *</Label>
-                      <Select value={novaAtribuicao.etapa} onValueChange={(v) => setNovaAtribuicao(p => ({ ...p, etapa: v }))}>
+                      <Label>Etapa/Nível *</Label>
+                      <Select value={novaAtribuicao.etapa} onValueChange={(v) => setNovaAtribuicao(p => ({ ...p, etapa: v, ano_serie: '' }))}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione..." />
+                          <SelectValue placeholder="Selecione a etapa..." />
                         </SelectTrigger>
                         <SelectContent>
                           {ETAPAS.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}
@@ -1005,7 +1031,49 @@ export default function Professores() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Disciplina *</Label>
+                      <Label>Ano/Série *</Label>
+                      <Select 
+                        value={novaAtribuicao.ano_serie} 
+                        onValueChange={(v) => setNovaAtribuicao(p => ({ ...p, ano_serie: v }))}
+                        disabled={!novaAtribuicao.etapa}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder={novaAtribuicao.etapa ? "Selecione o ano..." : "Selecione a etapa primeiro"} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {(ANOS_POR_ETAPA[novaAtribuicao.etapa] || []).map(a => (
+                            <SelectItem key={a} value={a}>{a}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Turma</Label>
+                      <Select value={novaAtribuicao.turma} onValueChange={(v) => setNovaAtribuicao(p => ({ ...p, turma: v }))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {TURMAS.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Turno *</Label>
+                      <Select value={novaAtribuicao.turno} onValueChange={(v) => setNovaAtribuicao(p => ({ ...p, turno: v }))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o turno..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {TURNOS.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Componente Curricular *</Label>
                       <Select value={novaAtribuicao.disciplina} onValueChange={(v) => setNovaAtribuicao(p => ({ ...p, disciplina: v }))}>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione..." />
@@ -1017,21 +1085,12 @@ export default function Professores() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Turma</Label>
-                      <Input
-                        value={novaAtribuicao.turma}
-                        onChange={(e) => setNovaAtribuicao(p => ({ ...p, turma: e.target.value }))}
-                        placeholder="1° ao 5°"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Carga Horária</Label>
+                      <Label>Carga Horária (h/semana)</Label>
                       <Input
                         type="number"
                         value={novaAtribuicao.carga_horaria}
                         onChange={(e) => setNovaAtribuicao(p => ({ ...p, carga_horaria: parseInt(e.target.value) || 0 }))}
-                        placeholder="20"
+                        placeholder="Ex: 20"
                       />
                     </div>
 
@@ -1047,7 +1106,7 @@ export default function Professores() {
                       </Select>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2 md:col-span-2">
                       <Label>Dias da Semana</Label>
                       <div className="flex flex-wrap gap-2">
                         {DIAS_SEMANA.map(dia => (
@@ -1068,7 +1127,7 @@ export default function Professores() {
 
                   <Button type="button" onClick={addAtribuicao} variant="outline" className="w-full">
                     <Plus className="w-4 h-4 mr-2" />
-                    Adicionar Atribuição
+                    Adicionar Lotação
                   </Button>
                 </CardContent>
               </Card>
@@ -1076,13 +1135,20 @@ export default function Professores() {
               {/* Lista de atribuições */}
               {formData.atribuicoes.length > 0 && (
                 <div className="space-y-2">
-                  <Label>Atribuições Cadastradas</Label>
+                  <Label>Lotações Cadastradas ({formData.atribuicoes.length})</Label>
                   {formData.atribuicoes.map((a, index) => (
                     <div key={index} className="flex items-center justify-between p-3 bg-white border rounded-lg">
-                      <div>
-                        <p className="font-medium">{a.disciplina} - {a.etapa}</p>
-                        <p className="text-sm text-slate-500">
-                          Turma: {a.turma || '-'} | {a.dias_semana?.join(', ')} | {a.carga_horaria}h
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-medium">{a.disciplina}</span>
+                          <Badge variant="outline">{a.etapa}</Badge>
+                          {a.turno && <Badge className="bg-teal-100 text-teal-700">{a.turno}</Badge>}
+                        </div>
+                        <p className="text-sm text-slate-500 mt-1">
+                          {a.ano_serie && `${a.ano_serie}`}
+                          {a.turma && ` - Turma ${a.turma}`}
+                          {a.carga_horaria > 0 && ` | ${a.carga_horaria}h/sem`}
+                          {a.dias_semana?.length > 0 && ` | ${a.dias_semana.join(', ')}`}
                           <Badge 
                             variant={a.habilitacao === 'HABILITADO' ? 'default' : 'destructive'}
                             className="ml-2"

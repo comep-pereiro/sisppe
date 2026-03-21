@@ -18,26 +18,53 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Load auth state from localStorage on mount
-    const storedToken = localStorage.getItem('comep_token');
-    const storedUser = localStorage.getItem('comep_user');
-    const storedUserType = localStorage.getItem('comep_user_type');
+    try {
+      const storedToken = localStorage.getItem('comep_token');
+      const storedUser = localStorage.getItem('comep_user');
+      const storedUserType = localStorage.getItem('comep_user_type');
 
-    if (storedToken && storedUser && storedUserType) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-      setUserType(storedUserType);
+      if (storedToken && storedUser && storedUserType) {
+        const parsedUser = JSON.parse(storedUser);
+        if (parsedUser && typeof parsedUser === 'object') {
+          setToken(storedToken);
+          setUser(parsedUser);
+          setUserType(storedUserType);
+        } else {
+          // Invalid user data, clear storage
+          localStorage.removeItem('comep_token');
+          localStorage.removeItem('comep_user');
+          localStorage.removeItem('comep_user_type');
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dados de autenticação:', error);
+      // Clear potentially corrupted storage
+      localStorage.removeItem('comep_token');
+      localStorage.removeItem('comep_user');
+      localStorage.removeItem('comep_user_type');
     }
     setLoading(false);
   }, []);
 
   const login = useCallback((accessToken, userData, type) => {
+    if (!accessToken || !userData || !type) {
+      console.error('Dados de login inválidos');
+      return false;
+    }
+    
     setToken(accessToken);
     setUser(userData);
     setUserType(type);
     
-    localStorage.setItem('comep_token', accessToken);
-    localStorage.setItem('comep_user', JSON.stringify(userData));
-    localStorage.setItem('comep_user_type', type);
+    try {
+      localStorage.setItem('comep_token', accessToken);
+      localStorage.setItem('comep_user', JSON.stringify(userData));
+      localStorage.setItem('comep_user_type', type);
+    } catch (error) {
+      console.error('Erro ao salvar dados de autenticação:', error);
+    }
+    
+    return true;
   }, []);
 
   const logout = useCallback(() => {
@@ -45,14 +72,24 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setUserType(null);
     
-    localStorage.removeItem('comep_token');
-    localStorage.removeItem('comep_user');
-    localStorage.removeItem('comep_user_type');
+    try {
+      localStorage.removeItem('comep_token');
+      localStorage.removeItem('comep_user');
+      localStorage.removeItem('comep_user_type');
+    } catch (error) {
+      console.error('Erro ao remover dados de autenticação:', error);
+    }
   }, []);
 
   const updateUser = useCallback((userData) => {
+    if (!userData) return;
+    
     setUser(userData);
-    localStorage.setItem('comep_user', JSON.stringify(userData));
+    try {
+      localStorage.setItem('comep_user', JSON.stringify(userData));
+    } catch (error) {
+      console.error('Erro ao atualizar dados do usuário:', error);
+    }
   }, []);
 
   const value = {

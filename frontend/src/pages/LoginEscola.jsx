@@ -77,7 +77,7 @@ export default function LoginEscola() {
               Área da Escola
             </h2>
             <p className="text-slate-600">
-              Sistema de Informatização e Simplificação de Processos
+              Sistema de Informatização e Simplificação de Processos de Pereiro
             </p>
           </div>
 

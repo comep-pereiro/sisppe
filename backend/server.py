@@ -295,10 +295,12 @@ class FormacaoDocente(BaseModel):
     parecer: Optional[str] = None
 
 class AtribuicaoDocente(BaseModel):
-    """Atribuição de ensino do docente"""
+    """Lotação do docente em sala de aula"""
     etapa: str  # ENSINO FUNDAMENTAL, EDUCAÇÃO INFANTIL, EJA
-    turma: str  # 1° AO 5°, 6° AO 9°, etc.
-    disciplina: str
+    ano_serie: Optional[str] = None  # 1º ANO, 2º ANO, PRÉ I, etc.
+    turma: Optional[str] = None  # A, B, C, ÚNICA
+    turno: Optional[str] = None  # MANHÃ, TARDE, NOITE, INTEGRAL
+    disciplina: str  # Componente curricular
     dias_semana: List[str] = []  # SEG, TER, QUA, QUI, SEX
     carga_horaria: int = 0
     habilitacao: str = "HABILITADO"  # HABILITADO, NÃO HABILITADO
@@ -782,18 +784,31 @@ async def atualizar_situacao_escola(escola_id: str, situacao: str, current_admin
 
 # ======================== DOCENTES ========================
 
-async def get_escola_id_from_user(current_user: dict) -> str:
+async def get_escola_id_from_user(current_user: dict) -> Optional[str]:
     """Helper to get escola_id from current user"""
+    if not current_user:
+        return None
     if current_user.get("type") == "admin":
         return None
+    
+    # Try to get escola_id directly from user data (if available)
+    if current_user.get("escola_id"):
+        return current_user["escola_id"]
+    
     # For escola users, get escola_id from usuarios_escola
-    usuario = await db.usuarios_escola.find_one({"id": current_user["sub"]}, {"_id": 0})
+    user_id = current_user.get("sub")
+    if not user_id:
+        return None
+        
+    usuario = await db.usuarios_escola.find_one({"id": user_id}, {"_id": 0})
     if usuario:
-        return usuario["escola_id"]
+        return usuario.get("escola_id")
     return None
 
 async def check_escola_bloqueada(escola_id: str):
     """Check if escola is blocked and raise exception if so"""
+    if not escola_id:
+        return
     escola = await db.escolas.find_one({"id": escola_id}, {"_id": 0})
     if escola and escola.get("bloqueado"):
         raise HTTPException(
