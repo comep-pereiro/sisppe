@@ -68,7 +68,7 @@ export default function LoginEscola() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: 'Manrope' }}>
-                  COMEP
+                  SISPPe
                 </h1>
                 <p className="text-sm text-slate-500">Pereiro - CE</p>
               </div>
@@ -77,7 +77,7 @@ export default function LoginEscola() {
               Área da Escola
             </h2>
             <p className="text-slate-600">
-              Sistema de Monitoramento das Escolas Municipais
+              Sistema de Informatização e Simplificação de Processos
             </p>
           </div>
 
@@ -211,14 +211,14 @@ export default function LoginEscola() {
               className="text-sm text-slate-500 hover:text-slate-700 transition-colors"
               data-testid="link-admin"
             >
-              Área Administrativa (acesso restrito aos funcionários do COMEP)
+              Área Administrativa (COMEP)
             </Link>
           </div>
 
           {/* Footer */}
           <div className="mt-8 text-center text-xs text-slate-400">
-            <p>Conselho Municipal de Educação de Pereiro - COMEP</p>
-            <p className="mt-1">Versão 1.0.0</p>
+            <p>SISPPe - Sistema de Informatização e Simplificação de Processos de Pereiro</p>
+            <p className="mt-1">Conselho Municipal de Educação - COMEP</p>
           </div>
         </div>
       </div>
@@ -233,10 +233,10 @@ export default function LoginEscola() {
         <div className="absolute inset-0 login-hero-overlay flex flex-col justify-end p-12">
           <div className="animate-slideInRight">
             <h3 className="text-3xl font-bold text-white mb-4" style={{ fontFamily: 'Manrope' }}>
-              Sistema de Monitoramento Escolar
+              SISPPe
             </h3>
             <p className="text-teal-100 text-lg max-w-lg leading-relaxed">
-              Plataforma integrada para gestão e acompanhamento das escolas da rede municipal de ensino de Pereiro.
+              Sistema de Informatização e Simplificação de Processos de Pereiro - Gestão das escolas da rede municipal de ensino.
             </p>
           </div>
         </div>

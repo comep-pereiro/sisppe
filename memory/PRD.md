@@ -5,6 +5,8 @@
 ## Problem Statement Original
 Criar um site para o Conselho Municipal de Educação de Pereiro - COMEP para monitoramento das escolas da rede municipal, baseado no modelo do SISP do CEE-CE (sisp.cee.ce.gov.br).
 
+O sistema deve permitir que secretários escolares alimentem informações reais das escolas seguindo o formulário oficial do SISP, com campos formatados (CPF, telefone, CEP) e opção de editar/excluir informações.
+
 ## User Personas
 1. **Escola** - Gestores escolares (Diretores e Secretários) da rede municipal
 2. **Administrador COMEP** - Funcionários do conselho municipal de educação
@@ -12,78 +14,61 @@ Criar um site para o Conselho Municipal de Educação de Pereiro - COMEP para mo
 ## Core Requirements
 - Login de escolas com Código INEP + CPF + Senha
 - Login administrativo para funcionários do COMEP
-- Cadastro de solicitações de novas escolas
-- Dashboard de monitoramento para escolas e admins
-- Gestão de corpo docente (CRUD)
-- Gestão de quadro administrativo (CRUD)
-- Listagem e análise de solicitações de cadastro
-- Relatórios em PDF
-- Notificações para escolas desatualizadas
-- Dashboard com gráficos de evolução
-- Sistema de bloqueio/desbloqueio de escolas para análise pelo COMEP
+- Formulário completo de dados da escola conforme SISP
+- Gestão de dependências físicas (salas, laboratórios)
+- Gestão de mobiliário e equipamentos por condição
+- Gestão completa de professores (dados pessoais + formação + atribuições)
+- Sistema de bloqueio/desbloqueio de escolas para análise
 
-## Status: COMPLETO
+## Status: COMPLETO - FASE 1
 
-Todas as funcionalidades principais foram implementadas e testadas com sucesso.
+Todas as funcionalidades da Fase 1 foram implementadas e testadas.
 
 ## What's Been Implemented
 
 ### Backend (FastAPI + MongoDB)
 - ✅ Sistema de autenticação JWT (escola e admin)
 - ✅ Autenticação multi-usuário por escola (Diretor + Secretário)
-- ✅ CRUD completo de escolas
-- ✅ CRUD de docentes com isolamento de dados
-- ✅ CRUD de quadro administrativo com isolamento de dados
-- ✅ Sistema de solicitações de cadastro (aprovar/rejeitar)
-- ✅ Dashboard stats APIs
-- ✅ Seed de dados com 18 escolas reais de Pereiro-CE
-- ✅ Recuperação de senha com token e email
-- ✅ Geração de relatórios PDF (individual e geral)
-- ✅ Sistema de notificações para escolas desatualizadas
-- ✅ API de evolução mensal para gráficos
+- ✅ CRUD completo de escolas com campos expandidos
+- ✅ CRUD de Dependências Físicas
+- ✅ CRUD de Mobiliário/Equipamento (por condição: Excelente, Bom, Regular, Péssimo)
+- ✅ CRUD completo de Professores (dados pessoais + formações + atribuições)
 - ✅ Sistema de bloqueio/desbloqueio de escolas
-- ✅ Envio de emails via Resend (configurado)
+- ✅ Seed de dados com 18 escolas reais de Pereiro-CE
+- ✅ Geração de relatórios PDF
+- ✅ Sistema de notificações
 
 ### Frontend (React + Shadcn UI)
 - ✅ Página de login escola (split-screen design) com Código INEP
 - ✅ Página de login admin
-- ✅ Página de solicitação de cadastro
-- ✅ Página de recuperação de senha
+- ✅ **Ficha Escolar** - Formulário completo com 4 tabs:
+  - Identificação (CNPJ, Ato de Criação, Mantenedora)
+  - Endereço (CEP, Rua, Bairro, Município)
+  - Contato (Telefone, Fax, Email)
+  - Características (Área, Internet, Características especiais)
+- ✅ **Dependências Físicas** - CRUD com resumo (Total, Área, Tipos)
+- ✅ **Mobiliário/Equipamento** - CRUD com quantidades por condição
+- ✅ **Professores** - CRUD completo com:
+  - Dados Pessoais (CPF, RG, Contato, Endereço)
+  - Dados Profissionais (Vínculo, Função, Carga Horária)
+  - Formações (Graduação, Especialização, etc.)
+  - Atribuições (Etapa, Disciplina, Dias, Habilitação)
 - ✅ Dashboard da escola com estatísticas
-- ✅ Dashboard do administrador com gráficos (Recharts)
-- ✅ Gestão de docentes (lista, criar, editar, remover)
-- ✅ Gestão de quadro administrativo
-- ✅ Listagem de escolas (admin) com busca e filtros
-- ✅ Detalhes de escola com tabs e lista de usuários
-- ✅ Botões de bloqueio/desbloqueio na página de detalhes
-- ✅ Listagem e análise de solicitações
-- ✅ Página de Relatórios PDF
-- ✅ Página de Notificações
-- ✅ Gráficos de evolução e distribuição
+- ✅ Dashboard do admin com gráficos
+- ✅ Inputs com máscaras (CPF, CNPJ, Telefone, CEP)
 
-### Design
-- Cores institucionais: Teal (#0F766E) primário
-- Fontes: Manrope (títulos), Inter (corpo)
-- Layout: Split-screen login, sidebar dashboard
-
-### Emails (configurado para Resend)
-- Email: protocolocomep@pereiro.ce.gov.br
-- Templates HTML para:
-  - Recuperação de senha
-  - Aprovação de cadastro
-  - Rejeição de cadastro
-  - Lembrete de atualização (escolas 90+ dias sem atualizar)
-  - Notificação de bloqueio/desbloqueio
+### Formatação de Campos
+- CPF: 123.456.789-00
+- CNPJ: 07.570.518/0001-00
+- Telefone: (88) 99999-9999
+- CEP: 63460-000
 
 ## Credenciais de Teste
 - **Admin:** admin@comep.gov.br / admin123
 - **Escola (exemplo):** Código INEP: 23056797 / CPF: 05174591 / Senha: 123456
 
 ## 18 Escolas Cadastradas
-Todas as 18 escolas da rede municipal de Pereiro-CE estão cadastradas com dados reais:
-- CEIs (Centros de Educação Infantil)
-- EEIEFs (Escolas de Ensino Infantil e Fundamental)
-- EMEFs (Escolas Municipais de Ensino Fundamental)
+Todas as 18 escolas da rede municipal de Pereiro-CE com dados reais.
 
 ## Arquitetura Técnica
 
@@ -105,34 +90,56 @@ Todas as 18 escolas da rede municipal de Pereiro-CE estão cadastradas com dados
 ```
 /app/
 ├── backend/
-│   ├── server.py       # API principal
+│   ├── server.py       # API principal (rotas expandidas)
 │   ├── services.py     # Serviços (email, PDF)
-│   └── .env            # Variáveis de ambiente
+│   └── .env
 └── frontend/
     └── src/
-        ├── pages/      # Componentes de página
-        ├── components/ # Componentes UI (Shadcn)
-        ├── context/    # AuthContext
-        └── services/   # API client
+        ├── pages/
+        │   ├── FichaEscolar.jsx        # NOVO
+        │   ├── DependenciasFisicas.jsx # NOVO
+        │   ├── MobiliarioEquipamento.jsx # NOVO
+        │   ├── Professores.jsx         # NOVO
+        │   └── ...
+        ├── components/
+        │   └── ui/
+        │       └── masked-input.jsx    # NOVO
+        ├── utils/
+        │   └── formatters.js           # NOVO
+        └── ...
 ```
 
+## Novas Coleções MongoDB
+- `dependencias_fisicas`: Salas, laboratórios, espaços físicos
+- `mobiliario_equipamento`: Inventário com condição
+- `docentes_completos`: Professores com formações e atribuições
+
 ## Test Results (2026-03-21)
-- **Backend:** 100% (25/25 testes passaram)
+- **Backend:** 100% (todas APIs funcionando)
 - **Frontend:** 100% (todos os fluxos UI funcionando)
-- **Report:** /app/test_reports/iteration_4.json
+- **Report:** /app/test_reports/iteration_5.json
 
 ## URLs
 - **Aplicação:** https://pereiro-escolas.preview.emergentagent.com
 - **API Health:** https://pereiro-escolas.preview.emergentagent.com/api/health
 
-## Backlog Futuro
+## Próximas Fases (Backlog)
+
+### Fase 2 - Organização do Ensino
+- [ ] Gestão de Turmas (Etapa, Modalidade, Turno, Alunos)
+- [ ] Vínculo entre Professores e Turmas
+- [ ] Matriz Curricular
+
+### Fase 3 - Biblioteca e Documentos
+- [ ] Gestão do Acervo (Categorias, Títulos, Quantidades)
+- [ ] Upload de Documentos (Regimento, PPP, etc.)
+- [ ] Anexos por Professor/Diretor
 
 ### P1 (Alta Prioridade)
-- Verificar domínio de email personalizado para envio de emails em produção
-- Dashboard com mais métricas detalhadas
+- Configurar domínio de email para envio de notificações em produção
+- Relatórios PDF com dados expandidos
 
 ### P2 (Média Prioridade)
 - Integração com sistemas estaduais (CEE-CE)
 - Sistema de auditoria de alterações
 - Exportação de dados para Excel
-- Relatórios personalizados por período

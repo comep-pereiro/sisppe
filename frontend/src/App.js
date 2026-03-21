@@ -20,6 +20,7 @@ import FichaEscolar from "@/pages/FichaEscolar";
 import DependenciasFisicas from "@/pages/DependenciasFisicas";
 import MobiliarioEquipamento from "@/pages/MobiliarioEquipamento";
 import Professores from "@/pages/Professores";
+import DocumentosGestao from "@/pages/DocumentosGestao";
 
 // Context
 import { AuthProvider, useAuth } from "@/context/AuthContext";
@@ -97,6 +98,11 @@ function AppRoutes() {
       <Route path="/escola/professores" element={
         <ProtectedEscolaRoute>
           <Professores />
+        </ProtectedEscolaRoute>
+      } />
+      <Route path="/escola/documentos" element={
+        <ProtectedEscolaRoute>
+          <DocumentosGestao />
         </ProtectedEscolaRoute>
       } />
       

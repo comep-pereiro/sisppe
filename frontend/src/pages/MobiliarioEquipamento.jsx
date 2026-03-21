@@ -27,7 +27,8 @@ import {
   Package,
   CheckCircle,
   AlertTriangle,
-  XCircle
+  XCircle,
+  FolderOpen
 } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -45,6 +46,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     { path: '/escola/mobiliario', icon: Boxes, label: 'Mobiliário/Equipamento' },
     { path: '/escola/professores', icon: GraduationCap, label: 'Professores' },
     { path: '/escola/quadro-administrativo', icon: Users, label: 'Quadro Administrativo' },
+    { path: '/escola/documentos', icon: FolderOpen, label: 'Documentos de Gestão' },
   ];
 
   const handleLogout = () => {
@@ -71,7 +73,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 <School className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-white" style={{ fontFamily: 'Manrope' }}>COMEP</h1>
+                <h1 className="text-lg font-bold text-white" style={{ fontFamily: 'Manrope' }}>SISPPe</h1>
                 <p className="text-xs text-slate-400">Área da Escola</p>
               </div>
             </div>

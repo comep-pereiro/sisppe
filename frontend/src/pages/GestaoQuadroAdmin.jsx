@@ -21,7 +21,11 @@ import {
   Plus,
   Edit,
   Trash2,
-  Search
+  Search,
+  FileText,
+  Home,
+  Boxes,
+  FolderOpen
 } from 'lucide-react';
 
 // Sidebar
@@ -32,8 +36,12 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   const menuItems = [
     { path: '/escola/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/escola/docentes', icon: GraduationCap, label: 'Corpo Docente' },
+    { path: '/escola/ficha-escolar', icon: FileText, label: 'Ficha Escolar' },
+    { path: '/escola/dependencias', icon: Home, label: 'Dependências Físicas' },
+    { path: '/escola/mobiliario', icon: Boxes, label: 'Mobiliário/Equipamento' },
+    { path: '/escola/professores', icon: GraduationCap, label: 'Professores' },
     { path: '/escola/quadro-administrativo', icon: Users, label: 'Quadro Administrativo' },
+    { path: '/escola/documentos', icon: FolderOpen, label: 'Documentos de Gestão' },
   ];
 
   const handleLogout = () => {
@@ -60,7 +68,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 <School className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-white" style={{ fontFamily: 'Manrope' }}>COMEP</h1>
+                <h1 className="text-lg font-bold text-white" style={{ fontFamily: 'Manrope' }}>SISPPe</h1>
                 <p className="text-xs text-slate-400">Área da Escola</p>
               </div>
             </div>

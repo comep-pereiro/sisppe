@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, File, UploadFile, Query, Header
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import Response
 from dotenv import load_dotenv
@@ -28,6 +28,9 @@ from services import (
     get_email_template
 )
 
+# Import storage
+from storage import init_storage, put_object, get_object, generate_storage_path, get_mime_type
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
@@ -41,7 +44,11 @@ JWT_SECRET = os.environ.get('JWT_SECRET', 'comep-secret-key-2024')
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
-app = FastAPI(title="COMEP - Conselho Municipal de Educação de Pereiro")
+# Configuração de logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+app = FastAPI(title="SISPPe - Sistema de Informatização e Simplificação de Processos de Pereiro")
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
 
@@ -342,6 +349,70 @@ class DocenteCompletoResponse(DocenteCompletoBase):
     escola_id: str
     data_cadastro: str
     ativo: bool = True
+
+# ======================== MODELOS DE DOCUMENTOS ========================
+
+# Tipos de documentos de gestão
+TIPOS_DOCUMENTOS_GESTAO = [
+    "ATA DE APROVAÇÃO DO REGIMENTO ESCOLAR",
+    "REGIMENTO ESCOLAR",
+    "PROJETO POLÍTICO PEDAGÓGICO (PPP)",
+    "MATRIZ CURRICULAR - EDUCAÇÃO INFANTIL",
+    "MATRIZ CURRICULAR - ENSINO FUNDAMENTAL ANOS INICIAIS",
+    "MATRIZ CURRICULAR - ENSINO FUNDAMENTAL ANOS FINAIS",
+    "MATRIZ CURRICULAR - EJA",
+    "PLANO DE GESTÃO",
+    "CALENDÁRIO ESCOLAR",
+    "ATA DO CONSELHO ESCOLAR",
+    "OUTROS"
+]
+
+class DocumentoBase(BaseModel):
+    """Documento de gestão escolar"""
+    tipo: str  # Tipo do documento (REGIMENTO, PPP, MATRIZ, etc.)
+    descricao: Optional[str] = None  # Descrição adicional
+
+class DocumentoResponse(DocumentoBase):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    escola_id: str
+    nome_arquivo: str
+    storage_path: str
+    content_type: str
+    tamanho: int
+    data_cadastro: str
+    is_deleted: bool = False
+
+class DocumentoDocenteBase(BaseModel):
+    """Documento anexado a um docente (diploma, certificado, etc.)"""
+    tipo: str  # DIPLOMA, CERTIFICADO, AUTORIZAÇÃO, etc.
+    descricao: Optional[str] = None
+
+class DocumentoDocenteResponse(DocumentoDocenteBase):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    docente_id: str
+    escola_id: str
+    nome_arquivo: str
+    storage_path: str
+    content_type: str
+    tamanho: int
+    data_cadastro: str
+    is_deleted: bool = False
+
+# Tipos de documentos de docentes
+TIPOS_DOCUMENTOS_DOCENTE = [
+    "DIPLOMA DE GRADUAÇÃO",
+    "DIPLOMA DE ESPECIALIZAÇÃO",
+    "DIPLOMA DE MESTRADO",
+    "DIPLOMA DE DOUTORADO",
+    "CERTIFICADO DE CURSO",
+    "AUTORIZAÇÃO DE ENSINO",
+    "PARECER DO CEE",
+    "LAUDO MÉDICO",
+    "DECLARAÇÃO",
+    "OUTROS"
+]
 
 # ======================== HELPERS ========================
 
@@ -1147,6 +1218,266 @@ async def remover_docente_completo(docente_id: str, current_user: dict = Depends
     await db.docentes_completos.update_one({"id": docente_id}, {"$set": {"ativo": False}})
     return {"message": "Docente removido com sucesso"}
 
+# ======================== DOCUMENTOS DE GESTÃO ========================
+
+@api_router.get("/documentos-gestao/tipos")
+async def listar_tipos_documentos_gestao():
+    """Lista os tipos de documentos de gestão disponíveis"""
+    return TIPOS_DOCUMENTOS_GESTAO
+
+@api_router.get("/documentos-gestao", response_model=List[DocumentoResponse])
+async def listar_documentos_gestao(escola_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+    """Lista documentos de gestão da escola"""
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        query = {"escola_id": user_escola_id, "is_deleted": False}
+    elif escola_id:
+        query = {"escola_id": escola_id, "is_deleted": False}
+    else:
+        query = {"is_deleted": False}
+    
+    docs = await db.documentos_gestao.find(query, {"_id": 0}).sort("data_cadastro", -1).to_list(1000)
+    return [DocumentoResponse(**d) for d in docs]
+
+@api_router.post("/documentos-gestao", response_model=DocumentoResponse)
+async def upload_documento_gestao(
+    tipo: str = Query(..., description="Tipo do documento"),
+    descricao: str = Query(None, description="Descrição adicional"),
+    file: UploadFile = File(...),
+    current_user: dict = Depends(get_current_user)
+):
+    """Faz upload de um documento de gestão"""
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        await check_escola_bloqueada(user_escola_id)
+    
+    # Validar tipo de arquivo
+    allowed_types = ["application/pdf", "image/jpeg", "image/png", "application/msword", 
+                     "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail="Tipo de arquivo não permitido. Use PDF, DOC, DOCX, JPG ou PNG.")
+    
+    # Limitar tamanho (10MB)
+    content = await file.read()
+    if len(content) > 10 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Arquivo muito grande. Máximo: 10MB")
+    
+    # Gerar ID e path
+    doc_id = str(uuid.uuid4())
+    ext = file.filename.split(".")[-1] if "." in file.filename else "pdf"
+    storage_path = generate_storage_path(user_escola_id, "documentos_gestao", doc_id, ext)
+    
+    # Fazer upload
+    try:
+        result = put_object(storage_path, content, file.content_type)
+    except Exception as e:
+        logger.error(f"Erro no upload: {e}")
+        raise HTTPException(status_code=500, detail="Erro ao fazer upload do arquivo")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    documento = {
+        "id": doc_id,
+        "escola_id": user_escola_id,
+        "tipo": tipo,
+        "descricao": descricao,
+        "nome_arquivo": file.filename,
+        "storage_path": result["path"],
+        "content_type": file.content_type,
+        "tamanho": result["size"],
+        "data_cadastro": now,
+        "is_deleted": False
+    }
+    
+    await db.documentos_gestao.insert_one(documento)
+    
+    # Atualizar data de atualização da escola
+    await db.escolas.update_one({"id": user_escola_id}, {"$set": {"data_atualizacao": now}})
+    
+    return DocumentoResponse(**{k: v for k, v in documento.items() if k != "_id"})
+
+@api_router.get("/documentos-gestao/{doc_id}/download")
+async def download_documento_gestao(
+    doc_id: str,
+    authorization: str = Header(None),
+    auth: str = Query(None),
+    current_user: dict = Depends(get_current_user)
+):
+    """Faz download de um documento de gestão"""
+    doc = await db.documentos_gestao.find_one({"id": doc_id, "is_deleted": False}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Documento não encontrado")
+    
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    # Verificar permissão
+    if current_user.get("type") == "escola" and doc["escola_id"] != user_escola_id:
+        raise HTTPException(status_code=403, detail="Acesso negado")
+    
+    try:
+        data, content_type = get_object(doc["storage_path"])
+        return Response(
+            content=data,
+            media_type=doc.get("content_type", content_type),
+            headers={
+                "Content-Disposition": f'attachment; filename="{doc["nome_arquivo"]}"'
+            }
+        )
+    except Exception as e:
+        logger.error(f"Erro no download: {e}")
+        raise HTTPException(status_code=500, detail="Erro ao baixar arquivo")
+
+@api_router.delete("/documentos-gestao/{doc_id}")
+async def excluir_documento_gestao(doc_id: str, current_user: dict = Depends(get_current_user)):
+    """Exclui (soft delete) um documento de gestão"""
+    doc = await db.documentos_gestao.find_one({"id": doc_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Documento não encontrado")
+    
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if doc["escola_id"] != user_escola_id:
+            raise HTTPException(status_code=403, detail="Você só pode excluir documentos da sua própria escola")
+        await check_escola_bloqueada(user_escola_id)
+    
+    await db.documentos_gestao.update_one({"id": doc_id}, {"$set": {"is_deleted": True}})
+    return {"message": "Documento excluído com sucesso"}
+
+# ======================== DOCUMENTOS DE DOCENTES ========================
+
+@api_router.get("/documentos-docentes/tipos")
+async def listar_tipos_documentos_docente():
+    """Lista os tipos de documentos de docentes disponíveis"""
+    return TIPOS_DOCUMENTOS_DOCENTE
+
+@api_router.get("/documentos-docentes/{docente_id}", response_model=List[DocumentoDocenteResponse])
+async def listar_documentos_docente(docente_id: str, current_user: dict = Depends(get_current_user)):
+    """Lista documentos de um docente"""
+    docente = await db.docentes_completos.find_one({"id": docente_id, "ativo": True}, {"_id": 0})
+    if not docente:
+        raise HTTPException(status_code=404, detail="Docente não encontrado")
+    
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola" and docente["escola_id"] != user_escola_id:
+        raise HTTPException(status_code=403, detail="Acesso negado")
+    
+    docs = await db.documentos_docentes.find(
+        {"docente_id": docente_id, "is_deleted": False}, {"_id": 0}
+    ).sort("data_cadastro", -1).to_list(100)
+    
+    return [DocumentoDocenteResponse(**d) for d in docs]
+
+@api_router.post("/documentos-docentes/{docente_id}", response_model=DocumentoDocenteResponse)
+async def upload_documento_docente(
+    docente_id: str,
+    tipo: str = Query(..., description="Tipo do documento"),
+    descricao: str = Query(None, description="Descrição adicional"),
+    file: UploadFile = File(...),
+    current_user: dict = Depends(get_current_user)
+):
+    """Faz upload de um documento para um docente"""
+    docente = await db.docentes_completos.find_one({"id": docente_id, "ativo": True}, {"_id": 0})
+    if not docente:
+        raise HTTPException(status_code=404, detail="Docente não encontrado")
+    
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if docente["escola_id"] != user_escola_id:
+            raise HTTPException(status_code=403, detail="Acesso negado")
+        await check_escola_bloqueada(user_escola_id)
+    
+    # Validar tipo de arquivo
+    allowed_types = ["application/pdf", "image/jpeg", "image/png"]
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail="Tipo de arquivo não permitido. Use PDF, JPG ou PNG.")
+    
+    # Limitar tamanho (5MB)
+    content = await file.read()
+    if len(content) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Arquivo muito grande. Máximo: 5MB")
+    
+    # Gerar ID e path
+    doc_id = str(uuid.uuid4())
+    ext = file.filename.split(".")[-1] if "." in file.filename else "pdf"
+    storage_path = generate_storage_path(docente["escola_id"], f"docentes/{docente_id}", doc_id, ext)
+    
+    # Fazer upload
+    try:
+        result = put_object(storage_path, content, file.content_type)
+    except Exception as e:
+        logger.error(f"Erro no upload: {e}")
+        raise HTTPException(status_code=500, detail="Erro ao fazer upload do arquivo")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    documento = {
+        "id": doc_id,
+        "docente_id": docente_id,
+        "escola_id": docente["escola_id"],
+        "tipo": tipo,
+        "descricao": descricao,
+        "nome_arquivo": file.filename,
+        "storage_path": result["path"],
+        "content_type": file.content_type,
+        "tamanho": result["size"],
+        "data_cadastro": now,
+        "is_deleted": False
+    }
+    
+    await db.documentos_docentes.insert_one(documento)
+    return DocumentoDocenteResponse(**{k: v for k, v in documento.items() if k != "_id"})
+
+@api_router.get("/documentos-docentes/{docente_id}/{doc_id}/download")
+async def download_documento_docente(
+    docente_id: str,
+    doc_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Faz download de um documento de docente"""
+    doc = await db.documentos_docentes.find_one(
+        {"id": doc_id, "docente_id": docente_id, "is_deleted": False}, {"_id": 0}
+    )
+    if not doc:
+        raise HTTPException(status_code=404, detail="Documento não encontrado")
+    
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola" and doc["escola_id"] != user_escola_id:
+        raise HTTPException(status_code=403, detail="Acesso negado")
+    
+    try:
+        data, content_type = get_object(doc["storage_path"])
+        return Response(
+            content=data,
+            media_type=doc.get("content_type", content_type),
+            headers={
+                "Content-Disposition": f'attachment; filename="{doc["nome_arquivo"]}"'
+            }
+        )
+    except Exception as e:
+        logger.error(f"Erro no download: {e}")
+        raise HTTPException(status_code=500, detail="Erro ao baixar arquivo")
+
+@api_router.delete("/documentos-docentes/{docente_id}/{doc_id}")
+async def excluir_documento_docente(docente_id: str, doc_id: str, current_user: dict = Depends(get_current_user)):
+    """Exclui (soft delete) um documento de docente"""
+    doc = await db.documentos_docentes.find_one({"id": doc_id, "docente_id": docente_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Documento não encontrado")
+    
+    user_escola_id = await get_escola_id_from_user(current_user)
+    
+    if current_user.get("type") == "escola":
+        if doc["escola_id"] != user_escola_id:
+            raise HTTPException(status_code=403, detail="Acesso negado")
+        await check_escola_bloqueada(user_escola_id)
+    
+    await db.documentos_docentes.update_one({"id": doc_id}, {"$set": {"is_deleted": True}})
+    return {"message": "Documento excluído com sucesso"}
+
 # ======================== ADMINS (COMEP) ========================
 
 @api_router.post("/admins", response_model=AdminResponse)
@@ -1686,11 +2017,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+# Inicialização do storage no startup
+@app.on_event("startup")
+async def startup_event():
+    try:
+        init_storage()
+        logger.info("Storage inicializado com sucesso")
+    except Exception as e:
+        logger.warning(f"Falha ao inicializar storage: {e}")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
