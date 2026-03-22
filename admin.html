@@ -503,6 +503,16 @@ let profsCache={}, qaCache={}; // subcollections: professores e quadro_admin
 let modalInep=null;
 
 // ── LOGIN ─────────────────────────────────────────────────────────
+
+// ── GLOBAL ERROR BOUNDARY ────────────────────────────────────────
+window.addEventListener('unhandledrejection',ev=>{
+  const msg=ev.reason?.message||'Erro desconhecido';
+  if(msg.includes('permission-denied'))showToast('⛔ Permissão negada no Firestore.','error');
+  else if(msg.includes('unavailable')||msg.includes('network'))showToast('📡 Sem conexão. Verifique a internet.','error');
+  else if(msg.includes('FAILED_PRECONDITION')||msg.includes('index'))showToast('⚠️ Índice Firestore pendente.','error');
+  ev.preventDefault();
+  console.error('Unhandled:',ev.reason);
+});
 function doAdminLogin(){
   const u=document.getElementById('admUser').value.trim();
   const p=document.getElementById('admPass').value.trim();
@@ -522,6 +532,7 @@ function doAdminLogin(){
 
 function doAdminLogout(){
   adminUser=null;
+  docsCache={};fichasCache={};statusCache={};profsCache={};qaCache={};
   document.getElementById('page-app').classList.remove('show');
   document.getElementById('page-login').classList.remove('hide');
   document.getElementById('admPass').value='';
@@ -544,7 +555,7 @@ function navAdmin(view){
 
 // ── CARGA DE DADOS ────────────────────────────────────────────────
 async function carregarTodosDados(){
-  document.getElementById('dash-time').textContent='Carregando dados... '+new Date().toLocaleString('pt-BR');
+  document.getElementById('dash-time').textContent='🔄 Carregando dados... '+new Date().toLocaleString('pt-BR');
   const promises=ESCOLAS.map(async e=>{
     try{
       const [docsSnap,fichaSnap,profsSnap,qaSnap]=await Promise.all([
@@ -573,6 +584,7 @@ async function carregarTodosDados(){
   });
   await Promise.all(promises);
   renderDashboard();
+  document.getElementById('dash-time').textContent='✅ Atualizado em: '+new Date().toLocaleString('pt-BR');
 }
 
 function docsCount(inep){return DOCS_OBRIG.filter(t=>docsCache[inep]&&docsCache[inep].has(t)).length;}
@@ -747,7 +759,7 @@ function renderHabilitacao(){
 
   ESCOLAS.forEach(e=>{
     // Professores (subcollection nova)
-    const profs=profsCache[e.inep]||[];
+    const profs=(profsCache&&profsCache[e.inep])||[];
     totProfs+=profs.length;
     profs.forEach(p=>{
       const forms=p.formacoes||[];
@@ -758,7 +770,7 @@ function renderHabilitacao(){
       else habNao++;
     });
     // Quadro admin
-    const qa=qaCache[e.inep]||[];
+    const qa=(qaCache&&qaCache[e.inep])||[];
     qa.forEach(m=>{
       if((m.habilitacao||'HABILITADO')==='HABILITADO')totQASim++;
       else totQANao++;
@@ -772,7 +784,7 @@ function renderHabilitacao(){
 
   // ---- Tabela por Escola ----
   const rows=ESCOLAS.map(e=>{
-    const profs=profsCache[e.inep]||[];
+    const profs=(profsCache&&profsCache[e.inep])||[];
     const total=profs.length;
     let sim=0,nao=0;
     profs.forEach(p=>{
@@ -797,7 +809,7 @@ function renderHabilitacao(){
   // ---- Tabela Quadro Administrativo ----
   let qaRows='';
   ESCOLAS.forEach(e=>{
-    const qa=qaCache[e.inep]||[];
+    const qa=(qaCache&&qaCache[e.inep])||[];
     if(!qa.length)return;
     qa.forEach(m=>{
       const h=m.habilitacao||'HABILITADO';
@@ -821,7 +833,7 @@ function renderHabilitacao(){
   // ---- Tabela Professores detalhada ----
   let profRows='';
   ESCOLAS.forEach(e=>{
-    const profs=profsCache[e.inep]||[];
+    const profs=(profsCache&&profsCache[e.inep])||[];
     if(!profs.length)return;
     profs.forEach(p=>{
       const forms=p.formacoes||[];
