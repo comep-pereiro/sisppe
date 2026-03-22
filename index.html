@@ -271,6 +271,12 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
 .info-box strong{color:var(--s800)}
 
 /* ── RESPONSIVE ── */
+
+/* Mobile menu toggle */
+#mob-tog{display:none;position:fixed;top:14px;left:14px;z-index:200;
+  width:38px;height:38px;background:var(--t700);border:none;border-radius:8px;
+  color:#fff;font-size:18px;cursor:pointer;box-shadow:var(--shm)}
+@media(max-width:760px){#mob-tog{display:flex;align-items:center;justify-content:center}}
 @media(max-width:760px){
   .lcard{grid-template-columns:1fr}.ll{display:none}
   .sb{position:fixed;transform:translateX(-100%);transition:transform .3s;width:260px}
@@ -314,8 +320,8 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
     💡 <strong>Secretário(a):</strong> CPF <b>200.000.001-01</b> · Senha <b>Sec@2025#01</b>
    </div>
    <div class="llinks">
-    <a onclick="alert('Contate a Secretaria Municipal de Educação de Pereiro.')">Esqueci minha senha</a>
-    <a onclick="alert('Solicite o cadastro à Secretaria Municipal de Educação de Pereiro.')">Solicitar acesso</a>
+    <a onclick="enviarEmailSenha()">Esqueci minha senha</a>
+    <a onclick="solicitarAcesso()">Solicitar acesso para nova escola</a>
    </div>
   </div>
  </div>
@@ -323,6 +329,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
 
 <!-- ═══════════════════════ APP ════════════════════════ -->
 <div id="pg-app">
+<button id="mob-tog" onclick="document.getElementById('sb').classList.toggle('open')">☰</button>
 
  <!-- SIDEBAR -->
  <aside class="sb" id="sb">
@@ -586,7 +593,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
 </div>
 
 <!-- ══════════════ MODAL PROFESSOR ══════════════ -->
-<div class="mover" id="m-prof">
+<div class="mover" id="m-prof" onclick="closeMOver(event,this)">
  <div class="mbox mlg">
   <div class="mh">
    <div><div class="mt" id="mp-t">Novo Professor</div><div class="ms">Preencha os dados completos do professor</div></div>
@@ -695,7 +702,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
 </div>
 
 <!-- ══════════════ MODAL QUADRO ADMIN ══════════════ -->
-<div class="mover" id="m-qa">
+<div class="mover" id="m-qa" onclick="closeMOver(event,this)">
  <div class="mbox mmd">
   <div class="mh">
    <div><div class="mt" id="qa-mt">Novo Membro</div><div class="ms">Preencha os dados do membro do quadro administrativo</div></div>
@@ -732,7 +739,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
 </div>
 
 <!-- ══════════════ MODAL DEPENDÊNCIA ══════════════ -->
-<div class="mover" id="m-dep">
+<div class="mover" id="m-dep" onclick="closeMOver(event,this)">
  <div class="mbox mmd">
   <div class="mh">
    <div><div class="mt" id="dep-mt">Nova Dependência</div><div class="ms">Salas, laboratórios e espaços físicos</div></div>
@@ -757,7 +764,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
      </select>
     </div>
     <div class="fg"><label>Quantidade *</label><input type="number" id="dep-qtd" value="1" min="1"></div>
-    <div class="fg"><label>Área (m²)</label><input type="number" id="dep-area" step="0.01" placeholder="Ex: 48"></div>
+    <div class="fg"><label>Área (m²)</label><input type="number" id="dep-m-area" step="0.01" placeholder="Ex: 48"></div>
     <div class="fg s2"><label>Observação</label><input id="dep-obs" placeholder="Informações adicionais (opcional)"></div>
    </div>
   </div>
@@ -766,7 +773,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
 </div>
 
 <!-- ══════════════ MODAL MOBILIÁRIO ══════════════ -->
-<div class="mover" id="m-mob">
+<div class="mover" id="m-mob" onclick="closeMOver(event,this)">
  <div class="mbox mmd">
   <div class="mh">
    <div><div class="mt" id="mob-mt">Novo Item</div><div class="ms">Informe o estado de conservação de cada unidade</div></div>
@@ -800,7 +807,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
 </div>
 
 <!-- ══════════════ MODAL DOCUMENTO ══════════════ -->
-<div class="mover" id="m-doc">
+<div class="mover" id="m-doc" onclick="closeMOver(event,this)">
  <div class="mbox mmd">
   <div class="mh">
    <div><div class="mt">Enviar Documento</div><div class="ms">PDF, JPG ou JPEG · Máx. 10 MB</div></div>
@@ -928,17 +935,22 @@ let NF=[],NA=[]; // temp formações/atribuições no modal
    UTILS
 ═══════════════════════════════════════════ */
 function mCpf(el){let v=el.value.replace(/\D/g,'');if(v.length>11)v=v.slice(0,11);v=v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');el.value=v;}
-function g(id){return document.getElementById(id)?.value||''}
-function gn(id){return parseInt(document.getElementById(id)?.value)||0}
-function gf(id){return parseFloat(document.getElementById(id)?.value)||0}
+function g(id){const el=document.getElementById(id);return el?el.value.trim():''}
+function gn(id){const el=document.getElementById(id);return parseInt(el?.value)||0}
+function gf(id){const el=document.getElementById(id);return parseFloat(el?.value)||0}
 function gc(id){return document.getElementById(id)?.checked||false}
-function s(id,v){const el=document.getElementById(id);if(el&&v!==undefined)el.value=v||''}
+function s(id,v){const el=document.getElementById(id);if(el)el.value=(v===null||v===undefined)?'':String(v)}
 function sc(id,v){const el=document.getElementById(id);if(el)el.checked=!!v}
 let _tT;
 function toast(msg,t=''){const el=document.getElementById('toast');el.textContent=msg;el.className='toast'+(t?' '+t:'');el.style.display='block';clearTimeout(_tT);_tT=setTimeout(()=>el.style.display='none',4000)}
 function termos(){alert('Termos de Uso do SISPPe\n\n• As informações inseridas são verídicas e de responsabilidade da instituição.\n• Os documentos enviados são autênticos.\n• O acesso é pessoal e intransferível.\n• O uso indevido pode acarretar sanções administrativas — Lei nº 12.527/2011.')}
 function hab(v){return v==='HABILITADO'?`<span class="bdg bgn">✅ HABILITADO</span>`:`<span class="bdg br">❌ NÃO HABILITADO</span>`}
 function closeM(id){document.getElementById(id).classList.remove('on')}
+
+function closeMOver(e,overlay){
+  if(e.target===overlay)overlay.classList.remove('on');
+}
+
 
 /* ═══════════════════════════════════════════
    LOGIN
@@ -947,6 +959,8 @@ async function doLogin(){
   const cpf=document.getElementById('inpCpf').value.trim();
   const pw=document.getElementById('inpPw').value.trim();
   if(!document.getElementById('chkT').checked){toast('Aceite os Termos de Uso.','err');return}
+  if(!cpf||!pw){document.getElementById('lerr').style.display='block';return}
+  if(cpf.length<14){document.getElementById('lerr').style.display='block';return}
   const u=USERS[cpf];
   if(!u||u.pw!==pw){document.getElementById('lerr').style.display='block';return}
   document.getElementById('lerr').style.display='none';
@@ -992,6 +1006,7 @@ function doLogout(){
    NAV + TABS
 ═══════════════════════════════════════════ */
 function nav(v){
+  document.getElementById('sb').classList.remove('open'); // close mobile sidebar
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('.sbi').forEach(x=>x.classList.remove('on'));
   document.getElementById('v-'+v).classList.add('on');
@@ -1009,7 +1024,9 @@ function st(pfx,tab,btn){
   cont.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   cont.querySelectorAll(`.tpane[id^="${pfx}-t-"]`).forEach(p=>p.classList.remove('on'));
-  const p=document.getElementById(pfx+'-t-'+tab);if(p)p.classList.add('on');
+  const p=document.getElementById(pfx+'-t-'+tab);
+  if(p)p.classList.add('on');
+  else console.warn('Tab pane not found:',pfx+'-t-'+tab);
 }
 
 /* ═══════════════════════════════════════════
@@ -1039,7 +1056,7 @@ async function rDash(){
     const nhab=ps.docs.filter(d=>(d.data().formacoes||[]).some(f=>f.parecer==='NÃO HABILITADO')).length;
     document.getElementById('d-profs-s').textContent=nhab>0?`⚠️ ${nhab} com não habilitado`:'✅ Situação regular';
     document.getElementById('d-qa').textContent=qs.size;
-  }catch(e){}
+  }catch(e){console.warn('Dashboard stats:',e)}
 }
 
 /* ═══════════════════════════════════════════
@@ -1088,7 +1105,7 @@ async function salvarFicha(){
   btn.disabled=true;btn.innerHTML='<span class="spin"></span> Salvando...';
   try{
     await db.collection('escolas').doc(U.inep).set({ficha,atualizadoPor:U.cpf,atualizadoEm:new Date().toISOString()},{merge:true});
-    toast('✅ Ficha salva com sucesso!','ok');
+    toast('✅ Ficha salva com sucesso!','ok');clearDirty();
   }catch(e){toast('❌ Erro: '+e.message,'err')}
   finally{btn.disabled=false;btn.innerHTML='💾 Salvar Alterações'}
 }
@@ -1131,19 +1148,20 @@ function openDepM(id=null){
     const d=DEPS.find(x=>x.id===id);if(!d)return;
     document.getElementById('dep-mt').textContent='Editar Dependência';
     s('dep-tip',d.tipo);document.getElementById('dep-qtd').value=d.quantidade||1;
-    document.getElementById('dep-area').value=d.area_m2||'';s('dep-obs',d.observacao);
+    document.getElementById('dep-m-area').value=d.area_m2||'';s('dep-obs',d.observacao);
   }else{
     document.getElementById('dep-mt').textContent='Nova Dependência';
     ['dep-tip','dep-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
     document.getElementById('dep-qtd').value=1;
-    if(document.getElementById('dep-area'))document.getElementById('dep-area').value='';
+    const depAreaInp=document.getElementById('dep-m-area');if(depAreaInp)depAreaInp.value='';
   }
   document.getElementById('m-dep').classList.add('on');
 }
 async function saveDep(){
+  if(!U){toast("Sessão expirada. Faça login novamente.","err");return}
   if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
   const tipo=g('dep-tip');if(!tipo){toast('Selecione o tipo.','err');return}
-  const dep={tipo,quantidade:gn('dep-qtd')||1,area_m2:gf('dep-area')||null,observacao:g('dep-obs'),atualizadoEm:new Date().toISOString()};
+  const dep={tipo,quantidade:gn('dep-qtd')||1,area_m2:gf('dep-m-area')||null,observacao:g('dep-obs'),atualizadoEm:new Date().toISOString()};
   try{
     if(dEid)await db.collection('escolas').doc(U.inep).collection('dependencias').doc(dEid).set(dep);
     else await db.collection('escolas').doc(U.inep).collection('dependencias').add(dep);
@@ -1209,6 +1227,7 @@ function openMobM(id=null){
   document.getElementById('m-mob').classList.add('on');
 }
 async function saveMob(){
+  if(!U){toast("Sessão expirada. Faça login novamente.","err");return}
   if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
   const tipo=g('mob-tip');if(!tipo){toast('Selecione o tipo.','err');return}
   const m={tipo,qtd_excelente:gn('mob-exc'),qtd_bom:gn('mob-bom'),qtd_regular:gn('mob-reg'),qtd_pessimo:gn('mob-pes'),observacao:g('mob-obs'),atualizadoEm:new Date().toISOString()};
@@ -1230,12 +1249,13 @@ async function delMob(id){
 async function loadProf(){
   if(!U)return;
   try{
-    const snap=await db.collection('escolas').doc(U.inep).collection('professores').orderBy('nome').get();
-    PROFS=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const snap=await db.collection('escolas').doc(U.inep).collection('professores').get();
+    PROFS=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.nome||'').localeCompare(b.nome||'','pt-BR'));
     rProf();
   }catch(e){toast('Erro ao carregar professores.','err')}
 }
 function rProf(){
+  if(!Array.isArray(PROFS))return;
   const q=(document.getElementById('p-srch')||{}).value?.toLowerCase()||'';
   const ls=PROFS.filter(p=>p.nome.toLowerCase().includes(q)||(p.cpf||'').includes(q));
   document.getElementById('p-tot').textContent=PROFS.length;
@@ -1339,6 +1359,7 @@ function openProfM(id=null){
 function closeM(id){document.getElementById(id).classList.remove('on')}
 
 async function saveProf(){
+  if(!U){toast("Sessão expirada. Faça login novamente.","err");return}
   if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
   const nome=g('mp-nome').trim(),cpf=g('mp-cpf').trim();
   if(!nome||!cpf){toast('Preencha nome e CPF.','err');return}
@@ -1440,6 +1461,7 @@ async function loadQA(){
 }
 const CORD=['Diretor(a)','Vice-Diretor(a)','Secretário(a) Escolar','Coordenador(a) Pedagógico(a)'];
 function rQA(){
+  if(!Array.isArray(QAS))return;
   const q=(document.getElementById('qa-srch')||{}).value?.toLowerCase()||'';
   const ls=QAS.filter(m=>m.nome.toLowerCase().includes(q)||(m.cpf||'').includes(q)||(m.cargo||'').toLowerCase().includes(q));
   ls.sort((a,b)=>(CORD.indexOf(a.cargo)===-1?99:CORD.indexOf(a.cargo))-(CORD.indexOf(b.cargo)===-1?99:CORD.indexOf(b.cargo)));
@@ -1480,6 +1502,7 @@ function openQAM(id=null){
   document.getElementById('m-qa').classList.add('on');
 }
 async function saveQA(){
+  if(!U){toast("Sessão expirada. Faça login novamente.","err");return}
   if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
   const nome=g('qa-nome').trim(),cpf=g('qa-cpf').trim(),cargo=g('qa-car'),form=g('qa-form').trim();
   if(!nome||!cpf||!cargo||!form){toast('Preencha nome, CPF, cargo e formação.','err');return}
@@ -1504,7 +1527,7 @@ async function loadDocs(){
   if(!U)return;
   document.getElementById('tb-docs').innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--s400)">🔄 Carregando...</td></tr>';
   try{
-    const snap=await db.collection('escolas').doc(U.inep).collection('documentos').orderBy('criadoEm','desc').get();
+    const snap=await db.collection('escolas').doc(U.inep).collection('documentos').get();
     const env={};snap.forEach(d=>{const dd=d.data();if(!env[dd.tipo])env[dd.tipo]={...dd,id:d.id}});
     let rows='',i=1;
     DOCS_OBR.forEach(tipo=>{
@@ -1532,7 +1555,7 @@ async function loadDocs(){
           <td style="font-weight:600">${tipo}</td>
           <td><span class="bdg br">⚠ Pendente</span></td>
           <td>—</td><td>—</td>
-          <td>${!BLQ?`<button class="btn bt bxs" onclick="preDOc('${tipo}')">Enviar</button>`:'<span style="color:var(--s400);font-size:12px">Bloqueado</span>'}</td>
+          <td>${!BLQ?`<button class="btn bt bxs" onclick="preDoc('${tipo}')">Enviar</button>`:'<span style="color:var(--s400);font-size:12px">Bloqueado</span>'}</td>
         </tr>`;
       }
     });
@@ -1557,7 +1580,7 @@ async function loadDocs(){
     document.getElementById('tb-docs').innerHTML=`<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--r600)">❌ Erro ao carregar. Verifique a conexão com a internet.</td></tr>`;
   }
 }
-function preDOc(tipo){s('doc-tip',tipo);document.getElementById('m-doc').classList.add('on')}
+function preDoc(tipo){s('doc-tip',tipo);document.getElementById('m-doc').classList.add('on')}
 function docSel(inp){const f=inp.files[0];if(f)document.getElementById('doc-fn').textContent='📄 '+f.name+' ('+(f.size/1024/1024).toFixed(2)+' MB)'}
 function docDrop(e){
   e.preventDefault();document.getElementById('doc-zone').classList.remove('drag');
@@ -1616,9 +1639,65 @@ async function delDoc(id,tipo){
   catch(e){toast('❌ Erro: '+e.message,'err')}
 }
 
+
+/* ═══════════════════════════════════════════
+   EMAIL HELPERS
+═══════════════════════════════════════════ */
+function enviarEmailSenha(){
+  const cpf=document.getElementById('inpCpf').value.trim();
+  const sub=encodeURIComponent('SISPPe — Solicitação de Redefinição de Senha');
+  const body=encodeURIComponent(
+    'Ao COMEP de Pereiro,\n\n' +
+    'Solicito a redefinição de senha do meu acesso ao portal SISPPe.\n\n' +
+    'CPF cadastrado: ' + (cpf||'(informe seu CPF)') + '\n' +
+    'Data: ' + new Date().toLocaleDateString('pt-BR') + '\n\n' +
+    'Atenciosamente,\n[Seu nome e escola]'
+  );
+  window.location.href='mailto:protocolo.comep@pereiro.ce.gov.br?subject='+sub+'&body='+body;
+}
+function solicitarAcesso(){
+  const sub=encodeURIComponent('SISPPe — Solicitação de Cadastro de Nova Escola');
+  const body=encodeURIComponent(
+    'Ao COMEP de Pereiro,\n\n' +
+    'Solicito o cadastro da seguinte unidade escolar no portal SISPPe:\n\n' +
+    'Nome da Escola: \n' +
+    'INEP / Código de Censo: \n' +
+    'Município: Pereiro/CE\n' +
+    'Nome do Diretor(a): \n' +
+    'CPF do Diretor(a): \n' +
+    'Telefone: \n\n' +
+    'Data: ' + new Date().toLocaleDateString('pt-BR') + '\n\n' +
+    'Atenciosamente,\n[Seu nome e cargo]'
+  );
+  window.location.href='mailto:protocolo.comep@pereiro.ce.gov.br?subject='+sub+'&body='+body;
+}
+
+// ── GLOBAL ERROR BOUNDARY ────────────────────────────────────────
+window.addEventListener('unhandledrejection',ev=>{
+  console.error('Unhandled promise rejection:',ev.reason);
+  const msg=ev.reason?.message||'Erro inesperado';
+  if(msg.includes('permission-denied'))toast('⛔ Acesso negado. Verifique as regras do Firestore.','err');
+  else if(msg.includes('unavailable')||msg.includes('network'))toast('📡 Sem conexão. Verifique a internet.','err');
+  else if(msg.includes('FAILED_PRECONDITION')||msg.includes('index'))toast('⚠️ Índice Firestore pendente. Contate o suporte.','err');
+  ev.preventDefault();
+});
+window.addEventListener('error',ev=>{
+  console.error('Global error:',ev.error);
+});
 /* ═══════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════ */
+
+// ── UNSAVED CHANGES GUARD ─────────────────────────────────────────
+let _dirty=false;
+document.addEventListener('input',e=>{
+  if(e.target.closest('.view[id="v-ficha"]'))_dirty=true;
+});
+window.addEventListener('beforeunload',e=>{
+  if(_dirty){e.preventDefault();e.returnValue=''}
+});
+function clearDirty(){_dirty=false}
+
 document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&!document.getElementById('pg-login').classList.contains('out'))doLogin()
 });
