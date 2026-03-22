@@ -193,6 +193,8 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size
       <div class="sb-item" onclick="navAdmin('habilitacao')" id="nav-habilitacao"><span class="ico">🎓</span> Habilitação Docente</div>
       <div class="sb-item" onclick="navAdmin('infraestrutura')" id="nav-infraestrutura"><span class="ico">🏗</span> Infraestrutura</div>
       <div class="sb-item" onclick="navAdmin('relatorio')" id="nav-relatorio"><span class="ico">📊</span> Relatório Geral</div>
+      <div class="sb-item" onclick="navAdmin('graficos')" id="nav-graficos"><span class="ico">📈</span> Gráficos</div>
+      <div class="sb-item" onclick="navAdmin('solicitacoes')" id="nav-solicitacoes"><span class="ico">📨</span> Solicitações</div>
     </nav>
     <div class="sb-logout" onclick="doAdminLogout()">🚪 Sair do Painel</div>
     <div class="sb-footer">COMEP Pereiro/CE · 2025</div>
@@ -426,6 +428,128 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size
       </div>
     </div>
 
+    <!-- ── GRÁFICOS ── -->
+    <div class="view" id="view-graficos">
+      <div class="page-title">📈 Gráficos e Análises</div>
+      <div class="page-sub">Visualizações analíticas do sistema — dados em tempo real.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+
+        <!-- Vínculo docente -->
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Vínculo Docente por Escola</span></div>
+          <div class="panel-body" id="graf-vinculo">
+            <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
+          </div>
+        </div>
+
+        <!-- Docs por escola -->
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Documentação por Escola (%)</span></div>
+          <div class="panel-body" id="graf-docs">
+            <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+        <!-- Habilitação geral -->
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Habilitação Docente — Visão Geral</span></div>
+          <div class="panel-body" id="graf-hab">
+            <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
+          </div>
+        </div>
+
+        <!-- Validade credenciamentos -->
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Validade dos Credenciamentos</span></div>
+          <div class="panel-body" id="graf-validade">
+            <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SOLICITAÇÕES ── -->
+    <div class="view" id="view-solicitacoes">
+      <div class="page-title">📨 Solicitações e Comunicados</div>
+      <div class="page-sub">Gerencie notificações e comunicados enviados às escolas.</div>
+
+      <!-- Enviar notificação -->
+      <div class="panel" style="margin-bottom:16px">
+        <div class="panel-header"><span class="panel-title">📤 Enviar Comunicado às Escolas</span></div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div style="grid-column:span 2">
+              <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">TÍTULO DO COMUNICADO *</label>
+              <input id="not-titulo" type="text" placeholder="Ex: Prazo para envio do relatório anual" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
+            </div>
+            <div>
+              <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">DESTINATÁRIO *</label>
+              <select id="not-dest" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
+                <option value="todas">📢 Todas as Escolas</option>
+                <optgroup label="Escola específica">
+                  <option value="23138378">Antônio Pinheiro Maia</option>
+                  <option value="23138408">Cândido José Nogueira</option>
+                  <option value="23219254">Cleonice Freire de Queiroz</option>
+                  <option value="23274778">Francisca Nogueira de Sousa</option>
+                  <option value="23238483">Francisco das Chagas de Aquino</option>
+                  <option value="23283467">João Nogueira de Sousa</option>
+                  <option value="23138777">José Matias de Sousa</option>
+                  <option value="23178370">José Nilson Bezerra</option>
+                  <option value="23138670">Maria das Graças Nogueira</option>
+                  <option value="23138688">Maria Nazaré de Jesus</option>
+                  <option value="23138742">Miguel Antônio da Rocha</option>
+                  <option value="23138530">Nossa Senhora das Graças</option>
+                  <option value="23138793">Pedro Gomes de Lima</option>
+                  <option value="23178280">Pequeno Príncipe</option>
+                  <option value="23138815">Pingo de Gente</option>
+                  <option value="23258829">Semeando o Saber</option>
+                  <option value="00000017">Luiz Gonçalves de Lima</option>
+                  <option value="00000018">Municipal 18 — A Cadastrar</option>
+                </optgroup>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">TIPO / PRIORIDADE</label>
+              <select id="not-tipo" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
+                <option value="info">🔵 Informativo</option>
+                <option value="atencao">🟡 Atenção</option>
+                <option value="urgente">🔴 Urgente</option>
+                <option value="sucesso">✅ Aprovação / Sucesso</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">PRAZO (opcional)</label>
+              <input id="not-prazo" type="text" placeholder="Ex: 30/04/2025" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
+            </div>
+            <div style="grid-column:span 2">
+              <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">MENSAGEM *</label>
+              <textarea id="not-msg" rows="4" placeholder="Texto completo do comunicado..." style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;resize:vertical"></textarea>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="enviarNotificacao()">📤 Enviar Comunicado</button>
+        </div>
+      </div>
+
+      <!-- Lista de comunicados enviados -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">📋 Comunicados Enviados</span>
+          <button class="btn btn-secondary btn-sm" onclick="carregarNotificacoes()">🔄 Atualizar</button>
+        </div>
+        <div class="panel-body" style="padding:0">
+          <table class="data-table">
+            <thead><tr><th>Destinatário</th><th>Título</th><th>Tipo</th><th>Prazo</th><th>Enviado em</th><th style="text-align:right">Ações</th></tr></thead>
+            <tbody id="tbody-notif">
+              <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
   </main>
 </div>
 
@@ -504,6 +628,200 @@ let modalInep=null;
 
 // ── LOGIN ─────────────────────────────────────────────────────────
 
+
+// ── GRÁFICOS ──────────────────────────────────────────────────────
+function renderGraficos(){
+  try{
+    renderGrafVinculo();
+    renderGrafDocs();
+    renderGrafHab();
+    renderGrafValidade();
+  }catch(e){console.error('renderGraficos:',e)}
+}
+
+function svgBar(data, opts={}){
+  // data: [{label, value, color, max}]
+  const W=opts.width||320, BH=opts.barH||22, GAP=opts.gap||8;
+  const LW=opts.labelW||160, VW=60;
+  const total=data.length;
+  const H=total*(BH+GAP)+GAP;
+  const maxVal=opts.maxVal||Math.max(...data.map(d=>d.value),1);
+  const BW=W-LW-VW-10;
+  let rows='';
+  data.forEach((d,i)=>{
+    const y=GAP+i*(BH+GAP);
+    const barW=Math.max(0,Math.round((d.value/maxVal)*BW));
+    const pct=maxVal>0?Math.round(d.value/maxVal*100):0;
+    rows+=`
+      <text x="0" y="${y+BH*0.72}" font-size="11" fill="#64748b" font-family="Inter,sans-serif"
+        text-anchor="start" style="dominant-baseline:auto">${d.label.substring(0,22)}${d.label.length>22?'…':''}</text>
+      <rect x="${LW}" y="${y}" width="${BW}" height="${BH}" rx="4" fill="#f1f5f9"/>
+      <rect x="${LW}" y="${y}" width="${barW}" height="${BH}" rx="4" fill="${d.color||'#0f766e'}"/>
+      <text x="${LW+barW+5}" y="${y+BH*0.72}" font-size="11" fill="#334155" font-family="Inter,sans-serif">${d.value}${opts.suffix||''}</text>`;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;overflow:visible">${rows}</svg>`;
+}
+
+function svgDonut(slices, opts={}){
+  // slices: [{label, value, color}]
+  const R=opts.R||70, r=opts.r||45, CX=90, CY=85, W=opts.W||260, H=180;
+  const total=slices.reduce((s,d)=>s+d.value,0)||1;
+  let startAngle=-Math.PI/2;
+  let paths='',legend='';
+  slices.forEach((s,i)=>{
+    if(s.value===0)return;
+    const angle=(s.value/total)*2*Math.PI;
+    const endAngle=startAngle+angle;
+    const x1=CX+R*Math.cos(startAngle),y1=CY+R*Math.sin(startAngle);
+    const x2=CX+R*Math.cos(endAngle),y2=CY+R*Math.sin(endAngle);
+    const x3=CX+r*Math.cos(endAngle),y3=CY+r*Math.sin(endAngle);
+    const x4=CX+r*Math.cos(startAngle),y4=CY+r*Math.sin(startAngle);
+    const large=angle>Math.PI?1:0;
+    paths+=`<path d="M${x1},${y1} A${R},${R} 0 ${large} 1 ${x2},${y2} L${x3},${y3} A${r},${r} 0 ${large} 0 ${x4},${y4} Z" fill="${s.color}" opacity="0.92"/>`;
+    const ly=22+i*20;
+    legend+=`<rect x="${CX*2+10}" y="${ly-9}" width="12" height="12" rx="3" fill="${s.color}"/>
+      <text x="${CX*2+26}" y="${ly}" font-size="11" fill="#334155" font-family="Inter,sans-serif">${s.label} (${s.value})</text>`;
+    startAngle=endAngle;
+  });
+  const pct=total>0?Math.round(slices[0]?.value/total*100):0;
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px;overflow:visible">
+    ${paths}
+    <text x="${CX}" y="${CY-4}" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a" font-family="Manrope,sans-serif">${pct}%</text>
+    <text x="${CX}" y="${CY+14}" text-anchor="middle" font-size="9" fill="#64748b" font-family="Inter,sans-serif">${slices[0]?.label||''}</text>
+    ${legend}
+  </svg>`;
+}
+
+function renderGrafVinculo(){
+  const el=document.getElementById('graf-vinculo');
+  if(!el)return;
+  const counts={EFETIVO:0,CONTRATADO:0,TEMPORÁRIO:0,CEDIDO:0,'OUTRO':0};
+  ESCOLAS.forEach(e=>{
+    (profsCache[e.inep]||[]).forEach(p=>{
+      const v=p.vinculo||'OUTRO';
+      if(counts[v]!==undefined)counts[v]++;else counts['OUTRO']++;
+    });
+  });
+  const total=Object.values(counts).reduce((a,b)=>a+b,0);
+  if(total===0){el.innerHTML='<div style="text-align:center;color:var(--gray-400);padding:20px;font-size:12.5px">Nenhum professor cadastrado ainda.</div>';return}
+  const cores={EFETIVO:'#0f766e',CONTRATADO:'#d97706',TEMPORÁRIO:'#9333ea',CEDIDO:'#2563eb','OUTRO':'#94a3b8'};
+  const slices=Object.entries(counts).filter(([,v])=>v>0).map(([k,v])=>({label:k,value:v,color:cores[k]}));
+  el.innerHTML=svgDonut(slices,{});
+}
+
+function renderGrafDocs(){
+  const el=document.getElementById('graf-docs');
+  if(!el)return;
+  const data=ESCOLAS.map(e=>{
+    const pct=Math.round(docsCount(e.inep)/6*100);
+    const color=pct===100?'#16a34a':pct>=66?'#d97706':'#dc2626';
+    return{label:e.nome.substring(0,22)+(e.nome.length>22?'…':''),value:pct,color,maxVal:100};
+  }).sort((a,b)=>b.value-a.value);
+  el.innerHTML=svgBar(data,{width:380,labelW:150,barH:18,gap:6,maxVal:100,suffix:'%'});
+}
+
+function renderGrafHab(){
+  const el=document.getElementById('graf-hab');
+  if(!el)return;
+  let sim=0,nao=0,semForm=0;
+  ESCOLAS.forEach(e=>{
+    (profsCache[e.inep]||[]).forEach(p=>{
+      const forms=p.formacoes||[];
+      if(!forms.length){semForm++;return}
+      forms.some(f=>f.parecer==='NÃO HABILITADO')?nao++:sim++;
+    });
+  });
+  const total=sim+nao+semForm||1;
+  if(sim+nao+semForm===0){el.innerHTML='<div style="text-align:center;color:var(--gray-400);padding:20px;font-size:12.5px">Nenhum professor cadastrado.</div>';return}
+  const slices=[
+    {label:'Habilitados',value:sim,color:'#16a34a'},
+    {label:'Não Habilitados',value:nao,color:'#dc2626'},
+    {label:'Sem Formação',value:semForm,color:'#94a3b8'},
+  ].filter(s=>s.value>0);
+  el.innerHTML=svgDonut(slices,{});
+}
+
+function renderGrafValidade(){
+  const el=document.getElementById('graf-validade');
+  if(!el)return;
+  const grupos={'2026':0,'2027':0,'2028':0,'2029+':0,'Indefinido':0};
+  ESCOLAS.forEach(e=>{
+    const v=e.validade||'—';
+    if(v.includes('2026'))grupos['2026']++;
+    else if(v.includes('2027'))grupos['2027']++;
+    else if(v.includes('2028'))grupos['2028']++;
+    else if(v==='—'||!v)grupos['Indefinido']++;
+    else grupos['2029+']++;
+  });
+  const cores={'2026':'#dc2626','2027':'#d97706','2028':'#0f766e','2029+':'#2563eb','Indefinido':'#94a3b8'};
+  const data=Object.entries(grupos).filter(([,v])=>v>0).map(([k,v])=>({label:'Vence em '+k,value:v,color:cores[k]}));
+  const maxV=Math.max(...data.map(d=>d.value),1);
+  el.innerHTML=svgBar(data,{width:380,labelW:140,barH:22,gap:8,maxVal:maxV,suffix:' escola(s)'});
+}
+
+// ── SOLICITAÇÕES / NOTIFICAÇÕES ────────────────────────────────────
+async function carregarNotificacoes(){
+  const tbody=document.getElementById('tbody-notif');
+  if(!tbody)return;
+  tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>';
+  try{
+    const snap=await db.collection('notificacoes').get();
+    const notifs=snap.docs.map(d=>({id:d.id,...d.data()}));
+    notifs.sort((a,b)=>(b.criadoEm||'').localeCompare(a.criadoEm||''));
+    if(!notifs.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-400)">Nenhum comunicado enviado ainda.</td></tr>';return}
+    const tipoIcon={'urgente':'🔴','atencao':'🟡','info':'🔵','sucesso':'✅'};
+    const destNome=(d)=>d==='todas'?'📢 Todas':ESCOLAS.find(e=>e.inep===d)?.nome?.substring(0,20)||d;
+    tbody.innerHTML=notifs.map(n=>`<tr>
+      <td style="font-size:12px">${destNome(n.destinatario)}</td>
+      <td style="font-weight:600;font-size:12.5px">${n.titulo||'—'}</td>
+      <td><span class="badge badge-${n.tipo==='urgente'?'red':n.tipo==='atencao'?'amber':n.tipo==='sucesso'?'green':'blue'}">${tipoIcon[n.tipo]||'📌'} ${n.tipo||'info'}</span></td>
+      <td style="font-size:12px">${n.prazo||'—'}</td>
+      <td style="font-size:12px;color:var(--gray-500)">${n.criadoEm?new Date(n.criadoEm).toLocaleString('pt-BR'):'—'}</td>
+      <td style="text-align:right">
+        <button class="btn btn-secondary btn-sm" onclick="excluirNotif('${n.id}')" style="color:var(--red)">🗑️</button>
+      </td>
+    </tr>`).join('');
+  }catch(e){
+    tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--red)">❌ Erro: ${e.message}</td></tr>`;
+    console.error(e);
+  }
+}
+
+async function enviarNotificacao(){
+  const titulo=document.getElementById('not-titulo')?.value?.trim();
+  const dest=document.getElementById('not-dest')?.value;
+  const tipo=document.getElementById('not-tipo')?.value||'info';
+  const msg=document.getElementById('not-msg')?.value?.trim();
+  const prazo=document.getElementById('not-prazo')?.value?.trim();
+  if(!titulo||!msg){adminToast('⚠️ Preencha título e mensagem.');return}
+  try{
+    await db.collection('notificacoes').add({
+      titulo,destinatario:dest,tipo,mensagem:msg,prazo:prazo||'',
+      criadoPor:adminUser,criadoEm:new Date().toISOString()
+    });
+    adminToast('✅ Comunicado enviado com sucesso!');
+    document.getElementById('not-titulo').value='';
+    document.getElementById('not-msg').value='';
+    document.getElementById('not-prazo').value='';
+    document.getElementById('not-dest').value='todas';
+    document.getElementById('not-tipo').value='info';
+    carregarNotificacoes();
+  }catch(e){adminToast('❌ Erro: '+e.message);console.error(e)}
+}
+
+async function excluirNotif(id){
+  if(!confirm('Excluir este comunicado?'))return;
+  try{
+    await db.collection('notificacoes').doc(id).delete();
+    adminToast('✅ Comunicado excluído.');
+    carregarNotificacoes();
+  }catch(e){adminToast('❌ Erro: '+e.message);console.error(e)}
+}
+
+function renderSolicitacoes(){
+  carregarNotificacoes();
+}
+
 // ── GLOBAL ERROR BOUNDARY ────────────────────────────────────────
 window.addEventListener('unhandledrejection',ev=>{
   const msg=ev.reason?.message||'Erro desconhecido';
@@ -551,6 +869,8 @@ function navAdmin(view){
   else if(view==='habilitacao')renderHabilitacao();
   else if(view==='infraestrutura')renderInfra();
   else if(view==='relatorio')renderRelatorio();
+  else if(view==='graficos')renderGraficos();
+  else if(view==='solicitacoes')renderSolicitacoes();
 }
 
 // ── CARGA DE DADOS ────────────────────────────────────────────────
@@ -753,6 +1073,15 @@ function renderPendencias(){
 }
 
 // ── HABILITAÇÃO ─────────────────────────────────────────────────────────
+
+function toggleHabRow(inep){
+  const row=document.getElementById('hab-expand-'+inep);
+  const btn=document.querySelector('#hab-row-'+inep+' button');
+  if(!row||!btn)return;
+  const vis=row.style.display!=='none';
+  row.style.display=vis?'none':'table-row';
+  btn.textContent=vis?'⌄':'⌃';
+}
 function renderHabilitacao(){
   // ---- KPIs globais ----
   let habSim=0,habNao=0,totProfs=0,totQASim=0,totQANao=0;
@@ -796,13 +1125,44 @@ function renderHabilitacao(){
       else nao++;
     });
     const taxa=sim+nao>0?Math.round(sim/(sim+nao)*100)+'%':'—';
-    return `<tr>
-      <td style="font-weight:600;font-size:12px">${e.nome.substring(0,32)}</td>
+    const profRows2=profs.map(p=>{
+      const pforms=p.formacoes||[];
+      const pNao=pforms.some(f=>f.parecer==='NÃO HABILITADO');
+      const pSim=pforms.some(f=>f.parecer==='HABILITADO');
+      let pHab,pColor;
+      if(!pforms.length){pHab='Sem formação';pColor='color:#94a3b8'}
+      else if(pSim&&!pNao){pHab='✅ Habilitado';pColor='color:var(--green)'}
+      else{pHab='❌ Não Habilitado';pColor='color:var(--red)'}
+      return `<tr style="background:#f8fafc">
+        <td style="padding:6px 12px 6px 32px;font-size:12px">${p.nome||'—'}</td>
+        <td style="padding:6px 12px;font-size:12px;color:#64748b">${p.vinculo||'—'} / ${p.funcao||'—'}</td>
+        <td colspan="2" style="padding:6px 12px;font-size:12px;${pColor};font-weight:600">${pHab}</td>
+        <td style="padding:6px 12px;font-size:11px;color:#94a3b8">${pforms.map(f=>f.tipo+': '+f.curso.substring(0,20)).join(' | ')||'—'}</td>
+      </tr>`;
+    }).join('');
+    return `<tr id="hab-row-${e.inep}">
+      <td>
+        <button onclick="toggleHabRow('${e.inep}')" style="border:none;background:none;cursor:pointer;font-size:13px;padding:2px 4px" title="Expandir professores">⌄</button>
+        <span style="font-weight:600;font-size:12px">${e.nome.substring(0,30)}</span>
+      </td>
       <td>${total||'—'}</td>
       <td style="color:var(--green)">${sim||'—'}</td>
       <td style="color:var(--red)">${nao||'—'}</td>
       <td><span class="badge ${sim+nao>0?(sim/(sim+nao))>=.8?'badge-green':'badge-amber':'badge-gray'}">${taxa}</span></td>
-    </tr>`;
+    </tr>
+    ${total>0?`<tr id="hab-expand-${e.inep}" style="display:none">
+      <td colspan="5" style="padding:0;border-bottom:2px solid var(--teal-pale,#ccfbf1)">
+        <table style="width:100%;border-collapse:collapse;background:#f8fafc">
+          <thead><tr>
+            <th style="padding:6px 12px 6px 32px;font-size:10.5px;color:#64748b;text-align:left">PROFESSOR(A)</th>
+            <th style="padding:6px 12px;font-size:10.5px;color:#64748b;text-align:left">VÍNCULO / FUNÇÃO</th>
+            <th colspan="2" style="padding:6px 12px;font-size:10.5px;color:#64748b;text-align:left">HABILITAÇÃO</th>
+            <th style="padding:6px 12px;font-size:10.5px;color:#64748b;text-align:left">FORMAÇÕES</th>
+          </tr></thead>
+          <tbody>${profRows2}</tbody>
+        </table>
+      </td>
+    </tr>`:''}`;
   }).join('');
   document.getElementById('tbody-hab').innerHTML=rows;
 
@@ -989,7 +1349,7 @@ async function confirmarStatus(){
 }
 
 function fecharModal(){document.getElementById('modal-bloqueio').classList.remove('show');modalInep=null;}
-async function confirmarBloqueio(){/* legacy — usar modal-status */fecharModal();}
+async function confirmarBloqueio(){try{fecharModal();}catch(e){console.error(e)}}
 
 // ── TOAST ─────────────────────────────────────────────────────────
 function adminToast(msg){const t=document.getElementById('adminToast');t.textContent=msg;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',4000);}
