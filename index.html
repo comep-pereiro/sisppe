@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>SISPPe — Portal da Escola</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
@@ -358,6 +359,8 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
    <button class="sbi" id="n-qa" onclick="nav('qa')"><span class="ic">👥</span> Quadro Administrativo</button>
    <div class="sb-sec">Processo</div>
    <button class="sbi" id="n-docs" onclick="nav('docs')"><span class="ic">📁</span> Documentos de Gestão</button>
+   <button class="sbi" id="n-escrit" onclick="nav('escrit')"><span class="ic">📝</span> Escrituração Escolar</button>
+   <button class="sbi" id="n-notif" onclick="nav('notif')"><span class="ic">🔔</span> Notificações <span id="notif-badge" style="display:none;background:var(--r500);color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:4px">0</span></button>
   </nav>
   <div class="sb-logout" onclick="doLogout()">🚪 <span>Sair do Portal</span></div>
  </aside>
@@ -399,7 +402,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
 
   <!-- FICHA ESCOLAR -->
   <div id="v-ficha" class="view">
-   <div class="ph"><div><div class="ph-t">Ficha Escolar</div><div class="ph-s">Dados da Instituição</div></div><div class="ph-acts"><button class="btn bt" id="btn-sfic" onclick="salvarFicha()">💾 Salvar Alterações</button></div></div>
+   <div class="ph"><div><div class="ph-t">Ficha Escolar</div><div class="ph-s">Dados da Instituição</div></div><div class="ph-acts"><button class="btn bo bsm" onclick="gerarPDF()" id="btn-pdf">📄 Exportar PDF</button><button class="btn bt" id="btn-sfic" onclick="salvarFicha()">💾 Salvar Alterações</button></div></div>
    <div style="padding:24px">
     <div class="tnav">
      <button class="tbtn on" onclick="st('fic','ide',this)">🏛️ Identificação</button>
@@ -588,6 +591,132 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
     </div>
    </div>
   </div>
+
+  <!-- ESCRITURAÇÃO ESCOLAR -->
+  <div id="v-escrit" class="view">
+   <div class="ph">
+    <div><div class="ph-t">Escrituração Escolar</div><div class="ph-s">Instrumentos de gestão, biblioteca e informações complementares</div></div>
+    <div class="ph-acts"><button class="btn bt" id="btn-sescrit" onclick="salvarEscrit()">💾 Salvar</button></div>
+   </div>
+   <div style="padding:24px">
+    <div class="tnav">
+     <button class="tbtn on" onclick="st('es','inst',this)">📋 Instrumentos</button>
+     <button class="tbtn" onclick="st('es','bib',this)">📚 Biblioteca</button>
+     <button class="tbtn" onclick="st('es','turn',this)">⏰ Turnos e Matrículas</button>
+     <button class="tbtn" onclick="st('es','obs',this)">📝 Observações</button>
+    </div>
+
+    <!-- Instrumentos de Gestão -->
+    <div class="tpane on" id="es-t-inst">
+     <div class="card" style="margin-bottom:16px">
+      <div class="ch"><span class="ct">Instrumentos de Gestão</span><span class="cs">Informe a existência e situação de cada instrumento</span></div>
+      <div class="cb" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+       <div class="tog-row"><label for="ei-ppp">Projeto Político Pedagógico (PPP)</label><label class="tog"><input type="checkbox" id="ei-ppp"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="ei-reg">Regimento Escolar</label><label class="tog"><input type="checkbox" id="ei-reg"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="ei-cons">Conselho Escolar Ativo</label><label class="tog"><input type="checkbox" id="ei-cons"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="ei-cal">Calendário Escolar Aprovado</label><label class="tog"><input type="checkbox" id="ei-cal"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="ei-plano">Plano de Ação / PDDE</label><label class="tog"><input type="checkbox" id="ei-plano"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="ei-prop">Proposta Curricular Atualizada</label><label class="tog"><input type="checkbox" id="ei-prop"><div class="tog-track"></div></label></div>
+      </div>
+     </div>
+     <div class="card">
+      <div class="ch"><span class="ct">Sistema de Escrituração</span></div>
+      <div class="cb">
+       <div class="gf">
+        <div class="fg"><label>Sistema Utilizado</label>
+         <select id="ei-sistema">
+          <option value="">Selecione...</option>
+          <option>SIGE — Sistema de Informações para Gestão Escolar</option>
+          <option>SIGPAE</option>
+          <option>Sistema próprio da SME</option>
+          <option>Planilha eletrônica (Excel/Sheets)</option>
+          <option>Manual (livros/fichas físicas)</option>
+          <option>Nenhum</option>
+         </select>
+        </div>
+        <div class="fg"><label>Responsável pela Escrituração</label><input id="ei-resp" placeholder="Nome do(a) responsável"></div>
+       </div>
+      </div>
+     </div>
+    </div>
+
+    <!-- Biblioteca -->
+    <div class="tpane" id="es-t-bib">
+     <div class="card" style="margin-bottom:16px">
+      <div class="ch"><span class="ct">Acervo Bibliográfico</span><span class="cs">Informe o acervo por etapa de ensino</span></div>
+      <div class="cb">
+       <div class="tw"><table class="tbl">
+        <thead><tr><th>Etapa</th><th>Qtd. Títulos</th><th>Qtd. Exemplares</th><th>Periódicos</th><th>Situação do Acervo</th></tr></thead>
+        <tbody>
+         <tr><td style="font-weight:600">Educação Infantil</td><td><input type="number" id="bib-ei-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ei-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ei-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-ei-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
+         <tr><td style="font-weight:600">Anos Iniciais</td><td><input type="number" id="bib-ai-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ai-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ai-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-ai-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
+         <tr><td style="font-weight:600">Anos Finais</td><td><input type="number" id="bib-af-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-af-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-af-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-af-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
+         <tr><td style="font-weight:600">EJA</td><td><input type="number" id="bib-eja-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-eja-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-eja-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-eja-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
+        </tbody>
+       </table></div>
+      </div>
+     </div>
+    </div>
+
+    <!-- Turnos e Matrículas -->
+    <div class="tpane" id="es-t-turn">
+     <div class="card" style="margin-bottom:16px">
+      <div class="ch"><span class="ct">Turnos de Funcionamento</span></div>
+      <div class="cb" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+       <div class="tog-row"><label for="et-manha">Manhã</label><label class="tog"><input type="checkbox" id="et-manha"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="et-tarde">Tarde</label><label class="tog"><input type="checkbox" id="et-tarde"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="et-noite">Noite</label><label class="tog"><input type="checkbox" id="et-noite"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="et-integral">Integral</label><label class="tog"><input type="checkbox" id="et-integral"><div class="tog-track"></div></label></div>
+      </div>
+     </div>
+     <div class="card">
+      <div class="ch"><span class="ct">Matrículas por Etapa e Modalidade</span></div>
+      <div class="cb">
+       <div class="tw"><table class="tbl">
+        <thead><tr><th>Etapa / Modalidade</th><th>Matrículas Totais</th><th>Turmas</th></tr></thead>
+        <tbody>
+         <tr><td style="font-weight:600">Creche (0–3 anos)</td><td><input type="number" id="mt-creche" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-creche-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
+         <tr><td style="font-weight:600">Pré-escola (4–5 anos)</td><td><input type="number" id="mt-pre" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-pre-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
+         <tr><td style="font-weight:600">Ensino Fund. – Anos Iniciais</td><td><input type="number" id="mt-ai" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-ai-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
+         <tr><td style="font-weight:600">Ensino Fund. – Anos Finais</td><td><input type="number" id="mt-af" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-af-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
+         <tr><td style="font-weight:600">EJA</td><td><input type="number" id="mt-eja" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-eja-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
+        </tbody>
+       </table></div>
+      </div>
+     </div>
+    </div>
+
+    <!-- Observações -->
+    <div class="tpane" id="es-t-obs">
+     <div class="card">
+      <div class="ch"><span class="ct">Observações Gerais</span><span class="cs">Informações adicionais relevantes para o processo de credenciamento</span></div>
+      <div class="cb">
+       <div class="fg"><label>Observações da Escola</label><textarea id="es-obs" rows="6" placeholder="Descreva informações adicionais, situações especiais, necessidades ou qualquer observação relevante para o COMEP..."></textarea></div>
+       <div class="fg" style="margin-top:14px"><label>Funcionários Administrativos</label>
+        <div class="info-box" style="margin-bottom:12px">Liste os funcionários de apoio (zeladores, merendeiros, porteiros, etc.) que não são professores.</div>
+        <div id="func-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px"></div>
+        <button class="btn bo bsm" onclick="addFuncForm()">+ Adicionar Funcionário</button>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <!-- NOTIFICAÇÕES DO COMEP -->
+  <div id="v-notif" class="view">
+   <div class="ph">
+    <div><div class="ph-t">🔔 Notificações do COMEP</div><div class="ph-s">Comunicados, alertas e solicitações do Conselho Municipal de Educação</div></div>
+    <div class="ph-acts"><button class="btn bo bsm" onclick="loadNotif()">🔄 Atualizar</button></div>
+   </div>
+   <div style="padding:24px">
+    <div id="notif-empty" class="card">
+     <div class="cb"><div class="empty"><div class="empty-ic">🔔</div><div class="empty-t">Nenhuma notificação</div><div class="empty-s">O COMEP não enviou comunicados para esta escola ainda.</div></div></div>
+    </div>
+    <div id="notif-list" style="display:flex;flex-direction:column;gap:14px"></div>
+   </div>
+  </div>
+
 
  </main>
 </div>
@@ -856,6 +985,34 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
  </div>
 </div>
 
+<!-- ══════════════ MODAL FUNCIONÁRIO ══════════════ -->
+<div class="mover" id="m-func" onclick="closeMOver(event,this)">
+ <div class="mbox msm">
+  <div class="mh">
+   <div><div class="mt">Funcionário Administrativo</div><div class="ms">Servidor de apoio (não docente)</div></div>
+   <button class="mc" onclick="closeM('m-func')">✕</button>
+  </div>
+  <div class="mb">
+   <div class="gf">
+    <div class="fg s2"><label>Nome Completo *</label><input id="fn-nome" placeholder="Nome completo"></div>
+    <div class="fg s2"><label>Função *</label>
+     <select id="fn-func">
+      <option value="">Selecione...</option>
+      <option>ZELADOR(A)</option><option>MERENDEIRO(A)</option><option>PORTEIRO(A)</option>
+      <option>AUXILIAR DE SERVIÇOS GERAIS</option><option>VIGIA</option>
+      <option>AUXILIAR ADMINISTRATIVO</option><option>MONITOR(A)</option><option>OUTRO</option>
+     </select>
+    </div>
+    <div class="fg s2"><label>Formação</label><input id="fn-form" placeholder="Ex: Ensino Médio Completo"></div>
+   </div>
+  </div>
+  <div class="mf">
+   <button class="btn bo" onclick="closeM('m-func')">Cancelar</button>
+   <button class="btn bt" onclick="addFunc()">✅ Adicionar</button>
+  </div>
+ </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -984,12 +1141,12 @@ async function doLogin(){
   else{st.className='sb-status err';st.textContent='⚠️ Pendente de Regularização';st.style.display='block'}
 
   // Disable edit buttons if blocked
-  ['btn-sfic','btn-nprof','btn-nqa','btn-ndep','btn-nmob','btn-ndoc','btn-sprof','btn-udoc'].forEach(id=>{
+  ['btn-sfic','btn-nprof','btn-nqa','btn-ndep','btn-nmob','btn-ndoc','btn-sprof','btn-udoc','btn-sescrit','btn-pdf'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.disabled=BLQ
   })
 
   document.getElementById('pg-login').classList.add('out');
-  setTimeout(()=>{document.getElementById('pg-app').classList.add('on');nav('dash')},360)
+  setTimeout(()=>{document.getElementById('pg-app').classList.add('on');nav('dash');loadNotifBadge()},360)
 }
 function doLogout(){
   U=null;BLQ=false;SIT='ativa';PROFS=[];QAS=[];DEPS=[];MOBS=[];
@@ -1000,6 +1157,7 @@ function doLogout(){
   document.getElementById('sb-st').style.display='none';
   document.getElementById('bann-bloq').style.display='none';
   document.getElementById('bann-anal').style.display='none';
+  const nb=document.getElementById('notif-badge');if(nb)nb.style.display='none';
 }
 
 /* ═══════════════════════════════════════════
@@ -1018,6 +1176,8 @@ function nav(v){
   else if(v==='prof')loadProf();
   else if(v==='qa')loadQA();
   else if(v==='docs')loadDocs();
+  else if(v==='escrit')loadEscrit();
+  else if(v==='notif')loadNotif();
 }
 function st(pfx,tab,btn){
   const cont=btn.closest('.mover')||btn.closest('.view');
@@ -1670,6 +1830,310 @@ function solicitarAcesso(){
     'Atenciosamente,\n[Seu nome e cargo]'
   );
   window.location.href='mailto:protocolo.comep@pereiro.ce.gov.br?subject='+sub+'&body='+body;
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   ESCRITURAÇÃO ESCOLAR
+═══════════════════════════════════════════════════════ */
+let FUNCS=[]; // funcionários admin em memória
+
+async function loadEscrit(){
+  if(!U){toast('Sessão expirada.','err');return}
+  try{
+    const snap=await db.collection('escolas').doc(U.inep).get();
+    if(snap.exists){
+      const d=snap.data().escrituracao||{};
+      const ci=['ei-ppp','ei-reg','ei-cons','ei-cal','ei-plano','ei-prop','et-manha','et-tarde','et-noite','et-integral'];
+      ci.forEach(id=>{const el=document.getElementById(id);if(el)el.checked=!!d[id]});
+      s('ei-sistema',d.sistema_escrituracao);s('ei-resp',d.responsavel_escrituracao);
+      // biblioteca
+      const bib=d.biblioteca||{};
+      const bfields=['ei','ai','af','eja'];
+      bfields.forEach(et=>{
+        ['tit','ex','per','sit'].forEach(f=>{s(`bib-${et}-${f}`,bib[`${et}_${f}`])});
+      });
+      // turnos/matrículas
+      const mat=d.matriculas||{};
+      ['creche','pre','ai','af','eja'].forEach(et=>{
+        s(`mt-${et}`,mat[`${et}`]);s(`mt-${et}-t`,mat[`${et}_turmas`]);
+      });
+      s('es-obs',d.observacoes);
+      FUNCS=d.funcionarios_admin||[];
+      rFuncList();
+    }
+  }catch(e){toast('Erro ao carregar escrituração.','err');console.error(e)}
+}
+
+async function salvarEscrit(){
+  if(!U){toast('Sessão expirada.','err');return}
+  if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
+  const ci=['ei-ppp','ei-reg','ei-cons','ei-cal','ei-plano','ei-prop','et-manha','et-tarde','et-noite','et-integral'];
+  const boolData={};
+  ci.forEach(id=>{const el=document.getElementById(id);if(el)boolData[id]=el.checked});
+  const bib={};
+  ['ei','ai','af','eja'].forEach(et=>{
+    ['tit','ex','per','sit'].forEach(f=>{bib[`${et}_${f}`]=g(`bib-${et}-${f}`)||0});
+    bib[`${et}_sit`]=g(`bib-${et}-sit`);
+  });
+  const mat={};
+  ['creche','pre','ai','af','eja'].forEach(et=>{
+    mat[et]=gn(`mt-${et}`);mat[`${et}_turmas`]=gn(`mt-${et}-t`);
+  });
+  const data={...boolData,sistema_escrituracao:g('ei-sistema'),responsavel_escrituracao:g('ei-resp'),
+    biblioteca:bib,matriculas:mat,observacoes:g('es-obs'),funcionarios_admin:FUNCS};
+  const btn=document.getElementById('btn-sescrit');
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span> Salvando...';
+  try{
+    await db.collection('escolas').doc(U.inep).set({escrituracao:data,atualizadoPor:U.cpf,atualizadoEm:new Date().toISOString()},{merge:true});
+    toast('✅ Escrituração salva!','ok');clearDirty();
+  }catch(e){toast('❌ Erro: '+e.message,'err');console.error(e)}
+  finally{btn.disabled=BLQ;btn.innerHTML='💾 Salvar'}
+}
+
+function addFuncForm(){
+  if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
+  s('fn-nome','');s('fn-func','');s('fn-form','');
+  document.getElementById('m-func').classList.add('on');
+}
+function addFunc(){
+  const nome=g('fn-nome').trim();const func=g('fn-func');
+  if(!nome||!func){toast('Preencha nome e função.','err');return}
+  FUNCS.push({nome,funcao:func,formacao:g('fn-form').trim()});
+  closeM('m-func');rFuncList();toast('Funcionário adicionado.','ok');
+}
+function remFunc(i){FUNCS.splice(i,1);rFuncList()}
+function rFuncList(){
+  const el=document.getElementById('func-list');
+  if(!el)return;
+  if(!FUNCS.length){el.innerHTML='<div style="font-size:12.5px;color:var(--s400);padding:4px">Nenhum funcionário cadastrado.</div>';return}
+  el.innerHTML=FUNCS.map((f,i)=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--s50);border:1px solid var(--s200);border-radius:var(--rs)">
+      <div>
+        <span style="font-size:13px;font-weight:600">${f.nome}</span>
+        <span class="bdg bb" style="margin-left:8px">${f.funcao}</span>
+        ${f.formacao?`<span style="font-size:12px;color:var(--s500);margin-left:8px">${f.formacao}</span>`:''}
+      </div>
+      <button class="btn bg bxs" style="color:var(--r600)" onclick="remFunc(${i})">🗑️</button>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════════════════════════════
+   NOTIFICAÇÕES DO COMEP
+═══════════════════════════════════════════════════════ */
+
+async function loadNotifBadge(){
+  if(!U)return;
+  try{
+    const [g,e]=await Promise.all([
+      db.collection('notificacoes').where('destinatario','==','todas').get(),
+      db.collection('notificacoes').where('destinatario','==',U.inep).get()
+    ]);
+    const total=g.size+e.size;
+    const badge=document.getElementById('notif-badge');
+    if(badge){badge.textContent=total;badge.style.display=total>0?'inline-block':'none'}
+  }catch(e){console.warn('Badge load:',e)}
+}
+async function loadNotif(){
+  if(!U){toast('Sessão expirada.','err');return}
+  const listEl=document.getElementById('notif-list');
+  const emptyEl=document.getElementById('notif-empty');
+  if(!listEl||!emptyEl)return;
+  listEl.innerHTML='';
+  try{
+    // Notificações globais (para todas as escolas)
+    const [globalSnap,escolaSnap]=await Promise.all([
+      db.collection('notificacoes').where('destinatario','==','todas').get(),
+      db.collection('notificacoes').where('destinatario','==',U.inep).get()
+    ]);
+    const notifs=[];
+    globalSnap.forEach(d=>notifs.push({id:d.id,...d.data()}));
+    escolaSnap.forEach(d=>notifs.push({id:d.id,...d.data()}));
+    notifs.sort((a,b)=>(b.criadoEm||'').localeCompare(a.criadoEm||''));
+
+    if(!notifs.length){emptyEl.style.display='block';listEl.innerHTML='';return}
+    emptyEl.style.display='none';
+    const tipoIcon={'urgente':'🔴','atencao':'🟡','info':'🔵','sucesso':'✅'};
+    const tipoClass={'urgente':'br','atencao':'ba','info':'bb','sucesso':'bgn'};
+    listEl.innerHTML=notifs.map(n=>{
+      const dt=n.criadoEm?new Date(n.criadoEm).toLocaleString('pt-BR'):'—';
+      const ic=tipoIcon[n.tipo]||'📌';
+      const cl=tipoClass[n.tipo]||'bsl';
+      return `<div class="card">
+        <div class="cb" style="padding:16px 20px">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                <span style="font-size:16px">${ic}</span>
+                <span style="font-family:'Manrope',sans-serif;font-size:14px;font-weight:700;color:var(--s900)">${n.titulo||'Comunicado'}</span>
+                <span class="bdg ${cl}">${n.tipo||'info'}</span>
+              </div>
+              <p style="font-size:13px;color:var(--s600);line-height:1.6">${n.mensagem||''}</p>
+              ${n.prazo?`<div style="margin-top:8px;font-size:12px;color:var(--r600);font-weight:600">⏰ Prazo: ${n.prazo}</div>`:''}
+            </div>
+            <div style="font-size:11.5px;color:var(--s400);white-space:nowrap">${dt}</div>
+          </div>
+        </div>
+       </div>`;
+    }).join('');
+    // Update badge
+    const badge=document.getElementById('notif-badge');
+    if(badge){badge.textContent=notifs.length;badge.style.display=notifs.length?'inline-block':'none'}
+  }catch(e){
+    listEl.innerHTML='<div class="card"><div class="cb empty"><div class="empty-ic">❌</div><div class="empty-t">Erro ao carregar notificações</div><div class="empty-s">'+e.message+'</div></div></div>';
+    console.error(e);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   EXPORTAR PDF — FICHA DA ESCOLA
+═══════════════════════════════════════════════════════ */
+async function gerarPDF(){
+  if(!U){toast('Faça login primeiro.','err');return}
+  const btn=document.getElementById('btn-pdf');
+  btn.disabled=true;btn.innerHTML='⏳ Gerando...';
+  try{
+    const {jsPDF}=window.jspdf;
+    const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const W=210,M=15,CW=W-M*2;
+    let y=M;
+
+    // Cores
+    const teal=[15,118,110],slate=[51,65,85],light=[241,245,249],white=[255,255,255];
+    const gray=[100,116,139],dark=[15,23,42];
+
+    // Cabeçalho
+    doc.setFillColor(...teal);
+    doc.rect(0,0,W,38,'F');
+    doc.setTextColor(...white);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(16);
+    doc.text('SISPPe — Ficha da Escola',M,17);
+    doc.setFontSize(9);
+    doc.setFont('helvetica','normal');
+    doc.text('COMEP — Conselho Municipal de Educação de Pereiro/CE',M,24);
+    doc.text('Emitido em: '+new Date().toLocaleString('pt-BR'),M,30);
+    doc.text('Parecer: '+U.par+' | Validade: '+U.val,W-M,30,{align:'right'});
+    y=46;
+
+    // Função auxiliar: linha campo/valor
+    const campo=(label,val,x,yy,w)=>{
+      doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(...gray);
+      doc.text(label.toUpperCase(),x,yy);
+      doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(...dark);
+      doc.text(String(val||'—'),x,yy+4.5);
+      return yy+11;
+    };
+
+    // Função seção
+    const secao=(titulo,yy)=>{
+      doc.setFillColor(...light);doc.rect(M,yy,CW,7,'F');
+      doc.setFillColor(...teal);doc.rect(M,yy,2,7,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...teal);
+      doc.text(titulo,M+5,yy+4.8);
+      return yy+12;
+    };
+
+    const newPage=()=>{doc.addPage();y=M;};
+    const checkPage=(need=20)=>{if(y+need>285){newPage()}};
+
+    // ── Identificação ──
+    y=secao('1. IDENTIFICAÇÃO DA INSTITUIÇÃO',y);
+    y=campo('Nome da Escola',U.nome,M,y,CW);checkPage();
+    y=campo('Código INEP / Censo',g('f-inep')||U.inep,M,y,CW);checkPage();
+
+    const row2=(l1,v1,l2,v2,yy)=>{
+      campo(l1,v1,M,yy,CW/2);
+      campo(l2,v2,M+CW/2,yy,CW/2);
+      return yy+11;
+    };
+    checkPage(12);y=row2('CNPJ',g('f-cnpj'),'Nº Ato de Criação',g('f-ato'),y);
+    checkPage(12);y=row2('Data do Ato de Criação',g('f-dato')||'—','Tipo de Escola',g('f-tesc'),y);
+    checkPage(12);y=campo('Escola(s) Nucleada(s)',g('f-nuc')||'Não há',M,y,CW);
+
+    // ── Endereço ──
+    checkPage(25);y=secao('2. ENDEREÇO',y);
+    checkPage(12);y=campo('Logradouro',g('f-log'),M,y,CW);
+    checkPage(12);y=row2('Número',g('f-num'),'Bairro / Localidade',g('f-bai'),y);
+    checkPage(12);y=row2('Município',g('f-mun'),'Estado',g('f-est'),y);
+    checkPage(12);y=row2('CEP',g('f-cep'),'CREDE',g('f-cre'),y);
+
+    // ── Contato ──
+    checkPage(25);y=secao('3. CONTATO',y);
+    checkPage(12);y=row2('Telefone',g('f-tel'),'E-mail',g('f-email'),y);
+
+    // ── Características ──
+    checkPage(25);y=secao('4. CARACTERÍSTICAS FÍSICAS',y);
+    checkPage(12);y=row2('Área Total (m²)',g('f-area'),'Dias Letivos',g('f-dl'),y);
+    checkPage(12);y=row2('Carga Horária Semanal',g('f-ch')+'h','Acesso à Internet',g('f-int'),y);
+    checkPage(12);y=row2('Matrículas',g('f-mat'),'Salas de Aula',g('f-sal'),y);
+
+    // Toggles
+    const togVal=(id)=>document.getElementById(id)?.checked?'SIM':'NÃO';
+    checkPage(12);
+    const togsLabel='Zona Rural: '+togVal('t-rur')+' | Escrit. Inform.: '+togVal('t-escr')+' | Assentamento: '+togVal('t-ass')+' | Quilombola: '+togVal('t-qui')+' | Indígena: '+togVal('t-ind');
+    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...slate);
+    doc.text(togsLabel,M,y);y+=9;
+
+    // ── Professores ──
+    if(PROFS.length){
+      checkPage(25);y=secao(`5. CORPO DOCENTE (${PROFS.length} professores)`,y);
+      PROFS.forEach((p,i)=>{
+        checkPage(22);
+        if(i>0){doc.setDrawColor(...light);doc.line(M,y,M+CW,y);y+=4;}
+        const forms=p.formacoes||[];
+        const temNao=forms.some(f=>f.parecer==='NÃO HABILITADO');
+        const habStatus=forms.length===0?'Sem formação':temNao?'NÃO HABILITADO':'HABILITADO';
+        y=row2(`${i+1}. ${p.nome}`,p.cpf||'—','Vínculo / Função',(p.vinculo||'—')+' / '+(p.funcao||'—'),y);
+        doc.setFontSize(7.5);doc.setFont('helvetica','normal');
+        doc.setTextColor(habStatus==='HABILITADO'?16:habStatus==='NÃO HABILITADO'?220:100,
+                         habStatus==='HABILITADO'?163:habStatus==='NÃO HABILITADO'?38:116,
+                         habStatus==='HABILITADO'?74:habStatus==='NÃO HABILITADO'?38:139);
+        doc.text('Habilitação: '+habStatus,M,y-2);
+        doc.setTextColor(...dark);
+        if(forms.length){
+          const formStr=forms.map(f=>f.tipo+': '+f.curso+(f.instituicao?' — '+f.instituicao:'')).join(' | ');
+          doc.setFontSize(7);doc.setTextColor(...gray);
+          const lines=doc.splitTextToSize(formStr,CW);
+          doc.text(lines,M,y+2);y+=lines.length*4;
+        }
+        y+=3;
+      });
+    }
+
+    // ── Quadro Administrativo ──
+    if(QAS.length){
+      checkPage(25);y=secao(`6. QUADRO ADMINISTRATIVO (${QAS.length} membros)`,y);
+      QAS.forEach((m,i)=>{
+        checkPage(14);
+        y=row2((m.cargo||'Membro')+': '+m.nome,m.cpf||'—','Formação',m.formacao||'—',y);
+        doc.setFontSize(7);doc.setFont('helvetica','normal');
+        const habCol=m.habilitacao==='HABILITADO'?[16,163,74]:[220,38,38];
+        doc.setTextColor(...habCol);
+        doc.text('Habilitação: '+(m.habilitacao||'NÃO INFORMADO'),M,y-3);
+        doc.setTextColor(...dark);
+      });
+    }
+
+    // ── Rodapé ──
+    const totalPages=doc.internal.getNumberOfPages();
+    for(let i=1;i<=totalPages;i++){
+      doc.setPage(i);
+      doc.setFillColor(...light);doc.rect(0,287,W,10,'F');
+      doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(...gray);
+      doc.text('SISPPe — COMEP Pereiro/CE | '+U.nome,M,293);
+      doc.text(`Página ${i} de ${totalPages}`,W-M,293,{align:'right'});
+    }
+
+    const nomeArq='Ficha_Escola_'+U.inep+'_'+new Date().toISOString().slice(0,10)+'.pdf';
+    doc.save(nomeArq);
+    toast('✅ PDF gerado: '+nomeArq,'ok');
+  }catch(e){
+    toast('❌ Erro ao gerar PDF: '+e.message,'err');
+    console.error(e);
+  }finally{
+    btn.disabled=false;btn.innerHTML='📄 Exportar PDF';
+  }
 }
 
 // ── GLOBAL ERROR BOUNDARY ────────────────────────────────────────
