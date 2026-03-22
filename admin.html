@@ -96,6 +96,7 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size
 .badge-red{background:var(--red-pale);color:var(--red)}
 .badge-amber{background:var(--amber-pale);color:var(--amber)}
 .badge-blue{background:var(--blue-pale);color:var(--blue)}
+.badge-teal{background:#ccfbf1;color:#0f766e}
 .badge-gray{background:var(--gray-100);color:var(--gray-600)}
 
 /* ── BUTTONS ── */
@@ -299,28 +300,83 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size
 
     <!-- ── HABILITAÇÃO ── -->
     <div class="view" id="view-habilitacao">
-      <div class="page-title">🎓 Habilitação Docente</div>
-      <div class="page-sub">Compilação de professores e habilitações por escola — dados da Ficha Escolar.</div>
+      <div class="page-title">🎓 Habilitação Docente e Administrativa</div>
+      <div class="page-sub">Situação de habilitação de professores, diretores e secretários de todas as escolas municipais.</div>
+
+      <!-- KPIs -->
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">Resumo de Habilitações</span></div>
+        <div class="panel-header"><span class="panel-title">Resumo Geral — Professores</span></div>
         <div class="panel-body">
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
-            <div class="kpi" style="border-color:var(--green-pale)"><div class="kpi-label">Taxa Geral</div><div class="kpi-value" id="hab-taxa" style="color:var(--green)">—</div><div class="kpi-sub">professores habilitados</div></div>
-            <div class="kpi"><div class="kpi-label">Habilitados</div><div class="kpi-value" id="hab-sim" style="color:var(--green)">—</div></div>
-            <div class="kpi"><div class="kpi-label">Não Habilitados</div><div class="kpi-value" id="hab-nao" style="color:var(--red)">—</div></div>
+            <div class="kpi" style="border-color:var(--green-pale)"><div class="kpi-label">Taxa de Habilitação</div><div class="kpi-value" id="hab-taxa" style="color:var(--green)">—</div><div class="kpi-sub">professores habilitados</div></div>
+            <div class="kpi" style="border-color:var(--green-pale)"><div class="kpi-label">✅ Professores Habilitados</div><div class="kpi-value" id="hab-sim" style="color:var(--green)">—</div></div>
+            <div class="kpi" style="border-color:#fee2e2"><div class="kpi-label">❌ Não Habilitados</div><div class="kpi-value" id="hab-nao" style="color:var(--red)">—</div></div>
           </div>
-          <div style="margin-top:20px;font-size:12.5px;color:var(--gray-500)">
-            ℹ️ Os dados de habilitação dependem do preenchimento da Ficha da Escola pelas unidades escolares. Escolas sem professores cadastrados aparecerão como "sem dados".
+          <div style="margin-top:14px;padding:10px 14px;background:#fffbeb;border-left:4px solid #f59e0b;border-radius:0 6px 6px 0;font-size:12.5px;color:#78350f">
+            ℹ️ <strong>Fonte:</strong> Dados preenchidos pelas escolas no Portal SISPPe. Escolas que ainda não cadastraram professores não aparecem nas tabelas abaixo.
           </div>
         </div>
       </div>
+
+      <!-- Por Escola -->
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">Por Escola</span></div>
+        <div class="panel-header"><span class="panel-title">📊 Resumo por Escola</span></div>
         <div class="panel-body" style="padding:0">
           <table class="data-table">
-            <thead><tr><th>Escola</th><th>Total Profs.</th><th>Habilitados</th><th>Não Hab.</th><th>Taxa</th></tr></thead>
+            <thead><tr><th>Escola</th><th>Total Profs.</th><th style="color:var(--green)">✅ Habilitados</th><th style="color:var(--red)">❌ Não Hab.</th><th>Taxa</th></tr></thead>
             <tbody id="tbody-hab">
               <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Quadro Administrativo: Diretores e Secretários -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">👥 Quadro Administrativo — Habilitação por Pessoa</span>
+          <span style="font-size:12px;color:var(--gray-400)">Diretores, Secretários e Coordenadores</span>
+        </div>
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>INEP</th>
+                <th>Escola</th>
+                <th>Nome</th>
+                <th>Cargo</th>
+                <th>Formação</th>
+                <th>Habilitação</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-hab-qa">
+              <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Professores: detalhado por pessoa e disciplina -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">🎓 Professores — Habilitação por Pessoa e Disciplina</span>
+          <span style="font-size:12px;color:var(--gray-400)">Habilitação geral e por lotação em sala de aula</span>
+        </div>
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>INEP</th>
+                <th>Escola</th>
+                <th>Professor(a)</th>
+                <th>Vínculo</th>
+                <th>Função</th>
+                <th>Habilitação Geral</th>
+                <th>Lotações e Habilitação por Disciplina</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-hab-profs">
+              <tr><td colspan="7" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
             </tbody>
           </table>
         </div>
@@ -443,6 +499,7 @@ const DOCS_OBRIG=['ATO DE CRIAÇÃO','COMPROVANTE DO CENSO ESCOLAR','COMPROVANTE
 const ADMIN_USERS={comep:'comep@2025',admin:'COMEP@admin#2025'};
 
 let adminUser=null, docsCache={}, fichasCache={}, statusCache={}, filtroAtual='todas';
+let profsCache={}, qaCache={}; // subcollections: professores e quadro_admin
 let modalInep=null;
 
 // ── LOGIN ─────────────────────────────────────────────────────────
@@ -490,24 +547,29 @@ async function carregarTodosDados(){
   document.getElementById('dash-time').textContent='Carregando dados... '+new Date().toLocaleString('pt-BR');
   const promises=ESCOLAS.map(async e=>{
     try{
-      const [docsSnap,fichaSnap]=await Promise.all([
+      const [docsSnap,fichaSnap,profsSnap,qaSnap]=await Promise.all([
         db.collection('escolas').doc(e.inep).collection('documentos').get(),
-        db.collection('escolas').doc(e.inep).get()
+        db.collection('escolas').doc(e.inep).get(),
+        db.collection('escolas').doc(e.inep).collection('professores').get(),
+        db.collection('escolas').doc(e.inep).collection('quadro_admin').get()
       ]);
       const tipos=new Set();
       docsSnap.forEach(d=>tipos.add(d.data().tipo));
       docsCache[e.inep]=tipos;
       if(fichaSnap.exists){
         fichasCache[e.inep]=fichaSnap.data();
-        statusCache[e.inep]={
-          bloqueado:fichaSnap.data().bloqueado||false,
-          situacao:fichaSnap.data().situacao||'ativa'
-        };
+        statusCache[e.inep]={bloqueado:fichaSnap.data().bloqueado||false,situacao:fichaSnap.data().situacao||'ativa'};
       }else{
         fichasCache[e.inep]=null;
         statusCache[e.inep]={bloqueado:false,situacao:'ativa'};
       }
-    }catch(err){docsCache[e.inep]=new Set();fichasCache[e.inep]=null;statusCache[e.inep]={bloqueado:false,situacao:'ativa'};}
+      profsCache[e.inep]=profsSnap.docs.map(d=>({id:d.id,...d.data()}));
+      qaCache[e.inep]=qaSnap.docs.map(d=>({id:d.id,...d.data()}));
+    }catch(err){
+      docsCache[e.inep]=new Set();fichasCache[e.inep]=null;
+      statusCache[e.inep]={bloqueado:false,situacao:'ativa'};
+      profsCache[e.inep]=[];qaCache[e.inep]=[];
+    }
   });
   await Promise.all(promises);
   renderDashboard();
@@ -678,21 +740,52 @@ function renderPendencias(){
   document.getElementById('pend-body').innerHTML=html;
 }
 
-// ── HABILITAÇÃO ───────────────────────────────────────────────────
+// ── HABILITAÇÃO ─────────────────────────────────────────────────────────
 function renderHabilitacao(){
-  let habSim=0,habNao=0;
+  // ---- KPIs globais ----
+  let habSim=0,habNao=0,totProfs=0,totQASim=0,totQANao=0;
+
+  ESCOLAS.forEach(e=>{
+    // Professores (subcollection nova)
+    const profs=profsCache[e.inep]||[];
+    totProfs+=profs.length;
+    profs.forEach(p=>{
+      const forms=p.formacoes||[];
+      if(forms.length===0){ habNao++; return; }
+      const temNao=forms.some(f=>f.parecer==='NÃO HABILITADO');
+      const temSim=forms.some(f=>f.parecer==='HABILITADO');
+      if(temSim&&!temNao)habSim++;
+      else habNao++;
+    });
+    // Quadro admin
+    const qa=qaCache[e.inep]||[];
+    qa.forEach(m=>{
+      if((m.habilitacao||'HABILITADO')==='HABILITADO')totQASim++;
+      else totQANao++;
+    });
+  });
+
+  const tot=habSim+habNao;
+  document.getElementById('hab-taxa').textContent=tot>0?Math.round(habSim/tot*100)+'%':'—';
+  document.getElementById('hab-sim').textContent=habSim||'—';
+  document.getElementById('hab-nao').textContent=habNao||'—';
+
+  // ---- Tabela por Escola ----
   const rows=ESCOLAS.map(e=>{
-    const ficha=fichasCache[e.inep];
-    const profs=ficha?.professores||[];
+    const profs=profsCache[e.inep]||[];
     const total=profs.length;
     let sim=0,nao=0;
     profs.forEach(p=>{
-      (p.formacoes||[]).forEach(f=>{if(f.parecer==='HABILITADO'||f.habilitado==='SIM')sim++;else if(f.parecer==='NÃO HABILITADO'||f.habilitado==='NÃO')nao++;});
+      const forms=p.formacoes||[];
+      const temNao=forms.some(f=>f.parecer==='NÃO HABILITADO');
+      const temSim=forms.some(f=>f.parecer==='HABILITADO');
+      if(forms.length===0)nao++;
+      else if(temSim&&!temNao)sim++;
+      else nao++;
     });
-    habSim+=sim;habNao+=nao;
     const taxa=sim+nao>0?Math.round(sim/(sim+nao)*100)+'%':'—';
     return `<tr>
-      <td style="font-weight:600;font-size:12px">${e.nome.substring(0,30)}</td>
+      <td style="font-weight:600;font-size:12px">${e.nome.substring(0,32)}</td>
       <td>${total||'—'}</td>
       <td style="color:var(--green)">${sim||'—'}</td>
       <td style="color:var(--red)">${nao||'—'}</td>
@@ -700,10 +793,66 @@ function renderHabilitacao(){
     </tr>`;
   }).join('');
   document.getElementById('tbody-hab').innerHTML=rows;
-  const tot=habSim+habNao;
-  document.getElementById('hab-taxa').textContent=tot>0?Math.round(habSim/tot*100)+'%':'—';
-  document.getElementById('hab-sim').textContent=habSim||'—';
-  document.getElementById('hab-nao').textContent=habNao||'—';
+
+  // ---- Tabela Quadro Administrativo ----
+  let qaRows='';
+  ESCOLAS.forEach(e=>{
+    const qa=qaCache[e.inep]||[];
+    if(!qa.length)return;
+    qa.forEach(m=>{
+      const h=m.habilitacao||'HABILITADO';
+      const hbdg=h==='HABILITADO'
+        ?'<span class="badge badge-green">✅ HABILITADO</span>'
+        :'<span class="badge badge-red">❌ NÃO HABILITADO</span>';
+      const cbdg=m.cargo==='Diretor(a)'?'badge-teal':m.cargo==='Secretário(a) Escolar'?'badge-amber':'badge-blue';
+      qaRows+=`<tr>
+        <td style="font-size:11.5px;color:var(--gray-400)">${e.inep}</td>
+        <td style="font-weight:600;font-size:12.5px">${e.nome.substring(0,28)}</td>
+        <td style="font-weight:600">${m.nome||'—'}</td>
+        <td><span class="badge ${cbdg}">${m.cargo||'—'}</span></td>
+        <td style="font-size:12px">${m.formacao||'—'}</td>
+        <td>${hbdg}</td>
+      </tr>`;
+    });
+  });
+  document.getElementById('tbody-hab-qa').innerHTML=qaRows||
+    '<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--gray-400)">Nenhum membro do quadro administrativo cadastrado ainda.</td></tr>';
+
+  // ---- Tabela Professores detalhada ----
+  let profRows='';
+  ESCOLAS.forEach(e=>{
+    const profs=profsCache[e.inep]||[];
+    if(!profs.length)return;
+    profs.forEach(p=>{
+      const forms=p.formacoes||[];
+      // Habilitação geral: HABILITADO se ao menos 1 formação habilitada e NENHUMA não habilitada
+      const temNao=forms.some(f=>f.parecer==='NÃO HABILITADO');
+      const temSim=forms.some(f=>f.parecer==='HABILITADO');
+      let hGeral,hBdg;
+      if(forms.length===0){hGeral='SEM FORMAÇÃO';hBdg='<span class="badge badge-gray">⚠️ SEM FORMAÇÃO</span>';}
+      else if(temSim&&!temNao){hGeral='HABILITADO';hBdg='<span class="badge badge-green">✅ HABILITADO</span>';}
+      else{hGeral='NÃO HABILITADO';hBdg='<span class="badge badge-red">❌ NÃO HABILITADO</span>';}
+      const vbdg=p.vinculo==='EFETIVO'?'badge-teal':p.vinculo==='CONTRATADO'?'badge-amber':'badge-gray';
+      // Lotações com habilitação
+      const lots=(p.atribuicoes||[]).map(a=>`<div style="font-size:11px;padding:2px 0;border-bottom:1px solid #f1f5f9">
+        <span style="font-weight:600">${a.disciplina}</span>
+        <span style="color:#64748b"> · ${a.etapa}</span>
+        ${a.turno?`<span style="color:#94a3b8"> · ${a.turno}</span>`:''}
+        <span style="${a.habilitacao==='HABILITADO'?'color:var(--green)':'color:var(--red)'};font-weight:700;margin-left:6px">${a.habilitacao==='HABILITADO'?'✅':'❌'} ${a.habilitacao||'—'}</span>
+      </div>`).join('');
+      profRows+=`<tr>
+        <td style="font-size:11px;color:var(--gray-400)">${e.inep}</td>
+        <td style="font-size:12px;color:var(--gray-500)">${e.nome.substring(0,22)}</td>
+        <td style="font-weight:600">${p.nome||'—'}</td>
+        <td><span class="badge ${vbdg}">${p.vinculo||'—'}</span></td>
+        <td style="font-size:12px">${p.funcao||'—'}</td>
+        <td>${hBdg}</td>
+        <td style="min-width:220px">${lots||'<span style="color:var(--gray-400);font-size:11px">Sem lotação</span>'}</td>
+      </tr>`;
+    });
+  });
+  document.getElementById('tbody-hab-profs').innerHTML=profRows||
+    '<tr><td colspan="7" style="text-align:center;padding:16px;color:var(--gray-400)">Nenhum professor cadastrado ainda. Os professores são cadastrados pelas escolas no Portal.</td></tr>';
 }
 
 // ── INFRAESTRUTURA ────────────────────────────────────────────────
