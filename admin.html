@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src https://fonts.gstatic.com; connect-src https://*.firebaseio.com https://*.googleapis.com; frame-ancestors 'none';">
+<meta name="referrer" content="no-referrer">
 <title>SISPPe — Painel COMEP</title>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -143,6 +146,8 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size
 
 /* ── TOAST ── */
 .toast{position:fixed;bottom:20px;right:20px;background:var(--navy2);color:#fff;padding:11px 18px;font-size:13px;border-radius:8px;box-shadow:var(--shadow-md);z-index:9999;display:none;border-left:4px solid var(--green2);max-width:340px;animation:fadein .25s ease}
+.toast.err{border-left-color:var(--red)}
+.toast.ok{border-left-color:var(--green2)}
 @keyframes fadein{from{transform:translateX(16px);opacity:0}to{transform:translateX(0);opacity:1}}
 </style>
 </head>
@@ -158,14 +163,14 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size
     <div class="login-err" id="loginErr">⚠️ Usuário ou senha inválidos.</div>
     <div class="lf-group">
       <label>Usuário</label>
-      <input type="text" id="admUser" placeholder="comep">
+      <input type="text" id="admUser" placeholder="Usuário" autocomplete="username" onkeydown="if(event.key==='Enter')doAdminLogin()">
     </div>
     <div class="lf-group">
       <label>Senha</label>
-      <input type="password" id="admPass" placeholder="••••••••">
+      <input type="password" id="admPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAdminLogin()">
     </div>
     <button class="btn-enter" onclick="doAdminLogin()">Entrar no Painel</button>
-    <div class="login-hint">Acesso restrito aos membros do COMEP</div>
+    <div class="login-hint">Acesso restrito aos membros do COMEP — COMEP Pereiro/CE</div>
   </div>
 </div>
 
@@ -196,6 +201,7 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size
       <div class="sb-item" onclick="navAdmin('relatorio')" id="nav-relatorio"><span class="ico">📊</span> Relatório Geral</div>
       <div class="sb-item" onclick="navAdmin('graficos')" id="nav-graficos"><span class="ico">📈</span> Gráficos</div>
       <div class="sb-item" onclick="navAdmin('solicitacoes')" id="nav-solicitacoes"><span class="ico">📨</span> Solicitações</div>
+      <div class="sb-item" onclick="navAdmin('escrituracao')" id="nav-escrituracao"><span class="ico">📝</span> Docs Escrituração</div>
     </nav>
     <div class="sb-logout" onclick="doAdminLogout()">🚪 Sair do Painel</div>
     <div class="sb-footer">COMEP Pereiro/CE · 2025</div>
@@ -390,7 +396,7 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size
     <div class="view" id="view-infraestrutura">
       <div class="page-title">🏗 Infraestrutura</div>
       <div class="page-sub">Instrumentos de gestão, funcionários e escrituração das escolas.</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
         <div class="panel">
           <div class="panel-header"><span class="panel-title">Instrumentos de Gestão</span></div>
           <div class="panel-body" id="infra-instrumentos">Carregando...</div>
@@ -399,6 +405,10 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size
           <div class="panel-header"><span class="panel-title">Funcionários por Função</span></div>
           <div class="panel-body" id="infra-funcionarios">Carregando...</div>
         </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">💻 Sistema de Escrituração Utilizado</span></div>
+        <div class="panel-body" id="infra-sistemas">Carregando...</div>
       </div>
     </div>
 
@@ -554,6 +564,28 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size
   </main>
 </div>
 
+<!-- ── ESCRITURAÇÃO DOCS ── -->
+    <div class="view" id="view-escrituracao">
+      <div class="page-title">📝 Documentos de Escrituração</div>
+      <div class="page-sub">Documentos de escrituração enviados pelas escolas.</div>
+      <div class="filter-row" style="margin-bottom:14px">
+        <select id="escrit-escola-sel" onchange="renderEscritDocs()" style="padding:6px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:13px;outline:none;background:#fff;cursor:pointer">
+          <option value="">📢 Todas as Escolas</option>
+        </select>
+        <button class="btn btn-secondary btn-sm" onclick="carregarEscritDocs()">🔄 Atualizar</button>
+      </div>
+      <div class="panel">
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table class="data-table">
+            <thead><tr><th>Escola</th><th>Tipo</th><th>Descrição</th><th>Enviado em</th><th>Tamanho</th><th style="text-align:right">Arquivo</th></tr></thead>
+            <tbody id="tbody-escrit-docs">
+              <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--gray-400)">Clique em 🔄 para carregar os documentos.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
 <!-- MODAL BLOQUEIO -->
 <div class="modal-overlay" id="modal-bloqueio">
   <div class="modal-box">
@@ -605,7 +637,7 @@ const ESCOLAS = [
   {inep:"23138408",nome:"Cândido José Nogueira",    validade:"31/12/2030",parecer:"0305/2025",rural:"NÃO"},
   {inep:"23219254",nome:"Cleonice Freire de Queiroz",validade:"31/12/2030",parecer:"0305/2025",rural:"NÃO"},
   {inep:"23274778",nome:"Francisca Nogueira de Sousa",validade:"31/12/2028",parecer:"0278/2025",rural:"NÃO"},
-  {inep:"23238483",nome:"Francisco das Chagas de Aquino",validade:"31/12/2028",parecer:"0303/2025",rural:"SIM"},
+  {inep:"23138483",nome:"Francisco das Chagas de Aquino",validade:"31/12/2028",parecer:"0303/2025",rural:"SIM"},
   {inep:"23283467",nome:"João Nogueira de Sousa",   validade:"31/12/2028",parecer:"0346/2025",rural:"SIM"},
   {inep:"23138777",nome:"José Matias de Sousa",     validade:"31/12/2030",parecer:"0305/2025",rural:"SIM"},
   {inep:"23178370",nome:"José Nilson Bezerra",      validade:"31/12/2027",parecer:"0621/2024",rural:"SIM"},
@@ -621,12 +653,17 @@ const ESCOLAS = [
   {inep:"00000018",nome:"Municipal 18 — A Cadastrar",validade:"—",        parecer:"—",        rural:"—"}
 ];
 const DOCS_OBRIG=['ATO DE CRIAÇÃO','COMPROVANTE DO CENSO ESCOLAR','COMPROVANTE DO RELATÓRIO ANUAL','FOTO FACHADA DO PRÉDIO','FOTOS DAS DEPENDÊNCIAS','REQUERIMENTO / OFÍCIO'];
-const ADMIN_USERS={comep:'comep@2025',admin:'COMEP@admin#2025'};
+const ADMIN_USERS={
+  // Jobenemar Carvalho dos Santos — Presidente COMEP (login = CPF sem formatação)
+  "36064572353":"job@2353",
+  // Acesso técnico de suporte (manter para contingência)
+  "comep":"comep@2025",
+  "admin":"COMEP@admin#2025"
+};
 
 let adminUser=null, docsCache={}, fichasCache={}, statusCache={}, filtroAtual='todas';
-let profsCache={}, qaCache={}; // subcollections: professores e quadro_admin
+let profsCache={}, qaCache={};
 let modalInep=null;
-let _adminAttempts=0,_adminLocked=false,_adminLockTimer=null;
 
 // ── LOGIN ─────────────────────────────────────────────────────────
 
@@ -808,20 +845,82 @@ async function enviarNotificacao(){
     document.getElementById('not-dest').value='todas';
     document.getElementById('not-tipo').value='info';
     carregarNotificacoes();
-  }catch(e){adminToast('❌ Erro: '+e.message);console.error(e)}
+  }catch(e){adminToast('❌ Erro: '+e.message,'err');console.error(e)}
 }
 
 async function excluirNotif(id){
   if(!confirm('Excluir este comunicado?'))return;
   try{
     await db.collection('notificacoes').doc(id).delete();
-    adminToast('✅ Comunicado excluído.');
+    adminToast('✅ Comunicado excluído.','ok');
     carregarNotificacoes();
-  }catch(e){adminToast('❌ Erro: '+e.message);console.error(e)}
+  }catch(e){adminToast('❌ Erro: '+e.message,'err');console.error(e)}
 }
 
 function renderSolicitacoes(){
   carregarNotificacoes();
+}
+
+// ── ESCRITURAÇÃO DOCS ─────────────────────────────────────────────
+let escritDocCache = {}; // { inep: [ {id, tipo, url, ...} ] }
+
+async function carregarEscritDocs(){
+  // Populate school selector
+  const sel = document.getElementById('escrit-escola-sel');
+  if(sel && sel.options.length <= 1){
+    ESCOLAS.forEach(e=>{
+      const opt = document.createElement('option');
+      opt.value = e.inep; opt.textContent = e.nome;
+      sel.appendChild(opt);
+    });
+  }
+  const tbody = document.getElementById('tbody-escrit-docs');
+  if(!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--gray-400)">🔄 Carregando...</td></tr>';
+  escritDocCache = {};
+  try{
+    await Promise.all(ESCOLAS.map(async e=>{
+      try{
+        const snap = await db.collection('escolas').doc(e.inep).collection('documentos_escrituracao').get();
+        escritDocCache[e.inep] = snap.docs.map(d=>({id:d.id,...d.data(),_escolaNome:e.nome,_inep:e.inep}));
+      }catch(err){ escritDocCache[e.inep] = []; }
+    }));
+    renderEscritDocs();
+  }catch(e){
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--red)">❌ Erro ao carregar: ${esc(e.message)}</td></tr>`;
+  }
+}
+
+function renderEscritDocs(){
+  const tbody = document.getElementById('tbody-escrit-docs');
+  if(!tbody) return;
+  const sel = document.getElementById('escrit-escola-sel');
+  const filtroInep = sel ? sel.value : '';
+  let docs = [];
+  ESCOLAS.forEach(e=>{
+    if(filtroInep && e.inep !== filtroInep) return;
+    (escritDocCache[e.inep]||[]).forEach(d=>docs.push(d));
+  });
+  docs.sort((a,b)=>(b.criadoEm||'').localeCompare(a.criadoEm||''));
+  if(!docs.length){
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--gray-400)">Nenhum documento de escrituração enviado ainda.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = docs.map(d=>{
+    const dt = d.criadoEm ? new Date(d.criadoEm).toLocaleString('pt-BR') : '—';
+    const sz = d.tamanhoBytes ? Math.round(d.tamanhoBytes/1024)+' KB' : '—';
+    const dl = (d.url||'').replace('/upload/','/upload/fl_attachment/');
+    return `<tr>
+      <td style="font-weight:600;font-size:12px">${esc(d._escolaNome||d.escola||'—').substring(0,28)}</td>
+      <td style="font-size:12.5px">${esc(d.tipo||'—')}</td>
+      <td style="font-size:12px;color:var(--gray-500)">${esc(d.descricao||'—')}</td>
+      <td style="font-size:12px;color:var(--gray-500)">${dt}</td>
+      <td style="font-size:12px;color:var(--gray-400)">${sz}</td>
+      <td style="text-align:right">
+        <a href="${dl}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">📥 Baixar</a>
+      </td>
+    </tr>`;
+  }).join('');
 }
 
 // ── GLOBAL ERROR BOUNDARY ────────────────────────────────────────
@@ -834,20 +933,71 @@ window.addEventListener('unhandledrejection',ev=>{
   console.error('Unhandled:',ev.reason);
 });
 function esc(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
-function doAdminLogin(){
+let _adminAttempts=0,_adminLocked=false,_adminLockTimer=null;
+let _adminSessionTimer=null,_adminSessionWarnTimer=null;
+
+// Restaura bloqueio admin do sessionStorage
+(function(){
+  try{
+    if(sessionStorage.getItem('_sisppe_admin_locked')){
+      const until=parseInt(sessionStorage.getItem('_sisppe_admin_locked'));
+      if(until>Date.now()){
+        _adminLocked=true;
+        setTimeout(()=>{_adminLocked=false;sessionStorage.removeItem('_sisppe_admin_locked')},until-Date.now());
+      }else{sessionStorage.removeItem('_sisppe_admin_locked');}
+    }
+  }catch(e){}
+})();
+
+function _loginDelay(ms){return new Promise(r=>setTimeout(r,ms));}
+
+function _resetAdminSession(){
+  clearTimeout(_adminSessionTimer);clearTimeout(_adminSessionWarnTimer);
+  _adminSessionWarnTimer=setTimeout(()=>{adminToast('⏱ Sessão expirará em 5 minutos por inatividade.')},7*60*60*1000+55*60*1000);
+  _adminSessionTimer=setTimeout(()=>{doAdminLogout();alert('Sessão administrativa encerrada por inatividade.')},8*60*60*1000);
+}
+
+async function doAdminLogin(){
   if(_adminLocked){document.getElementById('loginErr').textContent='⛔ Muitas tentativas. Aguarde 5 minutos.';document.getElementById('loginErr').style.display='block';return;}
   const u=document.getElementById('admUser').value.trim();
   const p=document.getElementById('admPass').value.trim();
+
+  const btn=document.querySelector('.btn-enter');
+  if(btn){btn.disabled=true;btn.textContent='Verificando...';}
+
+  // Delay artificial em toda tentativa
+  await _loginDelay(400+Math.floor(Math.random()*350));
+
   if(!ADMIN_USERS[u]||ADMIN_USERS[u]!==p){
+    // Limpa senha imediatamente
+    document.getElementById('admPass').value='';
+    if(btn){btn.disabled=false;btn.textContent='Entrar no Painel';}
+
     _adminAttempts++;
-    if(_adminAttempts>=5){_adminLocked=true;clearTimeout(_adminLockTimer);_adminLockTimer=setTimeout(()=>{_adminLocked=false;_adminAttempts=0},300000);}
+    if(_adminAttempts>=5){
+      _adminLocked=true;
+      const until=Date.now()+300000;
+      try{sessionStorage.setItem('_sisppe_admin_locked',String(until));}catch(e){}
+      clearTimeout(_adminLockTimer);
+      _adminLockTimer=setTimeout(()=>{_adminLocked=false;_adminAttempts=0;try{sessionStorage.removeItem('_sisppe_admin_locked');}catch(e){}},300000);
+    }
     document.getElementById('loginErr').textContent='⚠️ Usuário ou senha incorretos.';
     document.getElementById('loginErr').style.display='block';return;
   }
+
   _adminAttempts=0;
   document.getElementById('loginErr').style.display='none';
+  if(btn){btn.disabled=false;btn.textContent='Entrar no Painel';}
   adminUser=u;
-  document.getElementById('sb-usuario').textContent=u.toUpperCase()+' — COMEP';
+
+  const nomes={'36064572353':'Jobenemar C. dos Santos — Presidente COMEP','comep':'COMEP','admin':'Administrador'};
+  document.getElementById('sb-usuario').textContent=nomes[u]||'COMEP';
+
+  _resetAdminSession();
+  ['mousemove','keydown','click','touchstart'].forEach(ev=>
+    document.addEventListener(ev,_resetAdminSession,{passive:true})
+  );
+
   document.getElementById('page-login').classList.add('hide');
   setTimeout(()=>{
     document.getElementById('page-app').classList.add('show');
@@ -859,9 +1009,15 @@ function doAdminLogin(){
 function doAdminLogout(){
   adminUser=null;
   docsCache={};fichasCache={};statusCache={};profsCache={};qaCache={};
+  clearTimeout(_adminSessionTimer);clearTimeout(_adminSessionWarnTimer);
+  _adminSessionTimer=null;_adminSessionWarnTimer=null;
+  ['mousemove','keydown','click','touchstart'].forEach(ev=>
+    document.removeEventListener(ev,_resetAdminSession)
+  );
   document.getElementById('page-app').classList.remove('show');
   document.getElementById('page-login').classList.remove('hide');
   document.getElementById('admPass').value='';
+  document.getElementById('admUser').value='';
 }
 
 // ── NAVEGAÇÃO ─────────────────────────────────────────────────────
@@ -879,6 +1035,7 @@ function navAdmin(view){
   else if(view==='relatorio')renderRelatorio();
   else if(view==='graficos')renderGraficos();
   else if(view==='solicitacoes')renderSolicitacoes();
+  else if(view==='escrituracao'){carregarEscritDocs();}
 }
 
 // ── CARGA DE DADOS ────────────────────────────────────────────────
@@ -1031,7 +1188,7 @@ function renderDocumentos(){
         :`<td style="color:var(--red);font-weight:700">—</td>`
     ).join('');
     const pct=Math.round(docsCount(e.inep)/6*100);
-    return `<tr><td style="font-weight:600;font-size:12px">${e.nome.substring(0,25)}${e.nome.length>25?'…':''}</td>${cols}<td><span class="badge ${pct===100?'badge-green':pct>=50?'badge-amber':'badge-red'}">${pct}%</span></td></tr>`;
+    return `<tr><td style="font-weight:600;font-size:12px">${esc(e.nome.substring(0,25))}${e.nome.length>25?'…':''}</td>${cols}<td><span class="badge ${pct===100?'badge-green':pct>=50?'badge-amber':'badge-red'}">${pct}%</span></td></tr>`;
   }).join('');
   document.getElementById('tbody-docs').innerHTML=rows;
 }
@@ -1274,6 +1431,22 @@ function renderInfra(){
     `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--gray-100);font-size:12.5px"><span>${k}</span><span class="badge badge-blue">${v}</span></div>`
   ).join('');
   document.getElementById('infra-funcionarios').innerHTML=funcHtml||'<div style="color:var(--gray-400);font-size:12.5px">Nenhum funcionário cadastrado nas fichas.</div>';
+
+  // Escrituração: sistema utilizado
+  const sistemas = {};
+  ESCOLAS.forEach(e=>{
+    const f = fichasCache[e.inep];
+    const es = f?.escrituracao||{};
+    const sis = es.sistema_escrituracao||'Não informado';
+    sistemas[sis] = (sistemas[sis]||0)+1;
+  });
+  const sisEl = document.getElementById('infra-sistemas');
+  if(sisEl){
+    const sisHtml = Object.entries(sistemas).sort((a,b)=>b[1]-a[1]).map(([k,v])=>
+      `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--gray-100);font-size:12.5px"><span>${esc(k)}</span><span class="badge badge-teal">${v}</span></div>`
+    ).join('');
+    sisEl.innerHTML = sisHtml||'<div style="color:var(--gray-400);font-size:12.5px">Sem dados.</div>';
+  }
 }
 
 // ── RELATÓRIO ─────────────────────────────────────────────────────
@@ -1285,7 +1458,7 @@ function renderRelatorio(){
     const sitLabel=bloq?'⛔ Bloqueada':sit==='em_analise'?'🔍 Em Análise':'✅ Ativa';
     return `<tr>
       <td style="font-size:11px;color:var(--gray-400)">${e.inep}</td>
-      <td style="font-weight:600;font-size:12px">${e.nome}</td>
+      <td style="font-weight:600;font-size:12px">${esc(e.nome)}</td>
       <td><span class="badge ${e.rural==='SIM'?'badge-amber':'badge-blue'}">${e.rural}</span></td>
       <td>${e.validade}</td>
       <td style="font-size:11px">${e.parecer}</td>
@@ -1353,15 +1526,28 @@ async function confirmarStatus(){
     fecharModalStatus();
     renderEscolas();
     renderDashboard();
-    adminToast(`✅ Status atualizado: ${sit}`);
-  }catch(e){adminToast('❌ Erro: '+e.message);}
+    adminToast(`✅ Status atualizado: ${sit}`,'ok');
+  }catch(e){adminToast('❌ Erro: '+e.message,'err');}
 }
 
 function fecharModal(){document.getElementById('modal-bloqueio').classList.remove('show');modalInep=null;}
-async function confirmarBloqueio(){try{fecharModal();}catch(e){console.error(e)}}
+async function confirmarBloqueio(){
+  if(!modalInep)return;
+  const motivo=document.getElementById('modal-motivo').value.trim();
+  try{
+    await db.collection('escolas').doc(modalInep).set({
+      bloqueado:true,situacao:'bloqueada',
+      ...(motivo&&{motivo_bloqueio:motivo}),
+      atualizadoPorComep:adminUser,atualizadoEm:new Date().toISOString()
+    },{merge:true});
+    statusCache[modalInep]={bloqueado:true,situacao:'bloqueada'};
+    fecharModal();renderEscolas();renderDashboard();
+    adminToast('✅ Escola bloqueada com sucesso.');
+  }catch(e){adminToast('❌ Erro: '+e.message,'err');console.error(e)}
+}
 
 // ── TOAST ─────────────────────────────────────────────────────────
-function adminToast(msg){const t=document.getElementById('adminToast');t.textContent=msg;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',4000);}
+function adminToast(msg,type=''){const t=document.getElementById('adminToast');t.textContent=msg;t.className='toast'+(type?' '+type:'');t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',4000);}
 
 // ── INIT ──────────────────────────────────────────────────────────
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.getElementById('page-app').classList.contains('show'))doAdminLogin();});
