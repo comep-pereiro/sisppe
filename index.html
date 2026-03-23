@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
 <title>SISPPe — Portal da Escola</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -317,8 +318,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
    <div class="trow"><input type="checkbox" id="chkT" checked><label for="chkT">Li e aceito os <a onclick="termos()">Termos de Uso</a> do sistema.</label></div>
    <button class="btn-enter" onclick="doLogin()">Entrar no Portal</button>
    <div class="hint">
-    💡 <strong>Diretor(a):</strong> CPF <b>100.000.001-01</b> · Senha <b>Dir@2025#01</b><br>
-    💡 <strong>Secretário(a):</strong> CPF <b>200.000.001-01</b> · Senha <b>Sec@2025#01</b>
+    💡 Para recuperar o acesso, utilize o link abaixo ou entre em contato com a Secretaria Municipal de Educação de Pereiro.
    </div>
    <div class="llinks">
     <a onclick="enviarEmailSenha()">Esqueci minha senha</a>
@@ -356,6 +356,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
    <button class="sbi" id="n-dep" onclick="nav('dep')"><span class="ic">🏗️</span> Dependências Físicas</button>
    <button class="sbi" id="n-mob" onclick="nav('mob')"><span class="ic">📦</span> Mobiliário / Equipamento</button>
    <button class="sbi" id="n-prof" onclick="nav('prof')"><span class="ic">🎓</span> Professores</button>
+   <button class="sbi" id="n-func" onclick="nav('func')"><span class="ic">🧑‍💼</span> Funcionários / Servidores</button>
    <button class="sbi" id="n-qa" onclick="nav('qa')"><span class="ic">👥</span> Quadro Administrativo</button>
    <div class="sb-sec">Processo</div>
    <button class="sbi" id="n-docs" onclick="nav('docs')"><span class="ic">📁</span> Documentos de Gestão</button>
@@ -577,6 +578,23 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
    </div>
   </div>
 
+  <!-- FUNCIONÁRIOS / SERVIDORES -->
+  <div id="v-func" class="view">
+   <div class="ph">
+    <div><div class="ph-t">Funcionários / Servidores</div><div class="ph-s">Servidores de apoio não docentes da escola</div></div>
+    <div class="ph-acts"><button class="btn bt" id="btn-nfunc" onclick="addFuncForm()">+ Novo Funcionário</button><button class="btn bo bsm" id="btn-sfunc" onclick="saveFunc()">💾 Salvar</button></div>
+   </div>
+   <div style="padding:24px">
+    <div class="info-box">📋 <strong>Orientação:</strong> Cadastre aqui os servidores de apoio (zeladores, merendeiros, porteiros, vigilantes, auxiliares administrativos, etc.) que <strong>não são professores</strong>. Clique em <strong>Salvar</strong> após adicionar ou remover funcionários.</div>
+    <div class="card">
+     <div class="ch"><span class="ct">Lista de Funcionários / Servidores</span></div>
+     <div class="cb" id="func-list-main" style="display:flex;flex-direction:column;gap:8px;min-height:60px">
+      <div style="font-size:12.5px;color:var(--s400);padding:4px">Nenhum funcionário cadastrado.</div>
+     </div>
+    </div>
+   </div>
+  </div>
+
   <!-- DOCUMENTOS -->
   <div id="v-docs" class="view">
    <div class="ph"><div><div class="ph-t">Documentos de Gestão</div><div class="ph-s">Envie e gerencie os documentos obrigatórios para o recredenciamento</div></div><div class="ph-acts"><button class="btn bt" id="btn-ndoc" onclick="document.getElementById('m-doc').classList.add('on')">+ Enviar Documento</button><button class="btn bo bsm" onclick="loadDocs()">🔄</button></div></div>
@@ -596,7 +614,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
   <div id="v-escrit" class="view">
    <div class="ph">
     <div><div class="ph-t">Escrituração Escolar</div><div class="ph-s">Instrumentos de gestão, biblioteca e informações complementares</div></div>
-    <div class="ph-acts"><button class="btn bt" id="btn-sescrit" onclick="salvarEscrit()">💾 Salvar</button></div>
+    <div class="ph-acts"><button class="btn bo bsm" onclick="document.getElementById('m-doc').classList.add('on')">📤 Enviar Documento</button><button class="btn bt" id="btn-sescrit" onclick="salvarEscrit()">💾 Salvar</button></div>
    </div>
    <div style="padding:24px">
     <div class="tnav">
@@ -692,11 +710,6 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
       <div class="ch"><span class="ct">Observações Gerais</span><span class="cs">Informações adicionais relevantes para o processo de credenciamento</span></div>
       <div class="cb">
        <div class="fg"><label>Observações da Escola</label><textarea id="es-obs" rows="6" placeholder="Descreva informações adicionais, situações especiais, necessidades ou qualquer observação relevante para o COMEP..."></textarea></div>
-       <div class="fg" style="margin-top:14px"><label>Funcionários Administrativos</label>
-        <div class="info-box" style="margin-bottom:12px">Liste os funcionários de apoio (zeladores, merendeiros, porteiros, etc.) que não são professores.</div>
-        <div id="func-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px"></div>
-        <button class="btn bo bsm" onclick="addFuncForm()">+ Adicionar Funcionário</button>
-       </div>
       </div>
      </div>
     </div>
@@ -847,7 +860,6 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
       <option value="">Selecione...</option>
       <option>Diretor(a)</option><option>Vice-Diretor(a)</option>
       <option>Secretário(a) Escolar</option><option>Coordenador(a) Pedagógico(a)</option>
-      <option>Auxiliar Administrativo</option>
      </select>
     </div>
     <div class="fg"><label>Data de Admissão</label><input type="date" id="qa-adm"></div>
@@ -1087,6 +1099,7 @@ let U=null,BLQ=false,SIT='ativa';
 let PROFS=[],QAS=[],DEPS=[],MOBS=[];
 let pEid=null,qEid=null,dEid=null,mEid=null;
 let NF=[],NA=[]; // temp formações/atribuições no modal
+let _loginAttempts=0,_loginLocked=false,_loginLockTimer=null;
 
 /* ═══════════════════════════════════════════
    UTILS
@@ -1102,6 +1115,7 @@ let _tT;
 function toast(msg,t=''){const el=document.getElementById('toast');el.textContent=msg;el.className='toast'+(t?' '+t:'');el.style.display='block';clearTimeout(_tT);_tT=setTimeout(()=>el.style.display='none',4000)}
 function termos(){alert('Termos de Uso do SISPPe\n\n• As informações inseridas são verídicas e de responsabilidade da instituição.\n• Os documentos enviados são autênticos.\n• O acesso é pessoal e intransferível.\n• O uso indevido pode acarretar sanções administrativas — Lei nº 12.527/2011.')}
 function hab(v){return v==='HABILITADO'?`<span class="bdg bgn">✅ HABILITADO</span>`:`<span class="bdg br">❌ NÃO HABILITADO</span>`}
+function esc(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 function closeM(id){document.getElementById(id).classList.remove('on')}
 
 function closeMOver(e,overlay){
@@ -1113,13 +1127,23 @@ function closeMOver(e,overlay){
    LOGIN
 ═══════════════════════════════════════════ */
 async function doLogin(){
+  if(_loginLocked){toast('Muitas tentativas incorretas. Aguarde 5 minutos e tente novamente.','err');return}
   const cpf=document.getElementById('inpCpf').value.trim();
   const pw=document.getElementById('inpPw').value.trim();
   if(!document.getElementById('chkT').checked){toast('Aceite os Termos de Uso.','err');return}
   if(!cpf||!pw){document.getElementById('lerr').style.display='block';return}
   if(cpf.length<14){document.getElementById('lerr').style.display='block';return}
   const u=USERS[cpf];
-  if(!u||u.pw!==pw){document.getElementById('lerr').style.display='block';return}
+  if(!u||u.pw!==pw){
+    _loginAttempts++;
+    if(_loginAttempts>=5){
+      _loginLocked=true;
+      clearTimeout(_loginLockTimer);
+      _loginLockTimer=setTimeout(()=>{_loginLocked=false;_loginAttempts=0},300000);
+    }
+    document.getElementById('lerr').style.display='block';return
+  }
+  _loginAttempts=0;
   document.getElementById('lerr').style.display='none';
   U={...u,cpf};
   try{
@@ -1141,7 +1165,7 @@ async function doLogin(){
   else{st.className='sb-status err';st.textContent='⚠️ Pendente de Regularização';st.style.display='block'}
 
   // Disable edit buttons if blocked
-  ['btn-sfic','btn-nprof','btn-nqa','btn-ndep','btn-nmob','btn-ndoc','btn-sprof','btn-udoc','btn-sescrit','btn-pdf'].forEach(id=>{
+  ['btn-sfic','btn-nprof','btn-nqa','btn-ndep','btn-nmob','btn-ndoc','btn-sprof','btn-udoc','btn-sescrit','btn-pdf','btn-nfunc','btn-sfunc'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.disabled=BLQ
   })
 
@@ -1149,7 +1173,7 @@ async function doLogin(){
   setTimeout(()=>{document.getElementById('pg-app').classList.add('on');nav('dash');loadNotifBadge()},360)
 }
 function doLogout(){
-  U=null;BLQ=false;SIT='ativa';PROFS=[];QAS=[];DEPS=[];MOBS=[];
+  U=null;BLQ=false;SIT='ativa';PROFS=[];QAS=[];DEPS=[];MOBS=[];FUNCS=[];
   document.getElementById('pg-app').classList.remove('on');
   document.getElementById('pg-login').classList.remove('out');
   document.getElementById('inpPw').value='';
@@ -1177,6 +1201,7 @@ function nav(v){
   else if(v==='qa')loadQA();
   else if(v==='docs')loadDocs();
   else if(v==='escrit')loadEscrit();
+  else if(v==='func')loadFunc();
   else if(v==='notif')loadNotif();
 }
 function st(pfx,tab,btn){
@@ -1891,6 +1916,32 @@ async function salvarEscrit(){
   finally{btn.disabled=BLQ;btn.innerHTML='💾 Salvar'}
 }
 
+async function loadFunc(){
+  if(!U){toast('Sessão expirada.','err');return}
+  try{
+    const snap=await db.collection('escolas').doc(U.inep).get();
+    FUNCS=snap.exists?(snap.data().escrituracao?.funcionarios_admin||[]):[];
+    rFuncList();
+  }catch(e){toast('Erro ao carregar funcionários.','err');console.error(e)}
+}
+async function saveFunc(){
+  if(!U){toast('Sessão expirada.','err');return}
+  if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
+  const btn=document.getElementById('btn-sfunc');
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spin"></span> Salvando...'}
+  try{
+    const docRef=db.collection('escolas').doc(U.inep);
+    try{
+      await docRef.update({'escrituracao.funcionarios_admin':FUNCS,atualizadoPor:U.cpf,atualizadoEm:new Date().toISOString()});
+    }catch(err){
+      if(err.code==='not-found'){
+        await docRef.set({escrituracao:{funcionarios_admin:FUNCS},atualizadoPor:U.cpf,atualizadoEm:new Date().toISOString()},{merge:true});
+      }else throw err;
+    }
+    toast('✅ Funcionários salvos!','ok');
+  }catch(e){toast('❌ Erro: '+e.message,'err');console.error(e)}
+  finally{if(btn){btn.disabled=BLQ;btn.innerHTML='💾 Salvar'}}
+}
 function addFuncForm(){
   if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
   s('fn-nome','');s('fn-func','');s('fn-form','');
@@ -1904,15 +1955,15 @@ function addFunc(){
 }
 function remFunc(i){FUNCS.splice(i,1);rFuncList()}
 function rFuncList(){
-  const el=document.getElementById('func-list');
+  const el=document.getElementById('func-list-main');
   if(!el)return;
   if(!FUNCS.length){el.innerHTML='<div style="font-size:12.5px;color:var(--s400);padding:4px">Nenhum funcionário cadastrado.</div>';return}
   el.innerHTML=FUNCS.map((f,i)=>`
     <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--s50);border:1px solid var(--s200);border-radius:var(--rs)">
       <div>
-        <span style="font-size:13px;font-weight:600">${f.nome}</span>
-        <span class="bdg bb" style="margin-left:8px">${f.funcao}</span>
-        ${f.formacao?`<span style="font-size:12px;color:var(--s500);margin-left:8px">${f.formacao}</span>`:''}
+        <span style="font-size:13px;font-weight:600">${esc(f.nome)}</span>
+        <span class="bdg bb" style="margin-left:8px">${esc(f.funcao)}</span>
+        ${f.formacao?`<span style="font-size:12px;color:var(--s500);margin-left:8px">${esc(f.formacao)}</span>`:''}
       </div>
       <button class="btn bg bxs" style="color:var(--r600)" onclick="remFunc(${i})">🗑️</button>
     </div>`).join('');
@@ -1965,11 +2016,11 @@ async function loadNotif(){
             <div style="flex:1">
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
                 <span style="font-size:16px">${ic}</span>
-                <span style="font-family:'Manrope',sans-serif;font-size:14px;font-weight:700;color:var(--s900)">${n.titulo||'Comunicado'}</span>
-                <span class="bdg ${cl}">${n.tipo||'info'}</span>
+                <span style="font-family:'Manrope',sans-serif;font-size:14px;font-weight:700;color:var(--s900)">${esc(n.titulo)||'Comunicado'}</span>
+                <span class="bdg ${cl}">${esc(n.tipo)||'info'}</span>
               </div>
-              <p style="font-size:13px;color:var(--s600);line-height:1.6">${n.mensagem||''}</p>
-              ${n.prazo?`<div style="margin-top:8px;font-size:12px;color:var(--r600);font-weight:600">⏰ Prazo: ${n.prazo}</div>`:''}
+              <p style="font-size:13px;color:var(--s600);line-height:1.6">${esc(n.mensagem)||''}</p>
+              ${n.prazo?`<div style="margin-top:8px;font-size:12px;color:var(--r600);font-weight:600">⏰ Prazo: ${esc(n.prazo)}</div>`:''}
             </div>
             <div style="font-size:11.5px;color:var(--s400);white-space:nowrap">${dt}</div>
           </div>
