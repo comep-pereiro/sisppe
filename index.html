@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.gstatic.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src https://fonts.gstatic.com; connect-src https://*.firebaseio.com https://*.googleapis.com https://api.cloudinary.com; frame-ancestors 'none';">
+<meta name="referrer" content="no-referrer">
 <title>SISPPe — Portal da Escola</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -43,17 +46,27 @@ input,select,textarea,button{font-family:inherit}
   background:var(--w);border-radius:16px;box-shadow:var(--shl);
   display:grid;grid-template-columns:340px 1fr;max-width:850px;width:95%;overflow:hidden;
 }
-.ll{background:linear-gradient(155deg,var(--s900),#0c4a35);padding:38px 30px;display:flex;flex-direction:column;gap:18px}
-.ll-brand{display:flex;align-items:center;gap:12px}
+.ll{background:linear-gradient(165deg,#0f172a 0%,#0c3a2e 100%);padding:36px 28px;display:flex;flex-direction:column;gap:0}
+.ll-brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}
 .ll-ico{width:44px;height:44px;background:var(--t600);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .ll-name{font-family:'Manrope',sans-serif;font-size:21px;font-weight:800;color:var(--w);line-height:1}
 .ll-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;line-height:1.4}
-.ll-box{background:rgba(255,255,255,.08);border-radius:10px;padding:14px 16px;font-size:12.5px;line-height:1.7;color:rgba(255,255,255,.72)}
-.ll-box strong{color:rgba(255,255,255,.93)}
-.ll-ul{list-style:none;display:flex;flex-direction:column;gap:8px}
-.ll-ul li{display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,.6);line-height:1.5}
-.ll-ul li::before{content:'›';color:var(--t500);font-size:14px;flex-shrink:0;line-height:1.3}
-.ll-ver{margin-top:auto;font-size:10px;color:rgba(255,255,255,.25)}
+/* Info cards */
+.ll-card{display:flex;gap:12px;padding:13px 14px;border-radius:10px;background:rgba(255,255,255,.06);margin-bottom:10px;transition:background .2s}
+.ll-card:hover{background:rgba(255,255,255,.1)}
+.ll-card-ico{font-size:18px;flex-shrink:0;margin-top:1px;width:24px;text-align:center}
+.ll-card-body{}
+.ll-card-title{font-size:11.5px;font-weight:700;color:rgba(255,255,255,.95);letter-spacing:.02em;margin-bottom:4px}
+.ll-card-text{font-size:11.5px;color:rgba(255,255,255,.58);line-height:1.6}
+.ll-card-text strong{color:rgba(255,255,255,.85);font-weight:600}
+/* Divider */
+.ll-div{height:1px;background:rgba(255,255,255,.07);margin:8px 0 18px}
+/* Contact block */
+.ll-contact{display:flex;gap:10px;align-items:center;padding:11px 14px;border-radius:10px;background:rgba(13,148,136,.14);border:1px solid rgba(13,148,136,.25)}
+.ll-contact-ico{font-size:16px;flex-shrink:0}
+.ll-contact-text{font-size:11.5px;color:rgba(255,255,255,.65);line-height:1.55}
+.ll-contact-text strong{color:rgba(255,255,255,.9);display:block;font-size:12px;margin-bottom:2px}
+.ll-ver{margin-top:auto;padding-top:20px;font-size:10px;color:rgba(255,255,255,.2);display:flex;justify-content:space-between;align-items:center}
 .lr{padding:38px 34px;display:flex;flex-direction:column;justify-content:center}
 .lr h2{font-family:'Manrope',sans-serif;font-size:22px;font-weight:700;color:var(--s900);margin-bottom:4px}
 .lr > p{font-size:13px;color:var(--s500);margin-bottom:26px}
@@ -296,29 +309,69 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
   <div class="ll">
    <div class="ll-brand">
     <div class="ll-ico">🏫</div>
-    <div><div class="ll-name">SISPPe</div><div class="ll-sub">Sistema de Informatização e Simplificação<br>dos Processos de Pereiro — COMEP</div></div>
+    <div>
+     <div class="ll-name">SISPPe</div>
+     <div class="ll-sub">Sistema de Informatização e Simplificação<br>dos Processos de Pereiro — COMEP</div>
+    </div>
    </div>
-   <div class="ll-box">
-    <strong>📢 Resolução COMEP nº 001/2022:</strong> A instituição deverá encaminhar a solicitação de recredenciamento <strong>90 dias antes</strong> do vencimento do credenciamento anterior.
+
+   <div class="ll-card">
+    <div class="ll-card-ico">🔐</div>
+    <div class="ll-card-body">
+     <div class="ll-card-title">Acesso ao sistema</div>
+     <div class="ll-card-text">Use o <strong>CPF</strong> do(a) diretor(a) ou secretário(a) como usuário e a <strong>senha de acesso</strong> fornecida pelo COMEP.</div>
+    </div>
    </div>
-   <ul class="ll-ul">
-    <li>Escolas em diligência: prazo de <strong>30 dias</strong> para cumprimento conforme notificação do COMEP.</li>
-    <li>Acesso com <strong>CPF do diretor(a) ou secretário(a)</strong> e senha provisória.</li>
-    <li>Documentos aceitos: <strong>PDF e JPG/JPEG</strong> · Máx. 10 MB por arquivo.</li>
-    <li>Atualize sempre que houver mudança no quadro administrativo ou no corpo docente.</li>
-   </ul>
-   <div class="ll-ver">SISPPe v2.0 · COMEP Pereiro/CE · 2025</div>
+
+   <div class="ll-card">
+    <div class="ll-card-ico">📄</div>
+    <div class="ll-card-body">
+     <div class="ll-card-title">Documentos obrigatórios</div>
+     <div class="ll-card-text">Envie os arquivos nos formatos <strong>PDF, JPG ou JPEG</strong> com tamanho máximo de <strong>10 MB</strong> por arquivo.</div>
+    </div>
+   </div>
+
+   <div class="ll-card">
+    <div class="ll-card-ico">🔄</div>
+    <div class="ll-card-body">
+     <div class="ll-card-title">Mantenha os dados atualizados</div>
+     <div class="ll-card-text">Registre alterações no quadro docente, administrativo ou nos dados da escola assim que ocorrerem.</div>
+    </div>
+   </div>
+
+   <div class="ll-card">
+    <div class="ll-card-ico">⏱️</div>
+    <div class="ll-card-body">
+     <div class="ll-card-title">Prazo de recredenciamento</div>
+     <div class="ll-card-text">Protocole a solicitação <strong>90 dias antes</strong> do vencimento. Em diligência, a escola tem <strong>30 dias</strong> para regularização após notificação.</div>
+    </div>
+   </div>
+
+   <div class="ll-div"></div>
+
+   <div class="ll-contact">
+    <div class="ll-contact-ico">💬</div>
+    <div class="ll-contact-text">
+     <strong>Dúvidas ou problemas de acesso?</strong>
+     Entre em contato com o COMEP ou use os links na tela ao lado.
+    </div>
+   </div>
+
+   <div class="ll-ver">
+    <span>SISPPe v2.0 · COMEP Pereiro/CE</span>
+    <span>2026</span>
+   </div>
   </div>
   <div class="lr">
    <h2>🏫 Área da Escola</h2>
    <p>Acesso exclusivo para diretores(as) e secretários(as) das unidades municipais de Pereiro/CE.</p>
    <div class="err" id="lerr">⚠️ CPF ou senha incorretos. Verifique os dados e tente novamente.</div>
-   <div class="fg0"><label>CPF</label><input type="text" id="inpCpf" placeholder="000.000.000-00" maxlength="14" oninput="mCpf(this)"></div>
-   <div class="fg0"><label>Senha</label><input type="password" id="inpPw" placeholder="Senha provisória"></div>
+   <div class="fg0"><label>CPF</label><input type="text" id="inpCpf" placeholder="000.000.000-00" maxlength="14" autocomplete="username" oninput="mCpf(this)"></div>
+   <div class="fg0"><label>Senha</label><input type="password" id="inpPw" placeholder="Senha de acesso" autocomplete="current-password"></div>
    <div class="trow"><input type="checkbox" id="chkT" checked><label for="chkT">Li e aceito os <a onclick="termos()">Termos de Uso</a> do sistema.</label></div>
    <button class="btn-enter" onclick="doLogin()">Entrar no Portal</button>
    <div class="hint">
-    💡 Para recuperar o acesso, utilize o link abaixo ou entre em contato com a Secretaria Municipal de Educação de Pereiro.
+    💡 Para recuperar o acesso, utilize o link abaixo ou entre em contato com o COMEP.
    </div>
    <div class="llinks">
     <a onclick="enviarEmailSenha()">Esqueci minha senha</a>
@@ -388,6 +441,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
        <button class="btn bt" style="justify-content:flex-start" onclick="nav('docs')">📁 Enviar Documentos Obrigatórios</button>
        <button class="btn bo" style="justify-content:flex-start" onclick="nav('ficha')">📋 Atualizar Ficha Escolar</button>
        <button class="btn bo" style="justify-content:flex-start" onclick="nav('prof')">🎓 Gerenciar Professores</button>
+       <button class="btn bo" style="justify-content:flex-start" onclick="nav('func')">🧑‍💼 Funcionários / Servidores</button>
        <button class="btn bo" style="justify-content:flex-start" onclick="nav('qa')">👥 Quadro Administrativo</button>
        <button class="btn bo" style="justify-content:flex-start" onclick="nav('dep')">🏗️ Dependências Físicas</button>
        <button class="btn bo" style="justify-content:flex-start" onclick="nav('mob')">📦 Mobiliário / Equipamento</button>
@@ -614,7 +668,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
   <div id="v-escrit" class="view">
    <div class="ph">
     <div><div class="ph-t">Escrituração Escolar</div><div class="ph-s">Instrumentos de gestão, biblioteca e informações complementares</div></div>
-    <div class="ph-acts"><button class="btn bo bsm" onclick="document.getElementById('m-doc').classList.add('on')">📤 Enviar Documento</button><button class="btn bt" id="btn-sescrit" onclick="salvarEscrit()">💾 Salvar</button></div>
+    <div class="ph-acts"><button class="btn bo bsm" onclick="st('es','doces',document.querySelector('#v-escrit .tbtn:last-child'));loadDoces()">📤 Docs Escrituração</button><button class="btn bt" id="btn-sescrit" onclick="salvarEscrit()">💾 Salvar</button></div>
    </div>
    <div style="padding:24px">
     <div class="tnav">
@@ -622,6 +676,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
      <button class="tbtn" onclick="st('es','bib',this)">📚 Biblioteca</button>
      <button class="tbtn" onclick="st('es','turn',this)">⏰ Turnos e Matrículas</button>
      <button class="tbtn" onclick="st('es','obs',this)">📝 Observações</button>
+     <button class="tbtn" onclick="st('es','doces',this)">📤 Documentos</button>
     </div>
 
     <!-- Instrumentos de Gestão -->
@@ -710,6 +765,72 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
       <div class="ch"><span class="ct">Observações Gerais</span><span class="cs">Informações adicionais relevantes para o processo de credenciamento</span></div>
       <div class="cb">
        <div class="fg"><label>Observações da Escola</label><textarea id="es-obs" rows="6" placeholder="Descreva informações adicionais, situações especiais, necessidades ou qualquer observação relevante para o COMEP..."></textarea></div>
+      </div>
+     </div>
+    </div>
+
+    <!-- Documentos de Escrituração -->
+    <div class="tpane" id="es-t-doces">
+     <div class="info-box">📤 <strong>Documentos de Escrituração:</strong> Envie aqui os documentos comprobatórios dos instrumentos de gestão. Os arquivos ficam salvos na nuvem e ficam visíveis para o COMEP. Formatos aceitos: <strong>PDF, JPG ou JPEG</strong> — máximo <strong>10 MB</strong>.</div>
+     <div class="card" style="margin-bottom:16px">
+      <div class="ch"><span class="ct">📂 Enviar Documento de Escrituração</span></div>
+      <div class="cb">
+       <div class="gf">
+        <div class="fg s2">
+         <label>Tipo de Documento *</label>
+         <select id="doces-tip">
+          <option value="">— Selecione o tipo —</option>
+          <optgroup label="Instrumentos de Gestão">
+           <option>PROJETO POLÍTICO PEDAGÓGICO (PPP)</option>
+           <option>REGIMENTO ESCOLAR</option>
+           <option>ATA DE APROVAÇÃO DO REGIMENTO ESCOLAR</option>
+           <option>CALENDÁRIO ESCOLAR</option>
+           <option>ATA DO CONSELHO ESCOLAR</option>
+           <option>PLANO DE AÇÃO / PDDE</option>
+           <option>PROPOSTA CURRICULAR</option>
+          </optgroup>
+          <optgroup label="Matrículas e Escrituração">
+           <option>RELATÓRIO DE MATRÍCULAS</option>
+           <option>DIÁRIO DE CLASSE</option>
+           <option>ATA DE RESULTADO FINAL</option>
+           <option>FICHA INDIVIDUAL DO ALUNO</option>
+           <option>LIVRO DE PONTO</option>
+          </optgroup>
+          <optgroup label="Outros">
+           <option>OUTRO DOCUMENTO DE ESCRITURAÇÃO</option>
+          </optgroup>
+         </select>
+        </div>
+        <div class="fg s2">
+         <label>Descrição (opcional)</label>
+         <input id="doces-dsc" placeholder="Breve descrição do documento">
+        </div>
+       </div>
+       <div class="uzbox" id="doces-zone" onclick="document.getElementById('doces-fil').click()"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="docesDrop(event)">
+        <div class="uz-ico">📎</div>
+        <div class="uz-txt" id="doces-fn">Clique aqui ou arraste o arquivo</div>
+        <div class="uz-hint">PDF, JPG ou JPEG — máximo 10 MB</div>
+        <input type="file" id="doces-fil" accept=".pdf,.jpg,.jpeg" onchange="docesSel(this)">
+       </div>
+       <div class="prw" id="doces-prw">
+        <div class="prl"><span id="doces-prs">Enviando...</span><span id="doces-prp">0%</span></div>
+        <div class="prb"><div class="prf" id="doces-prf"></div></div>
+       </div>
+       <div style="margin-top:14px;text-align:right">
+        <button class="btn bt" id="btn-udoces" onclick="uploadDoces()">📤 Enviar Documento</button>
+       </div>
+      </div>
+     </div>
+     <div class="card">
+      <div class="ch"><span class="ct">📋 Documentos Enviados</span><button class="btn bg bsm" onclick="loadDoces()">🔄</button></div>
+      <div class="tw">
+       <table class="tbl">
+        <thead><tr><th>#</th><th>Tipo</th><th>Descrição</th><th>Enviado em</th><th>Tamanho</th><th style="text-align:right">Ações</th></tr></thead>
+        <tbody id="tb-doces"><tr><td colspan="6" style="text-align:center;padding:20px;color:var(--s400)">Clique em 🔄 para carregar.</td></tr></tbody>
+       </table>
       </div>
      </div>
     </div>
@@ -1046,43 +1167,57 @@ const CL_PRE='sisppe_docs';
 /* ═══════════════════════════════════════════
    USERS DATABASE
 ═══════════════════════════════════════════ */
+/*
+ * USERS — Cadastro de Acesso SISPPe
+ * Chave interna: "CPF_INEP" — autenticação sempre pelo par (cpf + pw).
+ */
 const USERS={
-"100.000.001-01":{inep:"23138378",nome:"Escola Antônio Pinheiro Maia",par:"0621/2024",val:"31/12/2027",rural:true,pw:"Dir@2025#01",pfil:"Diretor(a)"},
-"200.000.001-01":{inep:"23138378",nome:"Escola Antônio Pinheiro Maia",par:"0621/2024",val:"31/12/2027",rural:true,pw:"Sec@2025#01",pfil:"Secretário(a) Escolar"},
-"100.000.002-02":{inep:"23138408",nome:"Escola Cândido José Nogueira",par:"0305/2025",val:"31/12/2030",rural:false,pw:"Dir@2025#02",pfil:"Diretor(a)"},
-"200.000.002-02":{inep:"23138408",nome:"Escola Cândido José Nogueira",par:"0305/2025",val:"31/12/2030",rural:false,pw:"Sec@2025#02",pfil:"Secretário(a) Escolar"},
-"100.000.003-03":{inep:"23219254",nome:"Escola Cleonice Freire de Queiroz",par:"0305/2025",val:"31/12/2030",rural:false,pw:"Dir@2025#03",pfil:"Diretor(a)"},
-"200.000.003-03":{inep:"23219254",nome:"Escola Cleonice Freire de Queiroz",par:"0305/2025",val:"31/12/2030",rural:false,pw:"Sec@2025#03",pfil:"Secretário(a) Escolar"},
-"100.000.004-04":{inep:"23274778",nome:"Escola Francisca Nogueira de Sousa",par:"0278/2025",val:"31/12/2028",rural:false,pw:"Dir@2025#04",pfil:"Diretor(a)"},
-"200.000.004-04":{inep:"23274778",nome:"Escola Francisca Nogueira de Sousa",par:"0278/2025",val:"31/12/2028",rural:false,pw:"Sec@2025#04",pfil:"Secretário(a) Escolar"},
-"100.000.005-05":{inep:"23238483",nome:"Escola Francisco das Chagas de Aquino",par:"0303/2025",val:"31/12/2028",rural:true,pw:"Dir@2025#05",pfil:"Diretor(a)"},
-"200.000.005-05":{inep:"23238483",nome:"Escola Francisco das Chagas de Aquino",par:"0303/2025",val:"31/12/2028",rural:true,pw:"Sec@2025#05",pfil:"Secretário(a) Escolar"},
-"100.000.006-06":{inep:"23283467",nome:"Escola João Nogueira de Sousa",par:"0346/2025",val:"31/12/2028",rural:true,pw:"Dir@2025#06",pfil:"Diretor(a)"},
-"200.000.006-06":{inep:"23283467",nome:"Escola João Nogueira de Sousa",par:"0346/2025",val:"31/12/2028",rural:true,pw:"Sec@2025#06",pfil:"Secretário(a) Escolar"},
-"100.000.007-07":{inep:"23138777",nome:"Escola José Matias de Sousa",par:"0305/2025",val:"31/12/2030",rural:true,pw:"Dir@2025#07",pfil:"Diretor(a)"},
-"200.000.007-07":{inep:"23138777",nome:"Escola José Matias de Sousa",par:"0305/2025",val:"31/12/2030",rural:true,pw:"Sec@2025#07",pfil:"Secretário(a) Escolar"},
-"100.000.008-08":{inep:"23178370",nome:"Escola José Nilson Bezerra",par:"0621/2024",val:"31/12/2027",rural:true,pw:"Dir@2025#08",pfil:"Diretor(a)"},
-"200.000.008-08":{inep:"23178370",nome:"Escola José Nilson Bezerra",par:"0621/2024",val:"31/12/2027",rural:true,pw:"Sec@2025#08",pfil:"Secretário(a) Escolar"},
-"100.000.009-09":{inep:"23138670",nome:"Escola Maria das Graças Nogueira",par:"0305/2025",val:"31/12/2030",rural:true,pw:"Dir@2025#09",pfil:"Diretor(a)"},
-"200.000.009-09":{inep:"23138670",nome:"Escola Maria das Graças Nogueira",par:"0305/2025",val:"31/12/2030",rural:true,pw:"Sec@2025#09",pfil:"Secretário(a) Escolar"},
-"100.000.010-10":{inep:"23138688",nome:"Escola Maria Nazaré de Jesus",par:"0894/2024",val:"31/12/2026",rural:true,pw:"Dir@2025#10",pfil:"Diretor(a)"},
-"200.000.010-10":{inep:"23138688",nome:"Escola Maria Nazaré de Jesus",par:"0894/2024",val:"31/12/2026",rural:true,pw:"Sec@2025#10",pfil:"Secretário(a) Escolar"},
-"100.000.011-11":{inep:"23138742",nome:"Escola Miguel Antônio da Rocha",par:"098/2025",val:"31/12/2027",rural:true,pw:"Dir@2025#11",pfil:"Diretor(a)"},
-"200.000.011-11":{inep:"23138742",nome:"Escola Miguel Antônio da Rocha",par:"098/2025",val:"31/12/2027",rural:true,pw:"Sec@2025#11",pfil:"Secretário(a) Escolar"},
-"100.000.012-12":{inep:"23138530",nome:"Escola Nossa Senhora das Graças",par:"0304/2025",val:"31/12/2028",rural:true,pw:"Dir@2025#12",pfil:"Diretor(a)"},
-"200.000.012-12":{inep:"23138530",nome:"Escola Nossa Senhora das Graças",par:"0304/2025",val:"31/12/2028",rural:true,pw:"Sec@2025#12",pfil:"Secretário(a) Escolar"},
-"100.000.013-13":{inep:"23138793",nome:"Escola Pedro Gomes de Lima",par:"0894/2024",val:"31/12/2026",rural:true,pw:"Dir@2025#13",pfil:"Diretor(a)"},
-"200.000.013-13":{inep:"23138793",nome:"Escola Pedro Gomes de Lima",par:"0894/2024",val:"31/12/2026",rural:true,pw:"Sec@2025#13",pfil:"Secretário(a) Escolar"},
-"100.000.014-14":{inep:"23178280",nome:"Escola Pequeno Príncipe",par:"0304/2025",val:"31/12/2028",rural:false,pw:"Dir@2025#14",pfil:"Diretor(a)"},
-"200.000.014-14":{inep:"23178280",nome:"Escola Pequeno Príncipe",par:"0304/2025",val:"31/12/2028",rural:false,pw:"Sec@2025#14",pfil:"Secretário(a) Escolar"},
-"100.000.015-15":{inep:"23138815",nome:"Escola Pingo de Gente",par:"0304/2025",val:"31/12/2028",rural:false,pw:"Dir@2025#15",pfil:"Diretor(a)"},
-"200.000.015-15":{inep:"23138815",nome:"Escola Pingo de Gente",par:"0304/2025",val:"31/12/2028",rural:false,pw:"Sec@2025#15",pfil:"Secretário(a) Escolar"},
-"100.000.016-16":{inep:"23258829",nome:"Escola Semeando o Saber",par:"0112/2025",val:"31/12/2026",rural:true,pw:"Dir@2025#16",pfil:"Diretor(a)"},
-"200.000.016-16":{inep:"23258829",nome:"Escola Semeando o Saber",par:"0112/2025",val:"31/12/2026",rural:true,pw:"Sec@2025#16",pfil:"Secretário(a) Escolar"},
-"100.000.017-17":{inep:"00000017",nome:"Escola Luiz Gonçalves de Lima",par:"—",val:"—",rural:true,pw:"Dir@2025#17",pfil:"Diretor(a)"},
-"200.000.017-17":{inep:"00000017",nome:"Escola Luiz Gonçalves de Lima",par:"—",val:"—",rural:true,pw:"Sec@2025#17",pfil:"Secretário(a) Escolar"},
-"100.000.018-18":{inep:"00000018",nome:"Escola Municipal 18 — A Cadastrar",par:"—",val:"—",rural:false,pw:"Dir@2025#18",pfil:"Diretor(a)"},
-"200.000.018-18":{inep:"00000018",nome:"Escola Municipal 18 — A Cadastrar",par:"—",val:"—",rural:false,pw:"Sec@2025#18",pfil:"Secretário(a) Escolar"}
+/* ── EEIF ANTÔNIO PINHEIRO MAIA (PAR 0621/2024 · Val 31/12/2027) ── */
+"912.400.934-20_23138378":{cpf:"912.400.934-20",inep:"23138378",nome:"EEIF Antônio Pinheiro Maia",par:"0621/2024",val:"31/12/2027",rural:true,pw:"rai@3420",pfil:"Diretor(a)"},
+"862.841.343-04_23138378":{cpf:"862.841.343-04",inep:"23138378",nome:"EEIF Antônio Pinheiro Maia",par:"0621/2024",val:"31/12/2027",rural:true,pw:"fra@8378",pfil:"Secretário(a) Escolar"},
+/* ── EEF CÂNDIDO JOSÉ NOGUEIRA (PAR 0305/2025 · Val 31/12/2030) ── */
+"780.322.293-53_23138408":{cpf:"780.322.293-53",inep:"23138408",nome:"EEF Cândido José Nogueira",par:"0305/2025",val:"31/12/2030",rural:false,pw:"jos@9353",pfil:"Diretor(a)"},
+"862.809.703-10_23138408":{cpf:"862.809.703-10",inep:"23138408",nome:"EEF Cândido José Nogueira",par:"0305/2025",val:"31/12/2030",rural:false,pw:"fra@8408",pfil:"Secretário(a) Escolar"},
+/* ── EEF CLEONICE FREIRE DE QUEIROZ (PAR 0305/2025 · Val 31/12/2030) ── */
+"510.648.553-34_23219254":{cpf:"510.648.553-34",inep:"23219254",nome:"EEF Cleonice Freire de Queiroz",par:"0305/2025",val:"31/12/2030",rural:false,pw:"nor@5334",pfil:"Diretor(a)"},
+"907.258.913-00_23219254":{cpf:"907.258.913-00",inep:"23219254",nome:"EEF Cleonice Freire de Queiroz",par:"0305/2025",val:"31/12/2030",rural:false,pw:"mar@1300",pfil:"Secretário(a) Escolar"},
+/* ── EEF FRANCISCA NOGUEIRA DE SOUSA (PAR 0278/2025 · Val 31/12/2028) ── */
+"850.724.513-72_23274778":{cpf:"850.724.513-72",inep:"23274778",nome:"EEF Francisca Nogueira de Sousa",par:"0278/2025",val:"31/12/2028",rural:false,pw:"fra@1372",pfil:"Diretor(a)"},
+"835.637.923-72_23274778":{cpf:"835.637.923-72",inep:"23274778",nome:"EEF Francisca Nogueira de Sousa",par:"0278/2025",val:"31/12/2028",rural:false,pw:"mar@2372",pfil:"Secretário(a) Escolar"},
+/* ── EEIF FRANCISCO DAS CHAGAS DE AQUINO (PAR 0303/2025 · Val 31/12/2028) ── */
+"018.222.463-50_23138483":{cpf:"018.222.463-50",inep:"23138483",nome:"EEIF Francisco das Chagas de Aquino",par:"0303/2025",val:"31/12/2028",rural:true,pw:"lua@8483",pfil:"Diretor(a)"},
+"013.897.863-82_23138483":{cpf:"013.897.863-82",inep:"23138483",nome:"EEIF Francisco das Chagas de Aquino",par:"0303/2025",val:"31/12/2028",rural:true,pw:"mar@8483",pfil:"Secretário(a) Escolar"},
+/* ── EEF JOÃO NOGUEIRA DE SOUSA (PAR 0346/2025 · Val 31/12/2028) ── */
+"095.782.484-07_23283467":{cpf:"095.782.484-07",inep:"23283467",nome:"EEF João Nogueira de Sousa",par:"0346/2025",val:"31/12/2028",rural:true,pw:"jos@8407",pfil:"Diretor(a)"},
+"862.841.343-04_23283467":{cpf:"862.841.343-04",inep:"23283467",nome:"EEF João Nogueira de Sousa",par:"0346/2025",val:"31/12/2028",rural:true,pw:"fra@3467",pfil:"Secretário(a) Escolar"},
+/* ── EEIF JOSÉ MATIAS DE SOUSA (PAR 0305/2025 · Val 31/12/2030) ── */
+"230.646.173-20_23138777":{cpf:"230.646.173-20",inep:"23138777",nome:"EEIF José Matias de Sousa",par:"0305/2025",val:"31/12/2030",rural:true,pw:"rai@7320",pfil:"Diretor(a)"},
+"371.192.303-87_23138777":{cpf:"371.192.303-87",inep:"23138777",nome:"EEIF José Matias de Sousa",par:"0305/2025",val:"31/12/2030",rural:true,pw:"dam@8777",pfil:"Secretário(a) Escolar"},
+/* ── EEIF JOSÉ NILSON BEZERRA (PAR 0621/2024 · Val 31/12/2027) ── */
+"797.462.843-04_23178370":{cpf:"797.462.843-04",inep:"23178370",nome:"EEIF José Nilson Bezerra",par:"0621/2024",val:"31/12/2027",rural:true,pw:"fra@4304",pfil:"Diretor(a)"},
+"371.192.303-87_23178370":{cpf:"371.192.303-87",inep:"23178370",nome:"EEIF José Nilson Bezerra",par:"0621/2024",val:"31/12/2027",rural:true,pw:"dam@8370",pfil:"Secretário(a) Escolar"},
+/* ── EEF MARIA DAS GRAÇAS NOGUEIRA (PAR 0305/2025 · Val 31/12/2030) ── */
+"848.639.603-44_23138670":{cpf:"848.639.603-44",inep:"23138670",nome:"EEF Maria das Graças Nogueira",par:"0305/2025",val:"31/12/2030",rural:true,pw:"fla@0344",pfil:"Diretor(a)"},
+"862.841.343-04_23138670":{cpf:"862.841.343-04",inep:"23138670",nome:"EEF Maria das Graças Nogueira",par:"0305/2025",val:"31/12/2030",rural:true,pw:"fra@8670",pfil:"Secretário(a) Escolar"},
+/* ── EEIF MARIA NAZARÉ DE JESUS (PAR 0894/2024 · Val 31/12/2026) — Diretor sem CPF ── */
+"862.809.703-10_23138688":{cpf:"862.809.703-10",inep:"23138688",nome:"EEIF Maria Nazaré de Jesus",par:"0894/2024",val:"31/12/2026",rural:true,pw:"fra@8688",pfil:"Secretário(a) Escolar"},
+/* ── MIGUEL ANTÔNIO DA ROCHA (PAR 098/2025 · Val 31/12/2027) ── */
+"018.222.463-50_23138742":{cpf:"018.222.463-50",inep:"23138742",nome:"Miguel Antônio da Rocha",par:"098/2025",val:"31/12/2027",rural:true,pw:"lua@8742",pfil:"Diretor(a)"},
+"013.897.863-82_23138742":{cpf:"013.897.863-82",inep:"23138742",nome:"Miguel Antônio da Rocha",par:"098/2025",val:"31/12/2027",rural:true,pw:"mar@8742",pfil:"Secretário(a) Escolar"},
+/* ── EEIF NOSSA SENHORA DAS GRAÇAS (PAR 0304/2025 · Val 31/12/2028) — Diretor sem CPF ── */
+"026.055.083-31_23138530":{cpf:"026.055.083-31",inep:"23138530",nome:"EEIF Nossa Senhora das Graças",par:"0304/2025",val:"31/12/2028",rural:true,pw:"kar@8530",pfil:"Secretário(a) Escolar"},
+/* ── EEIF PEDRO GOMES DE LIMA (PAR 0894/2024 · Val 31/12/2026) ── */
+"157.152.803-20_23138793":{cpf:"157.152.803-20",inep:"23138793",nome:"EEIF Pedro Gomes de Lima",par:"0894/2024",val:"31/12/2026",rural:true,pw:"mar@0320",pfil:"Diretor(a)"},
+"371.192.303-87_23138793":{cpf:"371.192.303-87",inep:"23138793",nome:"EEIF Pedro Gomes de Lima",par:"0894/2024",val:"31/12/2026",rural:true,pw:"dam@8793",pfil:"Secretário(a) Escolar"},
+/* ── CENTRO DE EDUCAÇÃO INFANTIL PINGO DE GENTE (PAR 0304/2025 · Val 31/12/2028) ── */
+"812.472.733-34_23138815":{cpf:"812.472.733-34",inep:"23138815",nome:"CEI Pingo de Gente",par:"0304/2025",val:"31/12/2028",rural:false,pw:"zel@3334",pfil:"Diretor(a)"},
+"013.897.863-82_23138815":{cpf:"013.897.863-82",inep:"23138815",nome:"CEI Pingo de Gente",par:"0304/2025",val:"31/12/2028",rural:false,pw:"mar@8815",pfil:"Secretário(a) Escolar"},
+/* ── CRECHE INFANTIL SEMEANDO O SABER (PAR 0112/2025 · Val 31/12/2026) ── */
+"785.738.904-87_23258829":{cpf:"785.738.904-87",inep:"23258829",nome:"Creche Infantil Semeando o Saber",par:"0112/2025",val:"31/12/2026",rural:true,pw:"mar@0487",pfil:"Diretor(a)"},
+"026.055.083-31_23258829":{cpf:"026.055.083-31",inep:"23258829",nome:"Creche Infantil Semeando o Saber",par:"0112/2025",val:"31/12/2026",rural:true,pw:"kar@8829",pfil:"Secretário(a) Escolar"},
+/* ── CEI LUIZ GONÇALVES DE LIMA (Código INEP pendente) ── */
+"865.644.393-34_00000017":{cpf:"865.644.393-34",inep:"00000017",nome:"CEI Luiz Gonçalves de Lima",par:"—",val:"—",rural:true,pw:"edn@9334",pfil:"Diretor(a)"},
+"862.809.703-10_00000017":{cpf:"862.809.703-10",inep:"00000017",nome:"CEI Luiz Gonçalves de Lima",par:"—",val:"—",rural:true,pw:"fra@0017",pfil:"Secretário(a) Escolar"}
 };
 const DOCS_OBR=['ATO DE CRIAÇÃO','COMPROVANTE DO CENSO ESCOLAR','COMPROVANTE DO RELATÓRIO ANUAL','FOTO FACHADA DO PRÉDIO','FOTOS DAS DEPENDÊNCIAS','REQUERIMENTO / OFÍCIO'];
 const ANOS_ETP={
@@ -1096,10 +1231,12 @@ const ANOS_ETP={
    STATE
 ═══════════════════════════════════════════ */
 let U=null,BLQ=false,SIT='ativa';
+let FUNCS=[];
 let PROFS=[],QAS=[],DEPS=[],MOBS=[];
 let pEid=null,qEid=null,dEid=null,mEid=null;
-let NF=[],NA=[]; // temp formações/atribuições no modal
+let NF=[],NA=[];
 let _loginAttempts=0,_loginLocked=false,_loginLockTimer=null;
+let _sessionTimer=null,_sessionWarnTimer=null;
 
 /* ═══════════════════════════════════════════
    UTILS
@@ -1126,54 +1263,124 @@ function closeMOver(e,overlay){
 /* ═══════════════════════════════════════════
    LOGIN
 ═══════════════════════════════════════════ */
+const _loginAttemptsByCpf={};
+const _loginLockedByCpf={};
+
+// Restaura bloqueio do sessionStorage (persiste após F5)
+(function(){
+  try{
+    const locked=JSON.parse(sessionStorage.getItem('_sisppe_locked')||'{}');
+    Object.keys(locked).forEach(cpf=>{
+      if(locked[cpf].until>Date.now()){
+        _loginLockedByCpf[cpf]=true;
+        setTimeout(()=>{_loginLockedByCpf[cpf]=false;delete locked[cpf];sessionStorage.setItem('_sisppe_locked',JSON.stringify(locked))},locked[cpf].until-Date.now());
+      }
+    });
+  }catch(e){}
+})();
+
+function _persistLock(cpf){
+  try{
+    const locked=JSON.parse(sessionStorage.getItem('_sisppe_locked')||'{}');
+    locked[cpf]={until:Date.now()+300000};
+    sessionStorage.setItem('_sisppe_locked',JSON.stringify(locked));
+  }catch(e){}
+}
+
+function _loginDelay(ms){return new Promise(r=>setTimeout(r,ms));}
+
 async function doLogin(){
-  if(_loginLocked){toast('Muitas tentativas incorretas. Aguarde 5 minutos e tente novamente.','err');return}
+  if(_loginLocked){toast('⛔ Muitas tentativas. Aguarde 5 minutos.','err');return}
   const cpf=document.getElementById('inpCpf').value.trim();
   const pw=document.getElementById('inpPw').value.trim();
   if(!document.getElementById('chkT').checked){toast('Aceite os Termos de Uso.','err');return}
   if(!cpf||!pw){document.getElementById('lerr').style.display='block';return}
   if(cpf.length<14){document.getElementById('lerr').style.display='block';return}
-  const u=USERS[cpf];
-  if(!u||u.pw!==pw){
+
+  if(_loginLockedByCpf[cpf]){toast('⛔ Acesso temporariamente bloqueado. Aguarde 5 minutos.','err');return}
+
+  const btn=document.querySelector('.btn-enter');
+  if(btn){btn.disabled=true;btn.textContent='Verificando...';}
+
+  // Delay artificial (300–700ms) em TODA tentativa — dificulta timing attacks e força-bruta
+  await _loginDelay(300+Math.floor(Math.random()*400));
+
+  const match=Object.values(USERS).find(u=>u.cpf===cpf&&u.pw===pw);
+
+  if(!match){
+    // Limpa campo de senha imediatamente após falha
+    document.getElementById('inpPw').value='';
+    if(btn){btn.disabled=false;btn.textContent='Entrar no Portal';}
+
     _loginAttempts++;
-    if(_loginAttempts>=5){
+    _loginAttemptsByCpf[cpf]=(_loginAttemptsByCpf[cpf]||0)+1;
+
+    if(_loginAttemptsByCpf[cpf]>=5){
+      _loginLockedByCpf[cpf]=true;
+      _persistLock(cpf);
+      setTimeout(()=>{_loginLockedByCpf[cpf]=false;_loginAttemptsByCpf[cpf]=0},300000);
+    }
+    if(_loginAttempts>=10){
       _loginLocked=true;
       clearTimeout(_loginLockTimer);
       _loginLockTimer=setTimeout(()=>{_loginLocked=false;_loginAttempts=0},300000);
     }
-    document.getElementById('lerr').style.display='block';return
+    document.getElementById('lerr').style.display='block';
+    return;
   }
+
+  // Sucesso
   _loginAttempts=0;
+  _loginAttemptsByCpf[cpf]=0;
   document.getElementById('lerr').style.display='none';
-  U={...u,cpf};
+  if(btn){btn.disabled=false;btn.textContent='Entrar no Portal';}
+  U={...match};
+
+  // Session: 8h inativas → logout com aviso 5 min antes
+  _resetSessionTimer();
+  // Renova timer em qualquer atividade
+  ['mousemove','keydown','click','touchstart'].forEach(ev=>
+    document.addEventListener(ev,_resetSessionTimer,{passive:true})
+  );
+
   try{
-    const snap=await db.collection('escolas').doc(u.inep).get();
+    const snap=await db.collection('escolas').doc(match.inep).get();
     if(snap.exists){BLQ=snap.data().bloqueado===true;SIT=snap.data().situacao||'ativa'}
   }catch(e){}
 
-  // Banners
   document.getElementById('bann-bloq').style.display=BLQ?'block':'none';
   document.getElementById('bann-anal').style.display=(!BLQ&&SIT==='em_analise')?'block':'none';
 
-  // Sidebar
-  document.getElementById('sb-nome').textContent=u.nome;
-  document.getElementById('sb-pfil').textContent=u.pfil;
+  document.getElementById('sb-nome').textContent=match.nome;
+  document.getElementById('sb-pfil').textContent=match.pfil;
   const st=document.getElementById('sb-st');
   if(BLQ){st.className='sb-status err';st.textContent='⛔ Acesso Bloqueado';st.style.display='block'}
   else if(SIT==='em_analise'){st.className='sb-status warn';st.textContent='🔍 Em Análise pelo COMEP';st.style.display='block'}
-  else if(u.val!=='—'){st.className='sb-status ok';st.textContent='✅ Credenciamento Ativo · '+u.val;st.style.display='block'}
+  else if(match.val!=='—'){st.className='sb-status ok';st.textContent='✅ Credenciamento Ativo · '+match.val;st.style.display='block'}
   else{st.className='sb-status err';st.textContent='⚠️ Pendente de Regularização';st.style.display='block'}
 
-  // Disable edit buttons if blocked
-  ['btn-sfic','btn-nprof','btn-nqa','btn-ndep','btn-nmob','btn-ndoc','btn-sprof','btn-udoc','btn-sescrit','btn-pdf','btn-nfunc','btn-sfunc'].forEach(id=>{
+  ['btn-sfic','btn-nprof','btn-nqa','btn-ndep','btn-nmob','btn-ndoc','btn-sprof','btn-udoc','btn-sescrit','btn-pdf','btn-nfunc','btn-sfunc','btn-udoces'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.disabled=BLQ
-  })
+  });
 
   document.getElementById('pg-login').classList.add('out');
-  setTimeout(()=>{document.getElementById('pg-app').classList.add('on');nav('dash');loadNotifBadge()},360)
+  setTimeout(()=>{document.getElementById('pg-app').classList.add('on');nav('dash');loadNotifBadge()},360);
+}
+
+function _resetSessionTimer(){
+  clearTimeout(_sessionTimer);
+  clearTimeout(_sessionWarnTimer);
+  // Aviso 5 min antes do logout
+  _sessionWarnTimer=setTimeout(()=>{toast('⏱ Sua sessão expirará em 5 minutos por inatividade.','')},7*60*60*1000+55*60*1000);
+  _sessionTimer=setTimeout(()=>{doLogout();alert('Sessão encerrada por inatividade. Faça login novamente.')},8*60*60*1000);
 }
 function doLogout(){
   U=null;BLQ=false;SIT='ativa';PROFS=[];QAS=[];DEPS=[];MOBS=[];FUNCS=[];
+  clearTimeout(_sessionTimer);clearTimeout(_sessionWarnTimer);
+  _sessionTimer=null;_sessionWarnTimer=null;
+  ['mousemove','keydown','click','touchstart'].forEach(ev=>
+    document.removeEventListener(ev,_resetSessionTimer)
+  );
   document.getElementById('pg-app').classList.remove('on');
   document.getElementById('pg-login').classList.remove('out');
   document.getElementById('inpPw').value='';
@@ -1182,6 +1389,7 @@ function doLogout(){
   document.getElementById('bann-bloq').style.display='none';
   document.getElementById('bann-anal').style.display='none';
   const nb=document.getElementById('notif-badge');if(nb)nb.style.display='none';
+  _dirty=false;
 }
 
 /* ═══════════════════════════════════════════
@@ -1200,7 +1408,7 @@ function nav(v){
   else if(v==='prof')loadProf();
   else if(v==='qa')loadQA();
   else if(v==='docs')loadDocs();
-  else if(v==='escrit')loadEscrit();
+  else if(v==='escrit'){loadEscrit();loadDoces();}
   else if(v==='func')loadFunc();
   else if(v==='notif')loadNotif();
 }
@@ -1224,10 +1432,10 @@ async function rDash(){
   document.getElementById('d-val').textContent=U.val;
   document.getElementById('d-par').textContent='Parecer COMEP nº '+U.par;
   document.getElementById('d-stab').innerHTML=`
-    <tr><td style="color:var(--s500);font-size:12px;padding:5px 0;font-weight:600;width:90px">INEP</td><td>${U.inep}</td></tr>
-    <tr><td style="color:var(--s500);font-size:12px;padding:5px 0;font-weight:600">Escola</td><td>${U.nome}</td></tr>
-    <tr><td style="color:var(--s500);font-size:12px;padding:5px 0;font-weight:600">Parecer</td><td>${U.par}</td></tr>
-    <tr><td style="color:var(--s500);font-size:12px;padding:5px 0;font-weight:600">Validade</td><td>${U.val}</td></tr>
+    <tr><td style="color:var(--s500);font-size:12px;padding:5px 0;font-weight:600;width:90px">INEP</td><td>${esc(U.inep)}</td></tr>
+    <tr><td style="color:var(--s500);font-size:12px;padding:5px 0;font-weight:600">Escola</td><td>${esc(U.nome)}</td></tr>
+    <tr><td style="color:var(--s500);font-size:12px;padding:5px 0;font-weight:600">Parecer</td><td>${esc(U.par)}</td></tr>
+    <tr><td style="color:var(--s500);font-size:12px;padding:5px 0;font-weight:600">Validade</td><td>${esc(U.val)}</td></tr>
     <tr><td style="color:var(--s500);font-size:12px;padding:5px 0;font-weight:600">Zona</td><td>${U.rural?'🌾 Rural':'🏙️ Urbana'}</td></tr>`;
   try{
     const [ds,ps,qs]=await Promise.all([
@@ -1314,14 +1522,14 @@ function rDep(){
   document.getElementById('dep-tipos').textContent=DEPS.length;
   if(!DEPS.length){document.getElementById('tb-dep').innerHTML='<tr><td colspan="5"><div class="empty"><div class="empty-ic">🏗️</div><div class="empty-t">Nenhuma dependência cadastrada</div></div></td></tr>';return}
   document.getElementById('tb-dep').innerHTML=DEPS.map(d=>`<tr>
-    <td style="font-weight:600">${d.tipo}</td>
-    <td><span class="bdg bt2">${d.quantidade}</span></td>
-    <td>${d.area_m2?d.area_m2+' m²':'—'}</td>
-    <td style="font-size:12px;color:var(--s500)">${d.observacao||'—'}</td>
+    <td style="font-weight:600">${esc(d.tipo)}</td>
+    <td><span class="bdg bt2">${esc(String(d.quantidade||0))}</span></td>
+    <td>${d.area_m2?esc(String(d.area_m2))+' m²':'—'}</td>
+    <td style="font-size:12px;color:var(--s500)">${esc(d.observacao||'—')}</td>
     <td style="text-align:right">
       <div style="display:flex;gap:4px;justify-content:flex-end">
-        <button class="btn bg bxs" onclick="openDepM('${d.id}')">✏️</button>
-        <button class="btn bg bxs" style="color:var(--r600)" onclick="delDep('${d.id}')">🗑️</button>
+        <button class="btn bg bxs" onclick="openDepM('${esc(d.id)}')">✏️</button>
+        <button class="btn bg bxs" style="color:var(--r600)" onclick="delDep('${esc(d.id)}')">🗑️</button>
       </div>
     </td>
   </tr>`).join('');
@@ -1376,16 +1584,16 @@ function rMob(){
   document.getElementById('tb-mob').innerHTML=MOBS.map(m=>{
     const tot=(m.qtd_excelente||0)+(m.qtd_bom||0)+(m.qtd_regular||0)+(m.qtd_pessimo||0);
     return `<tr>
-      <td style="font-weight:600">${m.tipo}<br><span style="font-size:11.5px;color:var(--s400)">Total: ${tot}</span></td>
+      <td style="font-weight:600">${esc(m.tipo)}<br><span style="font-size:11.5px;color:var(--s400)">Total: ${tot}</span></td>
       <td style="text-align:center"><span class="bdg bgn">${m.qtd_excelente||0}</span></td>
       <td style="text-align:center"><span class="bdg bt2">${m.qtd_bom||0}</span></td>
       <td style="text-align:center"><span class="bdg ba">${m.qtd_regular||0}</span></td>
       <td style="text-align:center"><span class="bdg br">${m.qtd_pessimo||0}</span></td>
-      <td style="font-size:12px;color:var(--s500)">${m.observacao||'—'}</td>
+      <td style="font-size:12px;color:var(--s500)">${esc(m.observacao||'—')}</td>
       <td style="text-align:right">
         <div style="display:flex;gap:4px;justify-content:flex-end">
-          <button class="btn bg bxs" onclick="openMobM('${m.id}')">✏️</button>
-          <button class="btn bg bxs" style="color:var(--r600)" onclick="delMob('${m.id}')">🗑️</button>
+          <button class="btn bg bxs" onclick="openMobM('${esc(m.id)}')">✏️</button>
+          <button class="btn bg bxs" style="color:var(--r600)" onclick="delMob('${esc(m.id)}')">🗑️</button>
         </div>
       </td>
     </tr>`;
@@ -1435,14 +1643,14 @@ async function loadProf(){
   if(!U)return;
   try{
     const snap=await db.collection('escolas').doc(U.inep).collection('professores').get();
-    PROFS=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.nome||'').localeCompare(b.nome||'','pt-BR'));
+    PROFS=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.nome||'').localeCompare(b.nome||'','pt-BR',{sensitivity:'base'}));
     rProf();
   }catch(e){toast('Erro ao carregar professores.','err')}
 }
 function rProf(){
   if(!Array.isArray(PROFS))return;
   const q=(document.getElementById('p-srch')||{}).value?.toLowerCase()||'';
-  const ls=PROFS.filter(p=>p.nome.toLowerCase().includes(q)||(p.cpf||'').includes(q));
+  const ls=PROFS.filter(p=>(p.nome||'').toLowerCase().includes(q)||(p.cpf||'').includes(q));
   document.getElementById('p-tot').textContent=PROFS.length;
   document.getElementById('p-ef').textContent=PROFS.filter(p=>p.vinculo==='EFETIVO').length;
   document.getElementById('p-ct').textContent=PROFS.filter(p=>p.vinculo==='CONTRATADO').length;
@@ -1463,11 +1671,11 @@ function rProf(){
     const vbdg=p.vinculo==='EFETIVO'?'bt2':p.vinculo==='CONTRATADO'?'ba':'bsl';
     return `<tr>
       <td><button class="btn bg" style="padding:4px;font-size:13px" onclick="xRow('px-${p.id}',this)">⌄</button></td>
-      <td style="font-weight:600">${p.nome}</td>
-      <td style="font-family:monospace;font-size:12px">${p.cpf||'—'}</td>
-      <td style="font-size:12px">${p.telefone||p.celular||'—'}</td>
-      <td><span class="bdg ${vbdg}">${p.vinculo||'—'}</span></td>
-      <td style="font-size:12.5px">${p.funcao||'—'}</td>
+      <td style="font-weight:600">${esc(p.nome)}</td>
+      <td style="font-family:monospace;font-size:12px">${esc(p.cpf||'—')}</td>
+      <td style="font-size:12px">${esc(p.telefone||p.celular||'—')}</td>
+      <td><span class="bdg ${vbdg}">${esc(p.vinculo||'—')}</span></td>
+      <td style="font-size:12.5px">${esc(p.funcao||'—')}</td>
       <td>${habTag}</td>
       <td style="text-align:right">
         <div style="display:flex;gap:4px;justify-content:flex-end">
@@ -1483,9 +1691,9 @@ function rProf(){
             <div style="font-size:12px;font-weight:700;color:var(--s600);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">📚 Formações (${forms.length})</div>
             ${forms.length?forms.map(f=>`
               <div style="padding:7px 0;border-bottom:1px solid var(--s200);font-size:12.5px">
-                <span style="font-weight:600">${f.tipo}:</span> ${f.curso}
-                ${f.instituicao?`<span style="color:var(--s500)"> — ${f.instituicao}</span>`:''}
-                ${f.ano_conclusao?`<span style="color:var(--s400)">(${f.ano_conclusao})</span>`:''}
+                <span style="font-weight:600">${esc(f.tipo)}:</span> ${esc(f.curso)}
+                ${f.instituicao?`<span style="color:var(--s500)"> — ${esc(f.instituicao)}</span>`:''}
+                ${f.ano_conclusao?`<span style="color:var(--s400)">(${esc(f.ano_conclusao)})</span>`:''}
                 <br><span style="margin-top:4px;display:inline-block">${hab(f.parecer)}</span>
               </div>`).join(''):`<div style="font-size:12px;color:var(--s400)">Nenhuma formação cadastrada</div>`}
           </div>
@@ -1541,8 +1749,6 @@ function openProfM(id=null){
   rForList();rLotList();
   document.getElementById('m-prof').classList.add('on');
 }
-function closeM(id){document.getElementById(id).classList.remove('on')}
-
 async function saveProf(){
   if(!U){toast("Sessão expirada. Faça login novamente.","err");return}
   if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
@@ -1582,12 +1788,12 @@ function addFor(){
 function remFor(i){NF.splice(i,1);rForList()}
 function rForList(){
   const el=document.getElementById('for-list');
-  if(!NF.length){el.innerHTML='<div class="empty" style="padding:18px"><div class="empty-ic">📚</div><div class="empty-t">Nenhuma formação adicionada</div></div>';return}
+  if(!Array.isArray(NF)||!NF.length){el.innerHTML='<div class="empty" style="padding:18px"><div class="empty-ic">📚</div><div class="empty-t">Nenhuma formação adicionada</div></div>';return}
   el.innerHTML='<div style="display:flex;flex-direction:column;gap:8px">'+NF.map((f,i)=>`
     <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:10px 14px;background:var(--w);border:1px solid var(--s200);border-radius:var(--rs)">
       <div>
-        <div style="font-size:13px;font-weight:600">${f.tipo}: ${f.curso}</div>
-        <div style="font-size:12px;color:var(--s500)">${f.instituicao?f.instituicao+' ':''} ${f.ano_conclusao?'('+f.ano_conclusao+')':''}</div>
+        <div style="font-size:13px;font-weight:600">${esc(f.tipo)}: ${esc(f.curso)}</div>
+        <div style="font-size:12px;color:var(--s500)">${f.instituicao?esc(f.instituicao)+' ':''} ${f.ano_conclusao?'('+esc(String(f.ano_conclusao))+')':''}</div>
         <div style="margin-top:5px">${hab(f.parecer)}</div>
       </div>
       <button class="btn bg bxs" style="color:var(--r600);flex-shrink:0" onclick="remFor(${i})">🗑️</button>
@@ -1615,14 +1821,14 @@ function addLot(){
 function remLot(i){NA.splice(i,1);rLotList()}
 function rLotList(){
   const el=document.getElementById('lot-list');
-  if(!NA.length){el.innerHTML='<div class="empty" style="padding:18px"><div class="empty-ic">🗓️</div><div class="empty-t">Nenhuma lotação adicionada</div></div>';return}
+  if(!Array.isArray(NA)||!NA.length){el.innerHTML='<div class="empty" style="padding:18px"><div class="empty-ic">🗓️</div><div class="empty-t">Nenhuma lotação adicionada</div></div>';return}
   el.innerHTML='<div style="display:flex;flex-direction:column;gap:8px">'+NA.map((a,i)=>`
     <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:10px 14px;background:var(--w);border:1px solid var(--s200);border-radius:var(--rs)">
       <div>
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-          <span style="font-size:13px;font-weight:600">${a.disciplina}</span>
-          <span class="bdg bb">${a.etapa}</span>
-          ${a.turno?`<span class="bdg bt2">${a.turno}</span>`:''}
+          <span style="font-size:13px;font-weight:600">${esc(a.disciplina)}</span>
+          <span class="bdg bb">${esc(a.etapa)}</span>
+          ${a.turno?`<span class="bdg bt2">${esc(a.turno)}</span>`:''}
         </div>
         <div style="font-size:12px;color:var(--s500);margin-top:4px">
           ${[a.ano_serie,a.turma?'Turma '+a.turma:'',a.carga_horaria?a.carga_horaria+'h/sem':'',(a.dias_semana||[]).join(', ')].filter(Boolean).join(' · ')}
@@ -1648,19 +1854,19 @@ const CORD=['Diretor(a)','Vice-Diretor(a)','Secretário(a) Escolar','Coordenador
 function rQA(){
   if(!Array.isArray(QAS))return;
   const q=(document.getElementById('qa-srch')||{}).value?.toLowerCase()||'';
-  const ls=QAS.filter(m=>m.nome.toLowerCase().includes(q)||(m.cpf||'').includes(q)||(m.cargo||'').toLowerCase().includes(q));
+  const ls=QAS.filter(m=>(m.nome||'').toLowerCase().includes(q)||(m.cpf||'').includes(q)||(m.cargo||'').toLowerCase().includes(q));
   ls.sort((a,b)=>(CORD.indexOf(a.cargo)===-1?99:CORD.indexOf(a.cargo))-(CORD.indexOf(b.cargo)===-1?99:CORD.indexOf(b.cargo)));
   if(!ls.length){document.getElementById('tb-qa').innerHTML='<tr><td colspan="8"><div class="empty"><div class="empty-ic">👥</div><div class="empty-t">Nenhum membro cadastrado</div></div></td></tr>';return}
   document.getElementById('tb-qa').innerHTML=ls.map(m=>{
     const cb=m.cargo==='Diretor(a)'?'bt2':m.cargo==='Secretário(a) Escolar'?'ba':m.cargo?.includes('Coord')?'bb':'bsl';
     return `<tr>
-      <td style="font-weight:600">${m.nome}</td>
-      <td style="font-family:monospace;font-size:12px">${m.cpf||'—'}</td>
-      <td><span class="bdg ${cb}">${m.cargo||'—'}</span></td>
-      <td style="font-size:12.5px">${m.formacao||'—'}</td>
+      <td style="font-weight:600">${esc(m.nome)}</td>
+      <td style="font-family:monospace;font-size:12px">${esc(m.cpf||'—')}</td>
+      <td><span class="bdg ${cb}">${esc(m.cargo||'—')}</span></td>
+      <td style="font-size:12.5px">${esc(m.formacao||'—')}</td>
       <td>${hab(m.habilitacao||'HABILITADO')}</td>
-      <td style="font-size:12px;color:var(--s500)">${m.portaria||'—'}</td>
-      <td style="font-size:12px;color:var(--s500)">${m.email||m.telefone||'—'}</td>
+      <td style="font-size:12px;color:var(--s500)">${esc(m.portaria||'—')}</td>
+      <td style="font-size:12px;color:var(--s500)">${esc(m.email||m.telefone||'—')}</td>
       <td style="text-align:right">
         <div style="display:flex;gap:4px;justify-content:flex-end">
           <button class="btn bg bxs" onclick="openQAM('${m.id}')">✏️</button>
@@ -1720,10 +1926,10 @@ async function loadDocs(){
       if(doc){
         const dt=doc.criadoEm?new Date(doc.criadoEm).toLocaleString('pt-BR'):'—';
         const sz=doc.tamanhoBytes?Math.round(doc.tamanhoBytes/1024)+' KB':'—';
-        const dl=doc.url.replace('/upload/','/upload/fl_attachment/');
+        const dl=(doc.url||'').replace('/upload/','/upload/fl_attachment/');
         rows+=`<tr>
           <td style="color:var(--s400)">${i++}</td>
-          <td style="font-weight:600">${tipo}</td>
+          <td style="font-weight:600">${esc(tipo)}</td>
           <td><span class="bdg bt2">✔ Enviado</span></td>
           <td style="font-size:12px;color:var(--s500)">${dt}</td>
           <td style="font-size:12px;color:var(--s400)">${sz}</td>
@@ -1737,7 +1943,7 @@ async function loadDocs(){
       }else{
         rows+=`<tr>
           <td style="color:var(--s400)">${i++}</td>
-          <td style="font-weight:600">${tipo}</td>
+          <td style="font-weight:600">${esc(tipo)}</td>
           <td><span class="bdg br">⚠ Pendente</span></td>
           <td>—</td><td>—</td>
           <td>${!BLQ?`<button class="btn bt bxs" onclick="preDoc('${tipo}')">Enviar</button>`:'<span style="color:var(--s400);font-size:12px">Bloqueado</span>'}</td>
@@ -1753,7 +1959,7 @@ async function loadDocs(){
       const dl=doc.url.replace('/upload/','/upload/fl_attachment/');
       rows+=`<tr>
         <td style="color:var(--s400)">+</td>
-        <td style="font-size:12.5px">${tipo}</td>
+        <td style="font-size:12.5px">${esc(tipo)}</td>
         <td><span class="bdg bb">✔ Enviado</span></td>
         <td style="font-size:12px;color:var(--s500)">${dt}</td>
         <td style="font-size:12px;color:var(--s400)">${sz}</td>
@@ -1769,7 +1975,7 @@ function preDoc(tipo){s('doc-tip',tipo);document.getElementById('m-doc').classLi
 function docSel(inp){const f=inp.files[0];if(f)document.getElementById('doc-fn').textContent='📄 '+f.name+' ('+(f.size/1024/1024).toFixed(2)+' MB)'}
 function docDrop(e){
   e.preventDefault();document.getElementById('doc-zone').classList.remove('drag');
-  if(e.dataTransfer.files[0]){document.getElementById('doc-fil').files=e.dataTransfer.files;docSel(document.getElementById('doc-fil'))}
+  const fileEl2=document.getElementById('doc-fil');if(e.dataTransfer.files[0]&&fileEl2){try{fileEl2.files=e.dataTransfer.files;}catch(ex){}docSel(fileEl2)}
 }
 function setP(pct,lbl){
   document.getElementById('doc-prf').style.width=pct+'%';
@@ -1861,7 +2067,7 @@ function solicitarAcesso(){
 /* ═══════════════════════════════════════════════════════
    ESCRITURAÇÃO ESCOLAR
 ═══════════════════════════════════════════════════════ */
-let FUNCS=[]; // funcionários admin em memória
+// FUNCS declared globally above
 
 async function loadEscrit(){
   if(!U){toast('Sessão expirada.','err');return}
@@ -1913,7 +2119,7 @@ async function salvarEscrit(){
     await db.collection('escolas').doc(U.inep).set({escrituracao:data,atualizadoPor:U.cpf,atualizadoEm:new Date().toISOString()},{merge:true});
     toast('✅ Escrituração salva!','ok');clearDirty();
   }catch(e){toast('❌ Erro: '+e.message,'err');console.error(e)}
-  finally{btn.disabled=BLQ;btn.innerHTML='💾 Salvar'}
+  finally{if(btn){btn.disabled=BLQ;btn.innerHTML='💾 Salvar'}}
 }
 
 async function loadFunc(){
@@ -1976,11 +2182,11 @@ function rFuncList(){
 async function loadNotifBadge(){
   if(!U)return;
   try{
-    const [g,e]=await Promise.all([
+    const [gSnap,eSnap]=await Promise.all([
       db.collection('notificacoes').where('destinatario','==','todas').get(),
       db.collection('notificacoes').where('destinatario','==',U.inep).get()
     ]);
-    const total=g.size+e.size;
+    const total=gSnap.size+eSnap.size;
     const badge=document.getElementById('notif-badge');
     if(badge){badge.textContent=total;badge.style.display=total>0?'inline-block':'none'}
   }catch(e){console.warn('Badge load:',e)}
@@ -2040,7 +2246,7 @@ async function loadNotif(){
    EXPORTAR PDF — FICHA DA ESCOLA
 ═══════════════════════════════════════════════════════ */
 async function gerarPDF(){
-  if(!U){toast('Faça login primeiro.','err');return}
+  if(!U||!U.inep){toast('Faça login primeiro.','err');return}
   const btn=document.getElementById('btn-pdf');
   btn.disabled=true;btn.innerHTML='⏳ Gerando...';
   try{
@@ -2185,6 +2391,111 @@ async function gerarPDF(){
   }finally{
     btn.disabled=false;btn.innerHTML='📄 Exportar PDF';
   }
+}
+
+/* ═══════════════════════════════════════════════════════
+   DOCUMENTOS DE ESCRITURAÇÃO
+═══════════════════════════════════════════════════════ */
+function docesSel(inp){const f=inp.files[0];if(f)document.getElementById('doces-fn').textContent='📄 '+f.name+' ('+(f.size/1024/1024).toFixed(2)+' MB)'}
+function docesDrop(e){
+  e.preventDefault();document.getElementById('doces-zone').classList.remove('drag');
+  if(e.dataTransfer.files[0]){document.getElementById('doces-fil').files=e.dataTransfer.files;docesSel(document.getElementById('doces-fil'))}
+}
+function setDocesP(pct,lbl){
+  const prf=document.getElementById('doces-prf');
+  const prs=document.getElementById('doces-prs');
+  const prp=document.getElementById('doces-prp');
+  if(prf)prf.style.width=pct+'%';
+  if(prs)prs.textContent=lbl;
+  if(prp)prp.textContent=pct+'%';
+}
+async function uploadDoces(){
+  if(!U){toast('Sessão expirada.','err');return}
+  if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
+  const tipo=(document.getElementById('doces-tip')?.value||'').trim();
+  const fileEl=document.getElementById('doces-fil');
+  const arquivo=fileEl?.files[0];
+  if(!tipo){toast('Selecione o tipo de documento.','err');return}
+  if(!arquivo){toast('Selecione um arquivo.','err');return}
+  if(arquivo.size>10*1024*1024){toast('Arquivo excede 10 MB.','err');return}
+  const ext=arquivo.name.split('.').pop().toLowerCase();
+  if(!['pdf','jpg','jpeg'].includes(ext)){toast('Use PDF ou JPG/JPEG.','err');return}
+  const btn=document.getElementById('btn-udoces');
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spin"></span>'}
+  const prwEl=document.getElementById('doces-prw');
+  if(prwEl)prwEl.style.display='block';
+  setDocesP(15,'Conectando...');
+  try{
+    const fd=new FormData();
+    fd.append('file',arquivo);fd.append('upload_preset',CL_PRE);
+    fd.append('folder','sisppe/'+U.inep+'/escrituracao');
+    fd.append('public_id',U.inep+'/escrit_'+tipo.replace(/[^a-zA-Z0-9]/g,'-').toLowerCase()+'_'+Date.now());
+    setDocesP(40,'Enviando arquivo...');
+    const r=await fetch(CL_URL,{method:'POST',body:fd});
+    if(!r.ok)throw new Error('Erro no envio: '+r.status);
+    const data=await r.json();
+    setDocesP(75,'Salvando metadados...');
+    const docId='escrit_'+tipo.replace(/[^a-zA-Z0-9]/g,'-').toLowerCase()+'_'+Date.now();
+    const dsc=(document.getElementById('doces-dsc')?.value||'').trim();
+    await db.collection('escolas').doc(U.inep).collection('documentos_escrituracao').doc(docId).set({
+      tipo,descricao:dsc,url:data.secure_url,publicId:data.public_id,
+      formato:data.format,tamanhoBytes:data.bytes,uploadedBy:U.cpf,perfil:U.pfil,
+      escola:U.nome,inep:U.inep,criadoEm:new Date().toISOString()
+    });
+    setDocesP(100,'✅ Enviado!');toast('✅ Documento enviado: '+tipo,'ok');
+    if(document.getElementById('doces-tip'))document.getElementById('doces-tip').value='';
+    if(document.getElementById('doces-dsc'))document.getElementById('doces-dsc').value='';
+    if(fileEl)fileEl.value='';
+    if(document.getElementById('doces-fn'))document.getElementById('doces-fn').textContent='Clique aqui ou arraste o arquivo';
+    setTimeout(()=>{
+      if(prwEl)prwEl.style.display='none';setDocesP(0,'');
+      loadDoces();
+    },1800);
+  }catch(err){
+    setDocesP(0,'');if(prwEl)prwEl.style.display='none';
+    toast('❌ '+err.message,'err');
+  }finally{
+    if(btn){btn.disabled=BLQ;btn.innerHTML='📤 Enviar Documento'}
+  }
+}
+async function loadDoces(){
+  if(!U)return;
+  const tb=document.getElementById('tb-doces');
+  if(!tb)return;
+  tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--s400)">🔄 Carregando...</td></tr>';
+  try{
+    const snap=await db.collection('escolas').doc(U.inep).collection('documentos_escrituracao').get();
+    if(!snap.size){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--s400)">Nenhum documento enviado ainda.</td></tr>';return}
+    const docs=snap.docs.map(d=>({id:d.id,...d.data()}));
+    docs.sort((a,b)=>(b.criadoEm||'').localeCompare(a.criadoEm||''));
+    tb.innerHTML=docs.map((doc,i)=>{
+      const dt=doc.criadoEm?new Date(doc.criadoEm).toLocaleString('pt-BR'):'—';
+      const sz=doc.tamanhoBytes?Math.round(doc.tamanhoBytes/1024)+' KB':'—';
+      const dl=(doc.url||'').replace('/upload/','/upload/fl_attachment/');
+      return `<tr>
+        <td style="color:var(--s400)">${i+1}</td>
+        <td style="font-weight:600">${esc(doc.tipo)}</td>
+        <td style="font-size:12px;color:var(--s500)">${esc(doc.descricao||'—')}</td>
+        <td style="font-size:12px;color:var(--s500)">${dt}</td>
+        <td style="font-size:12px;color:var(--s400)">${sz}</td>
+        <td style="text-align:right">
+          <div style="display:flex;gap:4px;justify-content:flex-end">
+            <a href="${dl}" target="_blank" rel="noopener" class="btn bo bxs">📥 Baixar</a>
+            ${!BLQ?`<button class="btn bg bxs" style="color:var(--r600)" onclick="delDoces('${esc(doc.id)}','${esc(doc.tipo)}')">🗑️</button>`:''}
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }catch(e){
+    tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--r600)">❌ Erro: ${esc(e.message)}</td></tr>`;
+  }
+}
+async function delDoces(id,tipo){
+  if(!confirm('Excluir o documento "'+tipo+'"?'))return;
+  try{
+    await db.collection('escolas').doc(U.inep).collection('documentos_escrituracao').doc(id).delete();
+    toast('✅ Documento excluído.','ok');loadDoces();
+  }catch(e){toast('❌ Erro: '+e.message,'err')}
 }
 
 // ── GLOBAL ERROR BOUNDARY ────────────────────────────────────────
