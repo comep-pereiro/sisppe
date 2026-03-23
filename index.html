@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -37,19 +38,19 @@ input,select,textarea,button{font-family:inherit}
 
 /* ── LOGIN ── */
 #pg-login{
-  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,var(--s900),#1a3a5c 55%,#0f5e52);
-  z-index:1000;transition:opacity .4s,transform .4s;
+position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+background:linear-gradient(135deg,var(–s900),#1a3a5c 55%,#0f5e52);
+z-index:1000;transition:opacity .4s,transform .4s;
 }
 #pg-login.out{opacity:0;pointer-events:none;transform:scale(1.06)}
 .lcard{
-  background:var(--w);border-radius:16px;box-shadow:var(--shl);
-  display:grid;grid-template-columns:340px 1fr;max-width:850px;width:95%;overflow:hidden;
+background:var(–w);border-radius:16px;box-shadow:var(–shl);
+display:grid;grid-template-columns:340px 1fr;max-width:850px;width:95%;overflow:hidden;
 }
 .ll{background:linear-gradient(165deg,#0f172a 0%,#0c3a2e 100%);padding:36px 28px;display:flex;flex-direction:column;gap:0}
 .ll-brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}
-.ll-ico{width:44px;height:44px;background:var(--t600);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.ll-name{font-family:'Manrope',sans-serif;font-size:21px;font-weight:800;color:var(--w);line-height:1}
+.ll-ico{width:44px;height:44px;background:var(–t600);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ll-name{font-family:‘Manrope’,sans-serif;font-size:21px;font-weight:800;color:var(–w);line-height:1}
 .ll-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;line-height:1.4}
 /* Info cards */
 .ll-card{display:flex;gap:12px;padding:13px 14px;border-radius:10px;background:rgba(255,255,255,.06);margin-bottom:10px;transition:background .2s}
@@ -68,28 +69,28 @@ input,select,textarea,button{font-family:inherit}
 .ll-contact-text strong{color:rgba(255,255,255,.9);display:block;font-size:12px;margin-bottom:2px}
 .ll-ver{margin-top:auto;padding-top:20px;font-size:10px;color:rgba(255,255,255,.2);display:flex;justify-content:space-between;align-items:center}
 .lr{padding:38px 34px;display:flex;flex-direction:column;justify-content:center}
-.lr h2{font-family:'Manrope',sans-serif;font-size:22px;font-weight:700;color:var(--s900);margin-bottom:4px}
-.lr > p{font-size:13px;color:var(--s500);margin-bottom:26px}
+.lr h2{font-family:‘Manrope’,sans-serif;font-size:22px;font-weight:700;color:var(–s900);margin-bottom:4px}
+.lr > p{font-size:13px;color:var(–s500);margin-bottom:26px}
 .fg0{margin-bottom:15px}
-.fg0 label{display:block;font-size:11.5px;font-weight:700;color:var(--s600);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.fg0 label{display:block;font-size:11.5px;font-weight:700;color:var(–s600);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
 .fg0 input{
-  width:100%;padding:10px 13px;border:1.5px solid var(--s200);border-radius:var(--rs);
-  font-size:13.5px;color:var(--s700);outline:none;transition:border-color .2s,box-shadow .2s;background:var(--s50);
+width:100%;padding:10px 13px;border:1.5px solid var(–s200);border-radius:var(–rs);
+font-size:13.5px;color:var(–s700);outline:none;transition:border-color .2s,box-shadow .2s;background:var(–s50);
 }
-.fg0 input:focus{border-color:var(--t600);box-shadow:0 0 0 3px rgba(13,148,136,.12);background:var(--w)}
-.err{display:none;margin-bottom:13px;padding:9px 13px;background:var(--r50);border:1px solid #fca5a5;border-radius:var(--rs);font-size:12.5px;color:var(--r700)}
-.trow{display:flex;align-items:flex-start;gap:8px;margin-bottom:18px;font-size:12px;color:var(--s500);line-height:1.6;cursor:pointer}
-.trow input{accent-color:var(--t600);margin-top:2px;flex-shrink:0}
-.trow a{color:var(--t700);text-decoration:underline;cursor:pointer}
+.fg0 input:focus{border-color:var(–t600);box-shadow:0 0 0 3px rgba(13,148,136,.12);background:var(–w)}
+.err{display:none;margin-bottom:13px;padding:9px 13px;background:var(–r50);border:1px solid #fca5a5;border-radius:var(–rs);font-size:12.5px;color:var(–r700)}
+.trow{display:flex;align-items:flex-start;gap:8px;margin-bottom:18px;font-size:12px;color:var(–s500);line-height:1.6;cursor:pointer}
+.trow input{accent-color:var(–t600);margin-top:2px;flex-shrink:0}
+.trow a{color:var(–t700);text-decoration:underline;cursor:pointer}
 .btn-enter{
-  width:100%;padding:11px;background:var(--t700);color:var(--w);border:none;
-  border-radius:var(--r);font-size:14px;font-weight:700;cursor:pointer;
-  box-shadow:0 4px 12px rgba(13,148,136,.35);transition:all .2s;
+width:100%;padding:11px;background:var(–t700);color:var(–w);border:none;
+border-radius:var(–r);font-size:14px;font-weight:700;cursor:pointer;
+box-shadow:0 4px 12px rgba(13,148,136,.35);transition:all .2s;
 }
-.btn-enter:hover{background:var(--t800);transform:translateY(-1px)}
-.hint{margin-top:13px;padding:10px 13px;background:var(--a50);border-left:3px solid var(--a500);border-radius:0 var(--rs) var(--rs) 0;font-size:11.5px;color:var(--s600);line-height:1.7}
+.btn-enter:hover{background:var(–t800);transform:translateY(-1px)}
+.hint{margin-top:13px;padding:10px 13px;background:var(–a50);border-left:3px solid var(–a500);border-radius:0 var(–rs) var(–rs) 0;font-size:11.5px;color:var(–s600);line-height:1.7}
 .llinks{margin-top:12px;display:flex;flex-direction:column;gap:5px}
-.llinks a{font-size:12px;color:var(--t700);cursor:pointer}
+.llinks a{font-size:12px;color:var(–t700);cursor:pointer}
 .llinks a:hover{text-decoration:underline}
 
 /* ── APP ── */
@@ -97,17 +98,17 @@ input,select,textarea,button{font-family:inherit}
 #pg-app.on{display:flex}
 
 /* ── SIDEBAR ── */
-.sb{width:268px;background:var(--s900);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;z-index:100}
+.sb{width:268px;background:var(–s900);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;z-index:100}
 .sb-logo{padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,.07)}
 .sb-logo-row{display:flex;align-items:center;gap:10px}
-.sb-logo-ico{width:37px;height:37px;background:var(--t600);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.sb-app{font-family:'Manrope',sans-serif;font-size:16px;font-weight:800;color:var(--w)}
+.sb-logo-ico{width:37px;height:37px;background:var(–t600);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.sb-app{font-family:‘Manrope’,sans-serif;font-size:16px;font-weight:800;color:var(–w)}
 .sb-app-sub{font-size:10px;color:rgba(255,255,255,.38)}
 .sb-escola{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.07)}
 .sb-escola-card{background:rgba(255,255,255,.07);border-radius:8px;padding:10px 12px}
 .sb-elabel{font-size:10px;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.06em}
-.sb-ename{font-size:12.5px;font-weight:600;color:var(--w);margin-top:2px;line-height:1.3}
-.sb-ebadge{display:inline-block;margin-top:5px;padding:2px 8px;background:rgba(20,184,166,.18);border-radius:20px;font-size:10.5px;color:var(--t500);font-weight:600}
+.sb-ename{font-size:12.5px;font-weight:600;color:var(–w);margin-top:2px;line-height:1.3}
+.sb-ebadge{display:inline-block;margin-top:5px;padding:2px 8px;background:rgba(20,184,166,.18);border-radius:20px;font-size:10.5px;color:var(–t500);font-weight:600}
 .sb-status{display:none;margin:8px 12px;padding:8px 12px;border-radius:8px;font-size:11.5px;font-weight:600}
 .sb-status.ok{background:rgba(16,163,74,.15);color:#4ade80;display:block}
 .sb-status.warn{background:rgba(245,158,11,.15);color:#fcd34d;display:block}
@@ -115,32 +116,32 @@ input,select,textarea,button{font-family:inherit}
 .sb-nav{padding:8px 8px;flex:1}
 .sb-sec{padding:8px 10px 3px;font-size:9.5px;font-weight:700;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:.09em}
 .sbi{
-  display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:8px;
-  cursor:pointer;font-size:13px;font-weight:500;color:rgba(255,255,255,.55);
-  transition:all .14s;border:none;background:none;width:100%;text-align:left;margin-bottom:1px;
+display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:8px;
+cursor:pointer;font-size:13px;font-weight:500;color:rgba(255,255,255,.55);
+transition:all .14s;border:none;background:none;width:100%;text-align:left;margin-bottom:1px;
 }
-.sbi:hover{background:rgba(255,255,255,.07);color:var(--w)}
-.sbi.on{background:var(--t700);color:var(--w)}
+.sbi:hover{background:rgba(255,255,255,.07);color:var(–w)}
+.sbi.on{background:var(–t700);color:var(–w)}
 .sbi .ic{font-size:15px;width:20px;text-align:center;flex-shrink:0}
 .sb-logout{
-  padding:13px 14px;border-top:1px solid rgba(255,255,255,.07);
-  display:flex;align-items:center;gap:9px;cursor:pointer;
-  font-size:13px;color:rgba(255,255,255,.42);transition:color .14s;
+padding:13px 14px;border-top:1px solid rgba(255,255,255,.07);
+display:flex;align-items:center;gap:9px;cursor:pointer;
+font-size:13px;color:rgba(255,255,255,.42);transition:color .14s;
 }
-.sb-logout:hover{color:var(--w)}
+.sb-logout:hover{color:var(–w)}
 
 /* ── MAIN ── */
 .main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
 .banner{display:none;padding:9px 24px;font-size:12.5px;font-weight:600;text-align:center}
-.banner.bloq{background:var(--r600);color:var(--w);display:block}
-.banner.anal{background:var(--a600);color:var(--w);display:block}
+.banner.bloq{background:var(–r600);color:var(–w);display:block}
+.banner.anal{background:var(–a600);color:var(–w);display:block}
 .ph{
-  background:var(--w);border-bottom:1px solid var(--s200);
-  padding:14px 24px;display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:50;
+background:var(–w);border-bottom:1px solid var(–s200);
+padding:14px 24px;display:flex;align-items:center;justify-content:space-between;
+position:sticky;top:0;z-index:50;
 }
-.ph-t{font-family:'Manrope',sans-serif;font-size:19px;font-weight:700;color:var(--s900)}
-.ph-s{font-size:12.5px;color:var(--s500);margin-top:1px}
+.ph-t{font-family:‘Manrope’,sans-serif;font-size:19px;font-weight:700;color:var(–s900)}
+.ph-s{font-size:12.5px;color:var(–s500);margin-top:1px}
 .ph-acts{display:flex;align-items:center;gap:8px}
 
 /* ── VIEWS ── */
@@ -148,31 +149,31 @@ input,select,textarea,button{font-family:inherit}
 .view.on{display:block}
 
 /* ── BUTTONS ── */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;transition:all .14s;border:none;white-space:nowrap}
-.bt{background:var(--t700);color:var(--w)}
-.bt:hover{background:var(--t800)}
-.bt:disabled{background:var(--s300);cursor:not-allowed;transform:none!important}
-.bo{background:var(--w);border:1.5px solid var(--s200);color:var(--s700)}
-.bo:hover{background:var(--s50);border-color:var(--s300)}
-.bg{background:transparent;color:var(--s600);border:none}
-.bg:hover{background:var(--s100)}
-.bd{background:var(--r600);color:var(--w)}
-.bd:hover{background:var(--r700)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(–r);font-size:13px;font-weight:600;cursor:pointer;transition:all .14s;border:none;white-space:nowrap}
+.bt{background:var(–t700);color:var(–w)}
+.bt:hover{background:var(–t800)}
+.bt:disabled{background:var(–s300);cursor:not-allowed;transform:none!important}
+.bo{background:var(–w);border:1.5px solid var(–s200);color:var(–s700)}
+.bo:hover{background:var(–s50);border-color:var(–s300)}
+.bg{background:transparent;color:var(–s600);border:none}
+.bg:hover{background:var(–s100)}
+.bd{background:var(–r600);color:var(–w)}
+.bd:hover{background:var(–r700)}
 .bsm{padding:5px 11px;font-size:12px}
 .bxs{padding:3px 8px;font-size:11.5px}
 
 /* ── CARDS ── */
-.card{background:var(--w);border-radius:var(--r);border:1px solid var(--s200);box-shadow:0 1px 2px rgba(0,0,0,.05)}
-.ch{padding:15px 20px;border-bottom:1px solid var(--s100);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.ct{font-family:'Manrope',sans-serif;font-size:15px;font-weight:700;color:var(--s900)}
-.cs{font-size:12.5px;color:var(--s500);margin-top:1px}
+.card{background:var(–w);border-radius:var(–r);border:1px solid var(–s200);box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.ch{padding:15px 20px;border-bottom:1px solid var(–s100);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ct{font-family:‘Manrope’,sans-serif;font-size:15px;font-weight:700;color:var(–s900)}
+.cs{font-size:12.5px;color:var(–s500);margin-top:1px}
 .cb{padding:20px}
-.scard{background:var(--w);border-radius:var(--r);border:1px solid var(--s200);padding:20px 22px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
-.sic{width:42px;height:42px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:11px}
-.sic.t{background:var(--t50)}.sic.b{background:var(--b50)}.sic.a{background:var(--a50)}.sic.g{background:var(--g50)}.sic.p{background:var(--p50)}.sic.e{background:var(--e50)}
-.slbl{font-size:12px;color:var(--s500);margin-bottom:3px}
-.sval{font-family:'Manrope',sans-serif;font-size:27px;font-weight:800;color:var(--s900)}
-.ssub{font-size:12px;color:var(--s400);margin-top:2px}
+.scard{background:var(–w);border-radius:var(–r);border:1px solid var(–s200);padding:20px 22px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.sic{width:42px;height:42px;border-radius:var(–r);display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:11px}
+.sic.t{background:var(–t50)}.sic.b{background:var(–b50)}.sic.a{background:var(–a50)}.sic.g{background:var(–g50)}.sic.p{background:var(–p50)}.sic.e{background:var(–e50)}
+.slbl{font-size:12px;color:var(–s500);margin-bottom:3px}
+.sval{font-family:‘Manrope’,sans-serif;font-size:27px;font-weight:800;color:var(–s900)}
+.ssub{font-size:12px;color:var(–s400);margin-top:2px}
 
 /* ── GRIDS ── */
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
@@ -183,127 +184,129 @@ input,select,textarea,button{font-family:inherit}
 .s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
 
 /* ── FORM FIELDS ── */
-.fg label{display:block;font-size:11.5px;font-weight:700;color:var(--s600);margin-bottom:4px;letter-spacing:.03em}
+.fg label{display:block;font-size:11.5px;font-weight:700;color:var(–s600);margin-bottom:4px;letter-spacing:.03em}
 .fg input,.fg select,.fg textarea{
-  width:100%;padding:9px 11px;border:1.5px solid var(--s200);border-radius:var(--rs);
-  font-size:13px;color:var(--s700);outline:none;transition:border-color .2s,box-shadow .2s;
-  background:var(--w);
+width:100%;padding:9px 11px;border:1.5px solid var(–s200);border-radius:var(–rs);
+font-size:13px;color:var(–s700);outline:none;transition:border-color .2s,box-shadow .2s;
+background:var(–w);
 }
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--t600);box-shadow:0 0 0 3px rgba(13,148,136,.1)}
-.fg input:disabled,.fg select:disabled{background:var(--s50);color:var(--s400)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(–t600);box-shadow:0 0 0 3px rgba(13,148,136,.1)}
+.fg input:disabled,.fg select:disabled{background:var(–s50);color:var(–s400)}
 .fg textarea{resize:vertical;min-height:76px}
-.tog-row{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--s50);border-radius:var(--rs);border:1px solid var(--s200)}
-.tog-row label{font-size:13px;color:var(--s700);cursor:pointer;font-weight:500}
+.tog-row{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(–s50);border-radius:var(–rs);border:1px solid var(–s200)}
+.tog-row label{font-size:13px;color:var(–s700);cursor:pointer;font-weight:500}
 .tog{position:relative;width:40px;height:22px;flex-shrink:0}
 .tog input{opacity:0;width:0;height:0}
-.tog-track{position:absolute;inset:0;background:var(--s300);border-radius:11px;cursor:pointer;transition:background .2s}
-.tog input:checked+.tog-track{background:var(--t600)}
-.tog-track::after{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;background:var(--w);border-radius:50%;transition:transform .2s}
+.tog-track{position:absolute;inset:0;background:var(–s300);border-radius:11px;cursor:pointer;transition:background .2s}
+.tog input:checked+.tog-track{background:var(–t600)}
+.tog-track::after{content:’’;position:absolute;left:3px;top:3px;width:16px;height:16px;background:var(–w);border-radius:50%;transition:transform .2s}
 .tog input:checked+.tog-track::after{transform:translateX(18px)}
 
 /* ── TABS ── */
-.tnav{display:flex;border-bottom:2px solid var(--s200);margin-bottom:20px;gap:0;overflow-x:auto}
+.tnav{display:flex;border-bottom:2px solid var(–s200);margin-bottom:20px;gap:0;overflow-x:auto}
 .tbtn{
-  padding:10px 16px;border:none;background:none;cursor:pointer;
-  font-size:13px;font-weight:600;color:var(--s500);border-bottom:2px solid transparent;
-  margin-bottom:-2px;transition:all .14s;display:flex;align-items:center;gap:7px;white-space:nowrap;
+padding:10px 16px;border:none;background:none;cursor:pointer;
+font-size:13px;font-weight:600;color:var(–s500);border-bottom:2px solid transparent;
+margin-bottom:-2px;transition:all .14s;display:flex;align-items:center;gap:7px;white-space:nowrap;
 }
-.tbtn:hover{color:var(--s700)}
-.tbtn.on{color:var(--t700);border-bottom-color:var(--t700)}
+.tbtn:hover{color:var(–s700)}
+.tbtn.on{color:var(–t700);border-bottom-color:var(–t700)}
 .tpane{display:none}
 .tpane.on{display:block}
 
 /* ── TABLE ── */
 .tw{overflow-x:auto}
 .tbl{width:100%;border-collapse:collapse;font-size:13px}
-.tbl th{background:var(--s50);padding:9px 13px;text-align:left;font-size:11.5px;font-weight:700;color:var(--s500);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--s200)}
-.tbl td{padding:10px 13px;border-bottom:1px solid var(--s100);vertical-align:middle}
+.tbl th{background:var(–s50);padding:9px 13px;text-align:left;font-size:11.5px;font-weight:700;color:var(–s500);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(–s200)}
+.tbl td{padding:10px 13px;border-bottom:1px solid var(–s100);vertical-align:middle}
 .tbl tr:last-child td{border-bottom:none}
-.tbl tr:hover td{background:var(--s50)}
-.tbl-expand{background:var(--s50)!important}
+.tbl tr:hover td{background:var(–s50)}
+.tbl-expand{background:var(–s50)!important}
 
 /* ── BADGES ── */
 .bdg{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11.5px;font-weight:700}
-.bt2{background:var(--t100);color:#0f5e52}
-.bb{background:var(--b100);color:var(--b600)}
-.ba{background:var(--a100);color:var(--a600)}
-.br{background:var(--r100);color:var(--r700)}
-.bgn{background:var(--g100);color:var(--g700)}
-.bsl{background:var(--s100);color:var(--s600)}
-.bp{background:var(--p100);color:var(--p600)}
-.be{background:var(--e100);color:var(--e600)}
+.bt2{background:var(–t100);color:#0f5e52}
+.bb{background:var(–b100);color:var(–b600)}
+.ba{background:var(–a100);color:var(–a600)}
+.br{background:var(–r100);color:var(–r700)}
+.bgn{background:var(–g100);color:var(–g700)}
+.bsl{background:var(–s100);color:var(–s600)}
+.bp{background:var(–p100);color:var(–p600)}
+.be{background:var(–e100);color:var(–e600)}
 
 /* ── UPLOAD ── */
-.uzbox{border:2px dashed var(--s300);border-radius:var(--r);padding:28px;text-align:center;cursor:pointer;background:var(--s50);transition:border-color .2s,background .2s}
-.uzbox:hover,.uzbox.drag{border-color:var(--t600);background:var(--t50)}
+.uzbox{border:2px dashed var(–s300);border-radius:var(–r);padding:28px;text-align:center;cursor:pointer;background:var(–s50);transition:border-color .2s,background .2s}
+.uzbox:hover,.uzbox.drag{border-color:var(–t600);background:var(–t50)}
 .uzbox input{display:none}
 .uz-ico{font-size:34px;margin-bottom:10px}
-.uz-txt{font-size:13.5px;font-weight:600;color:var(--s600)}
-.uz-hint{font-size:11.5px;color:var(--s400);margin-top:5px}
+.uz-txt{font-size:13.5px;font-weight:600;color:var(–s600)}
+.uz-hint{font-size:11.5px;color:var(–s400);margin-top:5px}
 .prw{display:none;margin:12px 0}
-.prl{display:flex;justify-content:space-between;font-size:12px;color:var(--s500);margin-bottom:4px}
-.prb{background:var(--s200);height:8px;border-radius:4px;overflow:hidden}
-.prf{height:100%;background:var(--t600);width:0%;transition:width .3s}
+.prl{display:flex;justify-content:space-between;font-size:12px;color:var(–s500);margin-bottom:4px}
+.prb{background:var(–s200);height:8px;border-radius:4px;overflow:hidden}
+.prf{height:100%;background:var(–t600);width:0%;transition:width .3s}
 
 /* ── MODAL ── */
 .mover{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:400;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
 .mover.on{display:flex}
-.mbox{background:var(--w);border-radius:var(--rl);box-shadow:var(--shl);width:100%;margin:auto}
+.mbox{background:var(–w);border-radius:var(–rl);box-shadow:var(–shl);width:100%;margin:auto}
 .msm{max-width:440px}.mmd{max-width:640px}.mlg{max-width:900px}
-.mh{padding:20px 24px;border-bottom:1px solid var(--s200);display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:var(--w);z-index:10;border-radius:var(--rl) var(--rl) 0 0}
-.mt{font-family:'Manrope',sans-serif;font-size:17px;font-weight:700;color:var(--s900)}
-.ms{font-size:12.5px;color:var(--s500);margin-top:3px}
-.mc{width:30px;height:30px;border:none;background:var(--s100);border-radius:6px;cursor:pointer;font-size:16px;flex-shrink:0}
-.mc:hover{background:var(--s200)}
+.mh{padding:20px 24px;border-bottom:1px solid var(–s200);display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:var(–w);z-index:10;border-radius:var(–rl) var(–rl) 0 0}
+.mt{font-family:‘Manrope’,sans-serif;font-size:17px;font-weight:700;color:var(–s900)}
+.ms{font-size:12.5px;color:var(–s500);margin-top:3px}
+.mc{width:30px;height:30px;border:none;background:var(–s100);border-radius:6px;cursor:pointer;font-size:16px;flex-shrink:0}
+.mc:hover{background:var(–s200)}
 .mb{padding:24px}
-.mf{padding:16px 24px;border-bottom:1px solid var(--s200);display:flex;justify-content:flex-end;gap:10px;border-radius:0 0 var(--rl) var(--rl)}
+.mf{padding:16px 24px;border-bottom:1px solid var(–s200);display:flex;justify-content:flex-end;gap:10px;border-radius:0 0 var(–rl) var(–rl)}
 
 /* ── DAYS ── */
 .days{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
-.day{padding:5px 10px;border-radius:6px;border:1.5px solid var(--s200);background:var(--w);font-size:12px;font-weight:600;cursor:pointer;color:var(--s600);transition:all .14s}
-.day.on{background:var(--t700);border-color:var(--t700);color:var(--w)}
+.day{padding:5px 10px;border-radius:6px;border:1.5px solid var(–s200);background:var(–w);font-size:12px;font-weight:600;cursor:pointer;color:var(–s600);transition:all .14s}
+.day.on{background:var(–t700);border-color:var(–t700);color:var(–w)}
 
 /* ── TOASTS ── */
-.toast{position:fixed;bottom:20px;right:20px;background:var(--s800);color:var(--w);padding:12px 18px;border-radius:var(--r);box-shadow:var(--shl);z-index:9999;display:none;border-left:4px solid var(--t500);font-size:13.5px;max-width:340px;animation:tin .25s ease}
-.toast.err{border-left-color:var(--r500)}
-.toast.ok{border-left-color:var(--g600)}
+.toast{position:fixed;bottom:20px;right:20px;background:var(–s800);color:var(–w);padding:12px 18px;border-radius:var(–r);box-shadow:var(–shl);z-index:9999;display:none;border-left:4px solid var(–t500);font-size:13.5px;max-width:340px;animation:tin .25s ease}
+.toast.err{border-left-color:var(–r500)}
+.toast.ok{border-left-color:var(–g600)}
 @keyframes tin{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
 
 /* ── SPINNER ── */
-.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:var(--w);border-radius:50%;animation:sp .6s linear infinite;flex-shrink:0}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:var(–w);border-radius:50%;animation:sp .6s linear infinite;flex-shrink:0}
 @keyframes sp{to{transform:rotate(360deg)}}
 
 /* ── EMPTY ── */
-.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:44px;color:var(--s400);text-align:center}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:44px;color:var(–s400);text-align:center}
 .empty-ic{font-size:44px;margin-bottom:10px;opacity:.55}
-.empty-t{font-size:14px;font-weight:600;color:var(--s500);margin-bottom:4px}
+.empty-t{font-size:14px;font-weight:600;color:var(–s500);margin-bottom:4px}
 .empty-s{font-size:12.5px}
 
 /* ── DIVIDERS ── */
-hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
-.sec-t{font-family:'Manrope',sans-serif;font-size:13.5px;font-weight:700;color:var(--s700);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--s200)}
-.info-box{background:var(--a50);border-left:4px solid var(--a500);padding:11px 16px;border-radius:0 var(--rs) var(--rs) 0;font-size:12.5px;color:var(--s600);line-height:1.7;margin-bottom:18px}
-.info-box strong{color:var(--s800)}
+hr.div{border:none;border-top:1px solid var(–s200);margin:18px 0}
+.sec-t{font-family:‘Manrope’,sans-serif;font-size:13.5px;font-weight:700;color:var(–s700);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(–s200)}
+.info-box{background:var(–a50);border-left:4px solid var(–a500);padding:11px 16px;border-radius:0 var(–rs) var(–rs) 0;font-size:12.5px;color:var(–s600);line-height:1.7;margin-bottom:18px}
+.info-box strong{color:var(–s800)}
 
 /* ── RESPONSIVE ── */
 
 /* Mobile menu toggle */
 #mob-tog{display:none;position:fixed;top:14px;left:14px;z-index:200;
-  width:38px;height:38px;background:var(--t700);border:none;border-radius:8px;
-  color:#fff;font-size:18px;cursor:pointer;box-shadow:var(--shm)}
+width:38px;height:38px;background:var(–t700);border:none;border-radius:8px;
+color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
 @media(max-width:760px){#mob-tog{display:flex;align-items:center;justify-content:center}}
 @media(max-width:760px){
-  .lcard{grid-template-columns:1fr}.ll{display:none}
-  .sb{position:fixed;transform:translateX(-100%);transition:transform .3s;width:260px}
-  .sb.open{transform:none}
-  .g4,.g3,.g2{grid-template-columns:1fr}.gf,.gf3{grid-template-columns:1fr}
-  .s2,.s3,.s4{grid-column:span 1}
+.lcard{grid-template-columns:1fr}.ll{display:none}
+.sb{position:fixed;transform:translateX(-100%);transition:transform .3s;width:260px}
+.sb.open{transform:none}
+.g4,.g3,.g2{grid-template-columns:1fr}.gf,.gf3{grid-template-columns:1fr}
+.s2,.s3,.s4{grid-column:span 1}
 }
 </style>
+
 </head>
 <body>
 
 <!-- ═══════════════════════ LOGIN ════════════════════════ -->
+
 <div id="pg-login">
  <div class="lcard">
   <div class="ll">
@@ -377,15 +380,20 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
     <a onclick="enviarEmailSenha()">Esqueci minha senha</a>
     <a onclick="solicitarAcesso()">Solicitar acesso para nova escola</a>
    </div>
+   <div style="margin-top:22px;padding-top:14px;border-top:1px solid var(--s100);text-align:center">
+    <a onclick="window.open('admin.html','_blank','noopener')" style="font-size:10.5px;color:var(--s300);cursor:pointer;letter-spacing:.04em;text-decoration:none" onmouseover="this.style.color='var(--s500)'" onmouseout="this.style.color='var(--s300)'">🔒 Acesso Restrito — COMEP</a>
+   </div>
   </div>
  </div>
 </div>
 
 <!-- ═══════════════════════ APP ════════════════════════ -->
+
 <div id="pg-app">
 <button id="mob-tog" onclick="document.getElementById('sb').classList.toggle('open')">☰</button>
 
  <!-- SIDEBAR -->
+
  <aside class="sb" id="sb">
   <div class="sb-logo">
    <div class="sb-logo-row">
@@ -409,7 +417,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
    <button class="sbi" id="n-dep" onclick="nav('dep')"><span class="ic">🏗️</span> Dependências Físicas</button>
    <button class="sbi" id="n-mob" onclick="nav('mob')"><span class="ic">📦</span> Mobiliário / Equipamento</button>
    <button class="sbi" id="n-prof" onclick="nav('prof')"><span class="ic">🎓</span> Professores</button>
-   <button class="sbi" id="n-func" onclick="nav('func')"><span class="ic">🧑‍💼</span> Funcionários / Servidores</button>
+   <button class="sbi" id="n-func" onclick="nav('func')"><span class="ic">👤</span> Funcionários</button>
    <button class="sbi" id="n-qa" onclick="nav('qa')"><span class="ic">👥</span> Quadro Administrativo</button>
    <div class="sb-sec">Processo</div>
    <button class="sbi" id="n-docs" onclick="nav('docs')"><span class="ic">📁</span> Documentos de Gestão</button>
@@ -420,11 +428,13 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
  </aside>
 
  <!-- MAIN -->
+
  <main class="main">
   <div class="banner bloq" id="bann-bloq" style="display:none">⛔ Acesso bloqueado pelo COMEP. Entre em contato com a Secretaria Municipal de Educação de Pereiro para regularizar.</div>
   <div class="banner anal" id="bann-anal" style="display:none">🔍 Processo em análise pelo COMEP. Aguarde o retorno antes de realizar novas alterações.</div>
 
   <!-- DASHBOARD -->
+
   <div id="v-dash" class="view on">
    <div class="ph"><div><div class="ph-t" id="d-title">Bem-vindo(a)!</div><div class="ph-s" id="d-sub">Carregando...</div></div></div>
    <div style="padding:24px">
@@ -441,7 +451,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
        <button class="btn bt" style="justify-content:flex-start" onclick="nav('docs')">📁 Enviar Documentos Obrigatórios</button>
        <button class="btn bo" style="justify-content:flex-start" onclick="nav('ficha')">📋 Atualizar Ficha Escolar</button>
        <button class="btn bo" style="justify-content:flex-start" onclick="nav('prof')">🎓 Gerenciar Professores</button>
-       <button class="btn bo" style="justify-content:flex-start" onclick="nav('func')">🧑‍💼 Funcionários / Servidores</button>
+       <button class="btn bo" style="justify-content:flex-start" onclick="nav('func')">👤 Funcionários</button>
        <button class="btn bo" style="justify-content:flex-start" onclick="nav('qa')">👥 Quadro Administrativo</button>
        <button class="btn bo" style="justify-content:flex-start" onclick="nav('dep')">🏗️ Dependências Físicas</button>
        <button class="btn bo" style="justify-content:flex-start" onclick="nav('mob')">📦 Mobiliário / Equipamento</button>
@@ -456,6 +466,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
   </div>
 
   <!-- FICHA ESCOLAR -->
+
   <div id="v-ficha" class="view">
    <div class="ph"><div><div class="ph-t">Ficha Escolar</div><div class="ph-s">Dados da Instituição</div></div><div class="ph-acts"><button class="btn bo bsm" onclick="gerarPDF()" id="btn-pdf">📄 Exportar PDF</button><button class="btn bt" id="btn-sfic" onclick="salvarFicha()">💾 Salvar Alterações</button></div></div>
    <div style="padding:24px">
@@ -535,7 +546,17 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
         <div class="fg"><label>Área Total (m²)</label><input type="number" id="f-area" placeholder="Ex: 6000"></div>
         <div class="fg"><label>Qtd. Dias Letivos</label><input type="number" id="f-dl" value="200"></div>
         <div class="fg"><label>Carga Horária Semanal (h)</label><input type="number" id="f-ch" value="40"></div>
-        <div class="fg"><label>Tipo de Escola</label><select id="f-tesc"><option>Educação Básica</option><option>Educação Infantil</option><option>Ensino Fundamental</option><option>EJA</option><option>Outros</option></select></div>
+        <div class="fg s2">
+         <label>Tipo de Escola <span style="font-size:10px;color:var(--s400);font-weight:400">(selecione todas que se aplicam)</span></label>
+         <div style="display:flex;flex-direction:column;gap:7px;margin-top:6px;padding:10px 12px;border:1.5px solid var(--s200);border-radius:var(--rs);background:var(--s50)">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="tesc-ei" style="accent-color:var(--t600)"> Educação Infantil</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="tesc-ai" style="accent-color:var(--t600)"> Ensino Fundamental – Anos Iniciais</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="tesc-af" style="accent-color:var(--t600)"> Ensino Fundamental – Anos Finais</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="tesc-eja1" style="accent-color:var(--t600)"> EJA – 1º Segmento</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="tesc-eja2a" style="accent-color:var(--t600)"> EJA – 2º Segmento (6º e 7º anos)</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="tesc-eja2b" style="accent-color:var(--t600)"> EJA – 2º Segmento (8º e 9º anos)</label>
+         </div>
+        </div>
         <div class="fg"><label>Acesso à Internet</label><select id="f-int"><option value="">Selecione...</option><option>FIBRA ÓPTICA</option><option>ADSL</option><option>CABO</option><option>RÁDIO</option><option>SATELITE</option><option>NÃO POSSUI</option></select></div>
         <div class="fg"><label>Nº de Matrículas</label><input type="number" id="f-mat" placeholder="Ex: 120"></div>
         <div class="fg"><label>Qtd. de Salas de Aula</label><input type="number" id="f-sal" placeholder="Ex: 6"></div>
@@ -557,6 +578,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
   </div>
 
   <!-- DEPENDÊNCIAS FÍSICAS -->
+
   <div id="v-dep" class="view">
    <div class="ph"><div><div class="ph-t">Dependências Físicas</div><div class="ph-s">Salas, laboratórios e espaços da escola</div></div><div class="ph-acts"><button class="btn bt" id="btn-ndep" onclick="openDepM()">+ Nova Dependência</button></div></div>
    <div style="padding:24px">
@@ -578,6 +600,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
   </div>
 
   <!-- MOBILIÁRIO -->
+
   <div id="v-mob" class="view">
    <div class="ph"><div><div class="ph-t">Mobiliário / Equipamento</div><div class="ph-s">Condição física dos móveis e equipamentos</div></div><div class="ph-acts"><button class="btn bt" id="btn-nmob" onclick="openMobM()">+ Novo Item</button></div></div>
    <div style="padding:24px">
@@ -594,6 +617,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
   </div>
 
   <!-- PROFESSORES -->
+
   <div id="v-prof" class="view">
    <div class="ph"><div><div class="ph-t">Professores</div><div class="ph-s">Corpo docente da escola</div></div><div class="ph-acts"><button class="btn bt" id="btn-nprof" onclick="openProfM()">+ Novo Professor</button></div></div>
    <div style="padding:24px">
@@ -616,6 +640,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
   </div>
 
   <!-- QUADRO ADMIN -->
+
   <div id="v-qa" class="view">
    <div class="ph"><div><div class="ph-t">Quadro Administrativo</div><div class="ph-s">Diretores, secretários e coordenadores</div></div><div class="ph-acts"><button class="btn bt" id="btn-nqa" onclick="openQAM()">+ Novo Membro</button></div></div>
    <div style="padding:24px">
@@ -625,23 +650,24 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
       <input type="text" id="qa-srch" placeholder="Buscar nome, CPF ou cargo..." oninput="rQA()" style="padding:7px 11px;border:1.5px solid var(--s200);border-radius:var(--rs);font-size:13px;outline:none;width:260px">
      </div>
      <div class="tw"><table class="tbl">
-      <thead><tr><th>Nome</th><th>CPF</th><th>Cargo</th><th>Formação</th><th>Habilitação</th><th>Portaria</th><th>Contato</th><th style="text-align:right">Ações</th></tr></thead>
-      <tbody id="tb-qa"><tr><td colspan="8"><div class="empty"><div class="empty-ic">👥</div><div class="empty-t">Nenhum membro cadastrado</div></div></td></tr></tbody>
+      <thead><tr><th>Nome</th><th>CPF</th><th>Cargo</th><th>Vínculo</th><th>Formação</th><th>Habilitação</th><th>Portaria</th><th>Contato</th><th style="text-align:right">Ações</th></tr></thead>
+      <tbody id="tb-qa"><tr><td colspan="9"><div class="empty"><div class="empty-ic">👥</div><div class="empty-t">Nenhum membro cadastrado</div></div></td></tr></tbody>
      </table></div>
     </div>
    </div>
   </div>
 
   <!-- FUNCIONÁRIOS / SERVIDORES -->
+
   <div id="v-func" class="view">
    <div class="ph">
-    <div><div class="ph-t">Funcionários / Servidores</div><div class="ph-s">Servidores de apoio não docentes da escola</div></div>
+    <div><div class="ph-t">Funcionários</div><div class="ph-s">Servidores de apoio não docentes da escola</div></div>
     <div class="ph-acts"><button class="btn bt" id="btn-nfunc" onclick="addFuncForm()">+ Novo Funcionário</button><button class="btn bo bsm" id="btn-sfunc" onclick="saveFunc()">💾 Salvar</button></div>
    </div>
    <div style="padding:24px">
     <div class="info-box">📋 <strong>Orientação:</strong> Cadastre aqui os servidores de apoio (zeladores, merendeiros, porteiros, vigilantes, auxiliares administrativos, etc.) que <strong>não são professores</strong>. Clique em <strong>Salvar</strong> após adicionar ou remover funcionários.</div>
     <div class="card">
-     <div class="ch"><span class="ct">Lista de Funcionários / Servidores</span></div>
+     <div class="ch"><span class="ct">Lista de Funcionários</span></div>
      <div class="cb" id="func-list-main" style="display:flex;flex-direction:column;gap:8px;min-height:60px">
       <div style="font-size:12.5px;color:var(--s400);padding:4px">Nenhum funcionário cadastrado.</div>
      </div>
@@ -650,6 +676,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
   </div>
 
   <!-- DOCUMENTOS -->
+
   <div id="v-docs" class="view">
    <div class="ph"><div><div class="ph-t">Documentos de Gestão</div><div class="ph-s">Envie e gerencie os documentos obrigatórios para o recredenciamento</div></div><div class="ph-acts"><button class="btn bt" id="btn-ndoc" onclick="document.getElementById('m-doc').classList.add('on')">+ Enviar Documento</button><button class="btn bo bsm" onclick="loadDocs()">🔄</button></div></div>
    <div style="padding:24px">
@@ -665,6 +692,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
   </div>
 
   <!-- ESCRITURAÇÃO ESCOLAR -->
+
   <div id="v-escrit" class="view">
    <div class="ph">
     <div><div class="ph-t">Escrituração Escolar</div><div class="ph-s">Instrumentos de gestão, biblioteca e informações complementares</div></div>
@@ -679,165 +707,165 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
      <button class="tbtn" onclick="st('es','doces',this)">📤 Documentos</button>
     </div>
 
-    <!-- Instrumentos de Gestão -->
-    <div class="tpane on" id="es-t-inst">
-     <div class="card" style="margin-bottom:16px">
-      <div class="ch"><span class="ct">Instrumentos de Gestão</span><span class="cs">Informe a existência e situação de cada instrumento</span></div>
-      <div class="cb" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-       <div class="tog-row"><label for="ei-ppp">Projeto Político Pedagógico (PPP)</label><label class="tog"><input type="checkbox" id="ei-ppp"><div class="tog-track"></div></label></div>
-       <div class="tog-row"><label for="ei-reg">Regimento Escolar</label><label class="tog"><input type="checkbox" id="ei-reg"><div class="tog-track"></div></label></div>
-       <div class="tog-row"><label for="ei-cons">Conselho Escolar Ativo</label><label class="tog"><input type="checkbox" id="ei-cons"><div class="tog-track"></div></label></div>
-       <div class="tog-row"><label for="ei-cal">Calendário Escolar Aprovado</label><label class="tog"><input type="checkbox" id="ei-cal"><div class="tog-track"></div></label></div>
-       <div class="tog-row"><label for="ei-plano">Plano de Ação / PDDE</label><label class="tog"><input type="checkbox" id="ei-plano"><div class="tog-track"></div></label></div>
-       <div class="tog-row"><label for="ei-prop">Proposta Curricular Atualizada</label><label class="tog"><input type="checkbox" id="ei-prop"><div class="tog-track"></div></label></div>
-      </div>
-     </div>
-     <div class="card">
-      <div class="ch"><span class="ct">Sistema de Escrituração</span></div>
-      <div class="cb">
-       <div class="gf">
-        <div class="fg"><label>Sistema Utilizado</label>
-         <select id="ei-sistema">
-          <option value="">Selecione...</option>
-          <option>SIGE — Sistema de Informações para Gestão Escolar</option>
-          <option>SIGPAE</option>
-          <option>Sistema próprio da SME</option>
-          <option>Planilha eletrônica (Excel/Sheets)</option>
-          <option>Manual (livros/fichas físicas)</option>
-          <option>Nenhum</option>
-         </select>
-        </div>
-        <div class="fg"><label>Responsável pela Escrituração</label><input id="ei-resp" placeholder="Nome do(a) responsável"></div>
-       </div>
-      </div>
-     </div>
+```
+<!-- Instrumentos de Gestão -->
+<div class="tpane on" id="es-t-inst">
+ <div class="card" style="margin-bottom:16px">
+  <div class="ch"><span class="ct">Instrumentos de Gestão</span><span class="cs">Informe a existência e situação de cada instrumento</span></div>
+  <div class="cb" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+   <div class="tog-row"><label for="ei-ppp">Projeto Político Pedagógico (PPP)</label><label class="tog"><input type="checkbox" id="ei-ppp"><div class="tog-track"></div></label></div>
+   <div class="tog-row"><label for="ei-reg">Regimento Escolar</label><label class="tog"><input type="checkbox" id="ei-reg"><div class="tog-track"></div></label></div>
+   <div class="tog-row"><label for="ei-cons">Conselho Escolar Ativo</label><label class="tog"><input type="checkbox" id="ei-cons"><div class="tog-track"></div></label></div>
+   <div class="tog-row"><label for="ei-cal">Calendário Escolar Aprovado</label><label class="tog"><input type="checkbox" id="ei-cal"><div class="tog-track"></div></label></div>
+   <div class="tog-row"><label for="ei-plano">Plano de Ação / PDDE</label><label class="tog"><input type="checkbox" id="ei-plano"><div class="tog-track"></div></label></div>
+   <div class="tog-row"><label for="ei-prop">Proposta Curricular Atualizada</label><label class="tog"><input type="checkbox" id="ei-prop"><div class="tog-track"></div></label></div>
+  </div>
+ </div>
+ <div class="card">
+  <div class="ch"><span class="ct">Sistema de Escrituração</span></div>
+  <div class="cb">
+   <div class="gf">
+    <div class="fg"><label>Sistema Utilizado</label>
+     <select id="ei-sistema">
+      <option value="">Selecione...</option>
+      <option>SIGE — Sistema de Informações para Gestão Escolar</option>
+      <option>SIGPAE</option>
+      <option>Sistema próprio da SME</option>
+      <option>Planilha eletrônica (Excel/Sheets)</option>
+      <option>Manual (livros/fichas físicas)</option>
+      <option>Nenhum</option>
+     </select>
     </div>
+    <div class="fg"><label>Responsável pela Escrituração</label><input id="ei-resp" placeholder="Nome do(a) responsável"></div>
+   </div>
+  </div>
+ </div>
+</div>
 
-    <!-- Biblioteca -->
-    <div class="tpane" id="es-t-bib">
-     <div class="card" style="margin-bottom:16px">
-      <div class="ch"><span class="ct">Acervo Bibliográfico</span><span class="cs">Informe o acervo por etapa de ensino</span></div>
-      <div class="cb">
-       <div class="tw"><table class="tbl">
-        <thead><tr><th>Etapa</th><th>Qtd. Títulos</th><th>Qtd. Exemplares</th><th>Periódicos</th><th>Situação do Acervo</th></tr></thead>
-        <tbody>
-         <tr><td style="font-weight:600">Educação Infantil</td><td><input type="number" id="bib-ei-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ei-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ei-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-ei-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
-         <tr><td style="font-weight:600">Anos Iniciais</td><td><input type="number" id="bib-ai-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ai-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ai-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-ai-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
-         <tr><td style="font-weight:600">Anos Finais</td><td><input type="number" id="bib-af-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-af-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-af-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-af-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
-         <tr><td style="font-weight:600">EJA</td><td><input type="number" id="bib-eja-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-eja-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-eja-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-eja-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
-        </tbody>
-       </table></div>
-      </div>
-     </div>
-    </div>
+<!-- Biblioteca -->
+<div class="tpane" id="es-t-bib">
+ <div class="card" style="margin-bottom:16px">
+  <div class="ch"><span class="ct">Acervo Bibliográfico</span><span class="cs">Informe o acervo por etapa de ensino</span></div>
+  <div class="cb">
+   <div class="tw"><table class="tbl">
+    <thead><tr><th>Etapa</th><th>Qtd. Títulos</th><th>Qtd. Exemplares</th><th>Periódicos</th><th>Situação do Acervo</th></tr></thead>
+    <tbody>
+     <tr><td style="font-weight:600">Educação Infantil</td><td><input type="number" id="bib-ei-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ei-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ei-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-ei-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
+     <tr><td style="font-weight:600">Anos Iniciais</td><td><input type="number" id="bib-ai-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ai-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ai-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-ai-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
+     <tr><td style="font-weight:600">Anos Finais</td><td><input type="number" id="bib-af-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-af-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-af-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-af-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
+     <tr><td style="font-weight:600">EJA</td><td><input type="number" id="bib-eja-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-eja-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-eja-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-eja-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
+    </tbody>
+   </table></div>
+  </div>
+ </div>
+</div>
 
-    <!-- Turnos e Matrículas -->
-    <div class="tpane" id="es-t-turn">
-     <div class="card" style="margin-bottom:16px">
-      <div class="ch"><span class="ct">Turnos de Funcionamento</span></div>
-      <div class="cb" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-       <div class="tog-row"><label for="et-manha">Manhã</label><label class="tog"><input type="checkbox" id="et-manha"><div class="tog-track"></div></label></div>
-       <div class="tog-row"><label for="et-tarde">Tarde</label><label class="tog"><input type="checkbox" id="et-tarde"><div class="tog-track"></div></label></div>
-       <div class="tog-row"><label for="et-noite">Noite</label><label class="tog"><input type="checkbox" id="et-noite"><div class="tog-track"></div></label></div>
-       <div class="tog-row"><label for="et-integral">Integral</label><label class="tog"><input type="checkbox" id="et-integral"><div class="tog-track"></div></label></div>
-      </div>
-     </div>
-     <div class="card">
-      <div class="ch"><span class="ct">Matrículas por Etapa e Modalidade</span></div>
-      <div class="cb">
-       <div class="tw"><table class="tbl">
-        <thead><tr><th>Etapa / Modalidade</th><th>Matrículas Totais</th><th>Turmas</th></tr></thead>
-        <tbody>
-         <tr><td style="font-weight:600">Creche (0–3 anos)</td><td><input type="number" id="mt-creche" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-creche-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
-         <tr><td style="font-weight:600">Pré-escola (4–5 anos)</td><td><input type="number" id="mt-pre" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-pre-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
-         <tr><td style="font-weight:600">Ensino Fund. – Anos Iniciais</td><td><input type="number" id="mt-ai" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-ai-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
-         <tr><td style="font-weight:600">Ensino Fund. – Anos Finais</td><td><input type="number" id="mt-af" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-af-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
-         <tr><td style="font-weight:600">EJA</td><td><input type="number" id="mt-eja" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-eja-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
-        </tbody>
-       </table></div>
-      </div>
-     </div>
-    </div>
+<!-- Turnos e Matrículas -->
+<div class="tpane" id="es-t-turn">
+ <div class="card" style="margin-bottom:16px">
+  <div class="ch"><span class="ct">Turnos de Funcionamento</span></div>
+  <div class="cb" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+   <div class="tog-row"><label for="et-manha">Manhã</label><label class="tog"><input type="checkbox" id="et-manha"><div class="tog-track"></div></label></div>
+   <div class="tog-row"><label for="et-tarde">Tarde</label><label class="tog"><input type="checkbox" id="et-tarde"><div class="tog-track"></div></label></div>
+   <div class="tog-row"><label for="et-noite">Noite</label><label class="tog"><input type="checkbox" id="et-noite"><div class="tog-track"></div></label></div>
+   <div class="tog-row"><label for="et-integral">Integral</label><label class="tog"><input type="checkbox" id="et-integral"><div class="tog-track"></div></label></div>
+  </div>
+ </div>
+ <div class="card">
+  <div class="ch"><span class="ct">Matrículas por Etapa e Modalidade</span></div>
+  <div class="cb">
+   <div class="tw"><table class="tbl">
+    <thead><tr><th>Etapa / Modalidade</th><th>Matrículas Totais</th><th>Turmas</th></tr></thead>
+    <tbody>
+     <tr><td style="font-weight:600">Creche (0–3 anos)</td><td><input type="number" id="mt-creche" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-creche-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
+     <tr><td style="font-weight:600">Pré-escola (4–5 anos)</td><td><input type="number" id="mt-pre" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-pre-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
+     <tr><td style="font-weight:600">Ensino Fund. – Anos Iniciais</td><td><input type="number" id="mt-ai" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-ai-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
+     <tr><td style="font-weight:600">Ensino Fund. – Anos Finais</td><td><input type="number" id="mt-af" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-af-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
+     <tr><td style="font-weight:600">EJA</td><td><input type="number" id="mt-eja" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-eja-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
+    </tbody>
+   </table></div>
+  </div>
+ </div>
+</div>
 
-    <!-- Observações -->
-    <div class="tpane" id="es-t-obs">
-     <div class="card">
-      <div class="ch"><span class="ct">Observações Gerais</span><span class="cs">Informações adicionais relevantes para o processo de credenciamento</span></div>
-      <div class="cb">
-       <div class="fg"><label>Observações da Escola</label><textarea id="es-obs" rows="6" placeholder="Descreva informações adicionais, situações especiais, necessidades ou qualquer observação relevante para o COMEP..."></textarea></div>
-      </div>
-     </div>
-    </div>
+<!-- Observações -->
+<div class="tpane" id="es-t-obs">
+ <div class="card">
+  <div class="ch"><span class="ct">Observações Gerais</span><span class="cs">Informações adicionais relevantes para o processo de credenciamento</span></div>
+  <div class="cb">
+   <div class="fg"><label>Observações da Escola</label><textarea id="es-obs" rows="6" placeholder="Descreva informações adicionais, situações especiais, necessidades ou qualquer observação relevante para o COMEP..."></textarea></div>
+  </div>
+ </div>
+</div>
 
-    <!-- Documentos de Escrituração -->
-    <div class="tpane" id="es-t-doces">
-     <div class="info-box">📤 <strong>Documentos de Escrituração:</strong> Envie aqui os documentos comprobatórios dos instrumentos de gestão. Os arquivos ficam salvos na nuvem e ficam visíveis para o COMEP. Formatos aceitos: <strong>PDF, JPG ou JPEG</strong> — máximo <strong>10 MB</strong>.</div>
-     <div class="card" style="margin-bottom:16px">
-      <div class="ch"><span class="ct">📂 Enviar Documento de Escrituração</span></div>
-      <div class="cb">
-       <div class="gf">
-        <div class="fg s2">
-         <label>Tipo de Documento *</label>
-         <select id="doces-tip">
-          <option value="">— Selecione o tipo —</option>
-          <optgroup label="Instrumentos de Gestão">
-           <option>PROJETO POLÍTICO PEDAGÓGICO (PPP)</option>
-           <option>REGIMENTO ESCOLAR</option>
-           <option>ATA DE APROVAÇÃO DO REGIMENTO ESCOLAR</option>
-           <option>CALENDÁRIO ESCOLAR</option>
-           <option>ATA DO CONSELHO ESCOLAR</option>
-           <option>PLANO DE AÇÃO / PDDE</option>
-           <option>PROPOSTA CURRICULAR</option>
-          </optgroup>
-          <optgroup label="Matrículas e Escrituração">
-           <option>RELATÓRIO DE MATRÍCULAS</option>
-           <option>DIÁRIO DE CLASSE</option>
-           <option>ATA DE RESULTADO FINAL</option>
-           <option>FICHA INDIVIDUAL DO ALUNO</option>
-           <option>LIVRO DE PONTO</option>
-          </optgroup>
-          <optgroup label="Outros">
-           <option>OUTRO DOCUMENTO DE ESCRITURAÇÃO</option>
-          </optgroup>
-         </select>
-        </div>
-        <div class="fg s2">
-         <label>Descrição (opcional)</label>
-         <input id="doces-dsc" placeholder="Breve descrição do documento">
-        </div>
-       </div>
-       <div class="uzbox" id="doces-zone" onclick="document.getElementById('doces-fil').click()"
-        ondragover="event.preventDefault();this.classList.add('drag')"
-        ondragleave="this.classList.remove('drag')"
-        ondrop="docesDrop(event)">
-        <div class="uz-ico">📎</div>
-        <div class="uz-txt" id="doces-fn">Clique aqui ou arraste o arquivo</div>
-        <div class="uz-hint">PDF, JPG ou JPEG — máximo 10 MB</div>
-        <input type="file" id="doces-fil" accept=".pdf,.jpg,.jpeg" onchange="docesSel(this)">
-       </div>
-       <div class="prw" id="doces-prw">
-        <div class="prl"><span id="doces-prs">Enviando...</span><span id="doces-prp">0%</span></div>
-        <div class="prb"><div class="prf" id="doces-prf"></div></div>
-       </div>
-       <div style="margin-top:14px;text-align:right">
-        <button class="btn bt" id="btn-udoces" onclick="uploadDoces()">📤 Enviar Documento</button>
-       </div>
-      </div>
-     </div>
-     <div class="card">
-      <div class="ch"><span class="ct">📋 Documentos Enviados</span><button class="btn bg bsm" onclick="loadDoces()">🔄</button></div>
-      <div class="tw">
-       <table class="tbl">
-        <thead><tr><th>#</th><th>Tipo</th><th>Descrição</th><th>Enviado em</th><th>Tamanho</th><th style="text-align:right">Ações</th></tr></thead>
-        <tbody id="tb-doces"><tr><td colspan="6" style="text-align:center;padding:20px;color:var(--s400)">Clique em 🔄 para carregar.</td></tr></tbody>
-       </table>
-      </div>
-     </div>
+<!-- Documentos de Escrituração -->
+<div class="tpane" id="es-t-doces">
+ <div class="info-box">📤 <strong>Documentos de Escrituração:</strong> Envie aqui os documentos comprobatórios dos instrumentos de gestão. Os arquivos ficam salvos na nuvem e ficam visíveis para o COMEP. Formatos aceitos: <strong>PDF, JPG ou JPEG</strong> — máximo <strong>10 MB</strong>.</div>
+ <div class="card" style="margin-bottom:16px">
+  <div class="ch"><span class="ct">📂 Enviar Documento de Escrituração</span></div>
+  <div class="cb">
+   <div class="gf">
+    <div class="fg s2">
+     <label>Tipo de Documento *</label>
+     <select id="doces-tip">
+      <option value="">— Selecione o tipo —</option>
+      <optgroup label="Instrumentos de Gestão">
+       <option>PROJETO POLÍTICO PEDAGÓGICO (PPP)</option>
+       <option>REGIMENTO ESCOLAR</option>
+       <option>ATA DE APROVAÇÃO DO REGIMENTO ESCOLAR</option>
+       <option>CALENDÁRIO ESCOLAR</option>
+       <option>ATA DO CONSELHO ESCOLAR</option>
+       <option>PLANO DE AÇÃO / PDDE</option>
+       <option>PROPOSTA CURRICULAR</option>
+      </optgroup>
+      <optgroup label="Matrículas e Escrituração">
+       <option>ATA DE RESULTADO FINAL</option>
+      </optgroup>
+      <optgroup label="Outros">
+       <option>OUTRO DOCUMENTO DE ESCRITURAÇÃO</option>
+      </optgroup>
+     </select>
     </div>
+    <div class="fg s2">
+     <label>Descrição (opcional)</label>
+     <input id="doces-dsc" placeholder="Breve descrição do documento">
+    </div>
+   </div>
+   <div class="uzbox" id="doces-zone" onclick="document.getElementById('doces-fil').click()"
+    ondragover="event.preventDefault();this.classList.add('drag')"
+    ondragleave="this.classList.remove('drag')"
+    ondrop="docesDrop(event)">
+    <div class="uz-ico">📎</div>
+    <div class="uz-txt" id="doces-fn">Clique aqui ou arraste o arquivo</div>
+    <div class="uz-hint">PDF, JPG ou JPEG — máximo 10 MB</div>
+    <input type="file" id="doces-fil" accept=".pdf,.jpg,.jpeg" onchange="docesSel(this)">
+   </div>
+   <div class="prw" id="doces-prw">
+    <div class="prl"><span id="doces-prs">Enviando...</span><span id="doces-prp">0%</span></div>
+    <div class="prb"><div class="prf" id="doces-prf"></div></div>
+   </div>
+   <div style="margin-top:14px;text-align:right">
+    <button class="btn bt" id="btn-udoces" onclick="uploadDoces()">📤 Enviar Documento</button>
+   </div>
+  </div>
+ </div>
+ <div class="card">
+  <div class="ch"><span class="ct">📋 Documentos Enviados</span><button class="btn bg bsm" onclick="loadDoces()">🔄</button></div>
+  <div class="tw">
+   <table class="tbl">
+    <thead><tr><th>#</th><th>Tipo</th><th>Descrição</th><th>Enviado em</th><th>Tamanho</th><th style="text-align:right">Ações</th></tr></thead>
+    <tbody id="tb-doces"><tr><td colspan="6" style="text-align:center;padding:20px;color:var(--s400)">Clique em 🔄 para carregar.</td></tr></tbody>
+   </table>
+  </div>
+ </div>
+</div>
+```
+
    </div>
   </div>
 
   <!-- NOTIFICAÇÕES DO COMEP -->
+
   <div id="v-notif" class="view">
    <div class="ph">
     <div><div class="ph-t">🔔 Notificações do COMEP</div><div class="ph-s">Comunicados, alertas e solicitações do Conselho Municipal de Educação</div></div>
@@ -851,11 +879,11 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
    </div>
   </div>
 
-
  </main>
 </div>
 
 <!-- ══════════════ MODAL PROFESSOR ══════════════ -->
+
 <div class="mover" id="m-prof" onclick="closeMOver(event,this)">
  <div class="mbox mlg">
   <div class="mh">
@@ -965,6 +993,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
 </div>
 
 <!-- ══════════════ MODAL QUADRO ADMIN ══════════════ -->
+
 <div class="mover" id="m-qa" onclick="closeMOver(event,this)">
  <div class="mbox mmd">
   <div class="mh">
@@ -983,8 +1012,22 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
       <option>Secretário(a) Escolar</option><option>Coordenador(a) Pedagógico(a)</option>
      </select>
     </div>
+    <div class="fg"><label>Vínculo *</label>
+     <select id="qa-vinc">
+      <option value="">Selecione...</option>
+      <option>EFETIVO</option>
+      <option>CONTRATADO</option>
+     </select>
+    </div>
     <div class="fg"><label>Data de Admissão</label><input type="date" id="qa-adm"></div>
     <div class="fg"><label>Portaria de Nomeação</label><input id="qa-port" placeholder="Nº e data da portaria"></div>
+    <div class="fg"><label>Vínculo *</label>
+     <select id="qa-vinc">
+      <option value="">Selecione...</option>
+      <option>EFETIVO</option>
+      <option>CONTRATADO</option>
+     </select>
+    </div>
     <div class="fg s2"><label>Formação Acadêmica *</label><input id="qa-form" placeholder="Ex: Graduação em Pedagogia — UECE (2010)"></div>
     <div class="fg"><label>Habilitação para o cargo *</label>
      <select id="qa-hab">
@@ -1001,6 +1044,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
 </div>
 
 <!-- ══════════════ MODAL DEPENDÊNCIA ══════════════ -->
+
 <div class="mover" id="m-dep" onclick="closeMOver(event,this)">
  <div class="mbox mmd">
   <div class="mh">
@@ -1035,6 +1079,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
 </div>
 
 <!-- ══════════════ MODAL MOBILIÁRIO ══════════════ -->
+
 <div class="mover" id="m-mob" onclick="closeMOver(event,this)">
  <div class="mbox mmd">
   <div class="mh">
@@ -1069,6 +1114,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
 </div>
 
 <!-- ══════════════ MODAL DOCUMENTO ══════════════ -->
+
 <div class="mover" id="m-doc" onclick="closeMOver(event,this)">
  <div class="mbox mmd">
   <div class="mh">
@@ -1119,15 +1165,24 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
 </div>
 
 <!-- ══════════════ MODAL FUNCIONÁRIO ══════════════ -->
+
 <div class="mover" id="m-func" onclick="closeMOver(event,this)">
- <div class="mbox msm">
+ <div class="mbox mmd">
   <div class="mh">
-   <div><div class="mt">Funcionário Administrativo</div><div class="ms">Servidor de apoio (não docente)</div></div>
+   <div><div class="mt">Funcionário</div><div class="ms">Servidor de apoio não docente</div></div>
    <button class="mc" onclick="closeM('m-func')">✕</button>
   </div>
   <div class="mb">
    <div class="gf">
     <div class="fg s2"><label>Nome Completo *</label><input id="fn-nome" placeholder="Nome completo"></div>
+    <div class="fg"><label>CPF</label><input id="fn-cpf" placeholder="000.000.000-00" maxlength="14" oninput="mCpf(this)"></div>
+    <div class="fg"><label>Vínculo *</label>
+     <select id="fn-vinc">
+      <option value="">Selecione...</option>
+      <option>EFETIVO</option>
+      <option>CONTRATADO</option>
+     </select>
+    </div>
     <div class="fg s2"><label>Função *</label>
      <select id="fn-func">
       <option value="">Selecione...</option>
@@ -1136,6 +1191,8 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
       <option>AUXILIAR ADMINISTRATIVO</option><option>MONITOR(A)</option><option>OUTRO</option>
      </select>
     </div>
+    <div class="fg"><label>Contato / Telefone</label><input id="fn-tel" placeholder="(88) 99999-9999"></div>
+    <div class="fg"><label>E-mail</label><input type="email" id="fn-email" placeholder="email@exemplo.com"></div>
     <div class="fg s2"><label>Formação</label><input id="fn-form" placeholder="Ex: Ensino Médio Completo"></div>
    </div>
   </div>
@@ -1375,7 +1432,7 @@ function _resetSessionTimer(){
   _sessionTimer=setTimeout(()=>{doLogout();alert('Sessão encerrada por inatividade. Faça login novamente.')},8*60*60*1000);
 }
 function doLogout(){
-  U=null;BLQ=false;SIT='ativa';PROFS=[];QAS=[];DEPS=[];MOBS=[];FUNCS=[];
+  U=null;BLQ=false;SIT='ativa';PROFS=[];QAS=[];DEPS=[];MOBS=[];FUNCS=[];NF=[];NA=[];
   clearTimeout(_sessionTimer);clearTimeout(_sessionWarnTimer);
   _sessionTimer=null;_sessionWarnTimer=null;
   ['mousemove','keydown','click','touchstart'].forEach(ev=>
@@ -1472,7 +1529,10 @@ async function loadFicha(){
       s('f-mend',d.mantenedora_endereco||'RUA DR. ANTONIO AUGUSTO DE VASCONCELOS, 227');
       s('f-mtel',d.mantenedora_telefone||'(88) 3527-1250');s('f-meml',d.mantenedora_email||'pmpereiro@gmail.com');
       s('f-area',d.area_total_m2);s('f-dl',d.qtd_dias_letivos||200);s('f-ch',d.carga_horaria_semanal||40);
-      s('f-tesc',d.tipo_escola||'Educação Básica');s('f-int',d.acesso_internet);
+      // Tipo de escola — multi-select checkboxes
+      const tesc=d.tipo_escola||[];
+      ['tesc-ei','tesc-ai','tesc-af','tesc-eja1','tesc-eja2a','tesc-eja2b'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=Array.isArray(tesc)?tesc.includes(id):false;});
+      s('f-int',d.acesso_internet);
       s('f-mat',d.matriculas);s('f-sal',d.salas);
       sc('t-escr',d.sistema_escrituracao_informatizado);sc('t-rur',d.rural);
       sc('t-ass',d.assentamento);sc('t-qui',d.quilombola);sc('t-ind',d.indigena);
@@ -1490,7 +1550,8 @@ async function salvarFicha(){
     telefone:g('f-tel'),fax:g('f-fax'),email:g('f-email'),
     mantenedora_endereco:g('f-mend'),mantenedora_telefone:g('f-mtel'),mantenedora_email:g('f-meml'),
     area_total_m2:gf('f-area'),qtd_dias_letivos:gn('f-dl'),carga_horaria_semanal:gn('f-ch'),
-    tipo_escola:g('f-tesc'),acesso_internet:g('f-int'),matriculas:gn('f-mat'),salas:gn('f-sal'),
+    tipo_escola:['tesc-ei','tesc-ai','tesc-af','tesc-eja1','tesc-eja2a','tesc-eja2b'].filter(id=>document.getElementById(id)?.checked),
+    acesso_internet:g('f-int'),matriculas:gn('f-mat'),salas:gn('f-sal'),
     sistema_escrituracao_informatizado:gc('t-escr'),rural:gc('t-rur'),
     assentamento:gc('t-ass'),quilombola:gc('t-qui'),indigena:gc('t-ind')
   };
@@ -1563,6 +1624,8 @@ async function saveDep(){
   }catch(e){toast('❌ Erro: '+e.message,'err')}
 }
 async function delDep(id){
+  if(!U){toast('Sessão expirada.','err');return}
+  if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
   if(!confirm('Excluir esta dependência?'))return;
   try{await db.collection('escolas').doc(U.inep).collection('dependencias').doc(id).delete();toast('✅ Removido.','ok');loadDep()}
   catch(e){toast('❌ Erro: '+e.message,'err')}
@@ -1631,6 +1694,8 @@ async function saveMob(){
   }catch(e){toast('❌ Erro: '+e.message,'err')}
 }
 async function delMob(id){
+  if(!U){toast('Sessão expirada.','err');return}
+  if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
   if(!confirm('Excluir este item?'))return;
   try{await db.collection('escolas').doc(U.inep).collection('mobiliario').doc(id).delete();toast('✅ Removido.','ok');loadMob()}
   catch(e){toast('❌ Erro: '+e.message,'err')}
@@ -1771,6 +1836,8 @@ async function saveProf(){
   finally{btn.disabled=false;btn.innerHTML='💾 Salvar Professor'}
 }
 async function delProf(id){
+  if(!U){toast('Sessão expirada.','err');return}
+  if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
   if(!confirm('Excluir este professor?'))return;
   try{await db.collection('escolas').doc(U.inep).collection('professores').doc(id).delete();toast('✅ Professor removido.','ok');loadProf()}
   catch(e){toast('❌ Erro: '+e.message,'err')}
@@ -1856,13 +1923,15 @@ function rQA(){
   const q=(document.getElementById('qa-srch')||{}).value?.toLowerCase()||'';
   const ls=QAS.filter(m=>(m.nome||'').toLowerCase().includes(q)||(m.cpf||'').includes(q)||(m.cargo||'').toLowerCase().includes(q));
   ls.sort((a,b)=>(CORD.indexOf(a.cargo)===-1?99:CORD.indexOf(a.cargo))-(CORD.indexOf(b.cargo)===-1?99:CORD.indexOf(b.cargo)));
-  if(!ls.length){document.getElementById('tb-qa').innerHTML='<tr><td colspan="8"><div class="empty"><div class="empty-ic">👥</div><div class="empty-t">Nenhum membro cadastrado</div></div></td></tr>';return}
+  if(!ls.length){document.getElementById('tb-qa').innerHTML='<tr><td colspan="9"><div class="empty"><div class="empty-ic">👥</div><div class="empty-t">Nenhum membro cadastrado</div></div></td></tr>';return}
   document.getElementById('tb-qa').innerHTML=ls.map(m=>{
     const cb=m.cargo==='Diretor(a)'?'bt2':m.cargo==='Secretário(a) Escolar'?'ba':m.cargo?.includes('Coord')?'bb':'bsl';
+    const vb=m.vinculo==='EFETIVO'?'bgn':'ba';
     return `<tr>
       <td style="font-weight:600">${esc(m.nome)}</td>
       <td style="font-family:monospace;font-size:12px">${esc(m.cpf||'—')}</td>
       <td><span class="bdg ${cb}">${esc(m.cargo||'—')}</span></td>
+      <td>${m.vinculo?`<span class="bdg ${vb}">${esc(m.vinculo)}</span>`:'—'}</td>
       <td style="font-size:12.5px">${esc(m.formacao||'—')}</td>
       <td>${hab(m.habilitacao||'HABILITADO')}</td>
       <td style="font-size:12px;color:var(--s500)">${esc(m.portaria||'—')}</td>
@@ -1883,11 +1952,12 @@ function openQAM(id=null){
     const m=QAS.find(x=>x.id===id);if(!m)return;
     document.getElementById('qa-mt').textContent='Editar Membro';
     s('qa-nome',m.nome);s('qa-cpf',m.cpf);s('qa-rg',m.rg);s('qa-car',m.cargo);
-    s('qa-adm',m.data_admissao);s('qa-port',m.portaria);s('qa-form',m.formacao);
-    s('qa-hab',m.habilitacao||'HABILITADO');s('qa-tel',m.telefone);s('qa-email',m.email);
+    s('qa-adm',m.data_admissao);s('qa-port',m.portaria);s('qa-vinc',m.vinculo||'');
+    s('qa-form',m.formacao);s('qa-hab',m.habilitacao||'HABILITADO');
+    s('qa-tel',m.telefone);s('qa-email',m.email);
   }else{
     document.getElementById('qa-mt').textContent='Novo Membro';
-    ['qa-nome','qa-cpf','qa-rg','qa-car','qa-adm','qa-port','qa-form','qa-tel','qa-email'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
+    ['qa-nome','qa-cpf','qa-rg','qa-car','qa-adm','qa-port','qa-vinc','qa-form','qa-tel','qa-email'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
     document.getElementById('qa-hab').value='HABILITADO';
   }
   document.getElementById('m-qa').classList.add('on');
@@ -1895,9 +1965,9 @@ function openQAM(id=null){
 async function saveQA(){
   if(!U){toast("Sessão expirada. Faça login novamente.","err");return}
   if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
-  const nome=g('qa-nome').trim(),cpf=g('qa-cpf').trim(),cargo=g('qa-car'),form=g('qa-form').trim();
-  if(!nome||!cpf||!cargo||!form){toast('Preencha nome, CPF, cargo e formação.','err');return}
-  const m={nome,cpf,rg:g('qa-rg'),cargo,data_admissao:g('qa-adm'),portaria:g('qa-port'),formacao:form,
+  const nome=g('qa-nome').trim(),cpf=g('qa-cpf').trim(),cargo=g('qa-car'),form=g('qa-form').trim(),vinc=g('qa-vinc');
+  if(!nome||!cpf||!cargo||!form||!vinc){toast('Preencha nome, CPF, cargo, vínculo e formação.','err');return}
+  const m={nome,cpf,rg:g('qa-rg'),cargo,vinculo:vinc,data_admissao:g('qa-adm'),portaria:g('qa-port'),formacao:form,
     habilitacao:g('qa-hab'),telefone:g('qa-tel'),email:g('qa-email'),atualizadoEm:new Date().toISOString()};
   try{
     if(qEid)await db.collection('escolas').doc(U.inep).collection('quadro_admin').doc(qEid).set(m);
@@ -1906,6 +1976,8 @@ async function saveQA(){
   }catch(e){toast('❌ Erro: '+e.message,'err')}
 }
 async function delQA(id){
+  if(!U){toast('Sessão expirada.','err');return}
+  if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
   if(!confirm('Remover este membro?'))return;
   try{await db.collection('escolas').doc(U.inep).collection('quadro_admin').doc(id).delete();toast('✅ Membro removido.','ok');loadQA()}
   catch(e){toast('❌ Erro: '+e.message,'err')}
@@ -1983,6 +2055,7 @@ function setP(pct,lbl){
   document.getElementById('doc-prp').textContent=pct+'%';
 }
 async function uploadDoc(){
+  if(!U){toast('Sessão expirada.','err');return}
   if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
   const tipo=g('doc-tip').trim();
   const fileEl=document.getElementById('doc-fil');
@@ -2025,6 +2098,8 @@ async function uploadDoc(){
   }finally{btn.disabled=BLQ;btn.innerHTML='📤 Enviar Documento'}
 }
 async function delDoc(id,tipo){
+  if(!U){toast('Sessão expirada.','err');return}
+  if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
   if(!confirm('Excluir o documento "'+tipo+'"?'))return;
   try{await db.collection('escolas').doc(U.inep).collection('documentos').doc(id).delete();toast('✅ Documento excluído.','ok');loadDocs()}
   catch(e){toast('❌ Erro: '+e.message,'err')}
@@ -2150,13 +2225,14 @@ async function saveFunc(){
 }
 function addFuncForm(){
   if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
-  s('fn-nome','');s('fn-func','');s('fn-form','');
+  ['fn-nome','fn-cpf','fn-func','fn-vinc','fn-tel','fn-email','fn-form'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
   document.getElementById('m-func').classList.add('on');
 }
 function addFunc(){
-  const nome=g('fn-nome').trim();const func=g('fn-func');
-  if(!nome||!func){toast('Preencha nome e função.','err');return}
-  FUNCS.push({nome,funcao:func,formacao:g('fn-form').trim()});
+  const nome=g('fn-nome').trim();const func=g('fn-func');const vinc=g('fn-vinc');
+  if(!nome||!func||!vinc){toast('Preencha nome, função e vínculo.','err');return}
+  FUNCS.push({nome,cpf:g('fn-cpf').trim(),funcao:func,vinculo:vinc,
+    telefone:g('fn-tel').trim(),email:g('fn-email').trim(),formacao:g('fn-form').trim()});
   closeM('m-func');rFuncList();toast('Funcionário adicionado.','ok');
 }
 function remFunc(i){FUNCS.splice(i,1);rFuncList()}
@@ -2164,15 +2240,25 @@ function rFuncList(){
   const el=document.getElementById('func-list-main');
   if(!el)return;
   if(!FUNCS.length){el.innerHTML='<div style="font-size:12.5px;color:var(--s400);padding:4px">Nenhum funcionário cadastrado.</div>';return}
-  el.innerHTML=FUNCS.map((f,i)=>`
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--s50);border:1px solid var(--s200);border-radius:var(--rs)">
-      <div>
-        <span style="font-size:13px;font-weight:600">${esc(f.nome)}</span>
-        <span class="bdg bb" style="margin-left:8px">${esc(f.funcao)}</span>
-        ${f.formacao?`<span style="font-size:12px;color:var(--s500);margin-left:8px">${esc(f.formacao)}</span>`:''}
+  el.innerHTML=FUNCS.map((f,i)=>{
+    const vincBdg=f.vinculo==='EFETIVO'?'bgn':'ba';
+    return `<div style="display:flex;align-items:flex-start;justify-content:space-between;padding:11px 14px;background:var(--s50);border:1px solid var(--s200);border-radius:var(--rs)">
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-size:13px;font-weight:600">${esc(f.nome)}</span>
+          <span class="bdg bb">${esc(f.funcao)}</span>
+          ${f.vinculo?`<span class="bdg ${vincBdg}">${esc(f.vinculo)}</span>`:''}
+        </div>
+        <div style="font-size:12px;color:var(--s500);display:flex;gap:12px;flex-wrap:wrap">
+          ${f.cpf?`<span>📄 ${esc(f.cpf)}</span>`:''}
+          ${f.telefone?`<span>📞 ${esc(f.telefone)}</span>`:''}
+          ${f.email?`<span>✉️ ${esc(f.email)}</span>`:''}
+          ${f.formacao?`<span>🎓 ${esc(f.formacao)}</span>`:''}
+        </div>
       </div>
-      <button class="btn bg bxs" style="color:var(--r600)" onclick="remFunc(${i})">🗑️</button>
-    </div>`).join('');
+      <button class="btn bg bxs" style="color:var(--r600);flex-shrink:0;margin-left:8px" onclick="remFunc(${i})">🗑️</button>
+    </div>`;
+  }).join('');
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -2305,7 +2391,7 @@ async function gerarPDF(){
       return yy+11;
     };
     checkPage(12);y=row2('CNPJ',g('f-cnpj'),'Nº Ato de Criação',g('f-ato'),y);
-    checkPage(12);y=row2('Data do Ato de Criação',g('f-dato')||'—','Tipo de Escola',g('f-tesc'),y);
+    checkPage(12);y=row2('Data do Ato de Criação',g('f-dato')||'—','Tipo de Escola',(['tesc-ei','tesc-ai','tesc-af','tesc-eja1','tesc-eja2a','tesc-eja2b'].filter(id=>document.getElementById(id)?.checked).map(id=>({'tesc-ei':'Ed. Infantil','tesc-ai':'Fund. Anos Iniciais','tesc-af':'Fund. Anos Finais','tesc-eja1':'EJA 1º Seg.','tesc-eja2a':'EJA 2º Seg. (6º/7º)','tesc-eja2b':'EJA 2º Seg. (8º/9º)'})[id]).join(', '))||'—',y);
     checkPage(12);y=campo('Escola(s) Nucleada(s)',g('f-nuc')||'Não há',M,y,CW);
 
     // ── Endereço ──
@@ -2491,6 +2577,8 @@ async function loadDoces(){
   }
 }
 async function delDoces(id,tipo){
+  if(!U){toast('Sessão expirada.','err');return}
+  if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
   if(!confirm('Excluir o documento "'+tipo+'"?'))return;
   try{
     await db.collection('escolas').doc(U.inep).collection('documentos_escrituracao').doc(id).delete();
@@ -2528,5 +2616,6 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&!document.getElementById('pg-login').classList.contains('out'))doLogin()
 });
 </script>
+
 </body>
 </html>
