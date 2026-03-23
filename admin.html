@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
 <title>SISPPe — Painel COMEP</title>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -625,6 +626,7 @@ const ADMIN_USERS={comep:'comep@2025',admin:'COMEP@admin#2025'};
 let adminUser=null, docsCache={}, fichasCache={}, statusCache={}, filtroAtual='todas';
 let profsCache={}, qaCache={}; // subcollections: professores e quadro_admin
 let modalInep=null;
+let _adminAttempts=0,_adminLocked=false,_adminLockTimer=null;
 
 // ── LOGIN ─────────────────────────────────────────────────────────
 
@@ -772,13 +774,13 @@ async function carregarNotificacoes(){
     const tipoIcon={'urgente':'🔴','atencao':'🟡','info':'🔵','sucesso':'✅'};
     const destNome=(d)=>d==='todas'?'📢 Todas':ESCOLAS.find(e=>e.inep===d)?.nome?.substring(0,20)||d;
     tbody.innerHTML=notifs.map(n=>`<tr>
-      <td style="font-size:12px">${destNome(n.destinatario)}</td>
-      <td style="font-weight:600;font-size:12.5px">${n.titulo||'—'}</td>
-      <td><span class="badge badge-${n.tipo==='urgente'?'red':n.tipo==='atencao'?'amber':n.tipo==='sucesso'?'green':'blue'}">${tipoIcon[n.tipo]||'📌'} ${n.tipo||'info'}</span></td>
-      <td style="font-size:12px">${n.prazo||'—'}</td>
+      <td style="font-size:12px">${esc(destNome(n.destinatario))}</td>
+      <td style="font-weight:600;font-size:12.5px">${esc(n.titulo)||'—'}</td>
+      <td><span class="badge badge-${n.tipo==='urgente'?'red':n.tipo==='atencao'?'amber':n.tipo==='sucesso'?'green':'blue'}">${tipoIcon[n.tipo]||'📌'} ${esc(n.tipo)||'info'}</span></td>
+      <td style="font-size:12px">${esc(n.prazo)||'—'}</td>
       <td style="font-size:12px;color:var(--gray-500)">${n.criadoEm?new Date(n.criadoEm).toLocaleString('pt-BR'):'—'}</td>
       <td style="text-align:right">
-        <button class="btn btn-secondary btn-sm" onclick="excluirNotif('${n.id}')" style="color:var(--red)">🗑️</button>
+        <button class="btn btn-secondary btn-sm" onclick="excluirNotif('${esc(n.id)}')" style="color:var(--red)">🗑️</button>
       </td>
     </tr>`).join('');
   }catch(e){
@@ -825,18 +827,24 @@ function renderSolicitacoes(){
 // ── GLOBAL ERROR BOUNDARY ────────────────────────────────────────
 window.addEventListener('unhandledrejection',ev=>{
   const msg=ev.reason?.message||'Erro desconhecido';
-  if(msg.includes('permission-denied'))showToast('⛔ Permissão negada no Firestore.','error');
-  else if(msg.includes('unavailable')||msg.includes('network'))showToast('📡 Sem conexão. Verifique a internet.','error');
-  else if(msg.includes('FAILED_PRECONDITION')||msg.includes('index'))showToast('⚠️ Índice Firestore pendente.','error');
+  if(msg.includes('permission-denied'))adminToast('⛔ Permissão negada no Firestore.');
+  else if(msg.includes('unavailable')||msg.includes('network'))adminToast('📡 Sem conexão. Verifique a internet.');
+  else if(msg.includes('FAILED_PRECONDITION')||msg.includes('index'))adminToast('⚠️ Índice Firestore pendente.');
   ev.preventDefault();
   console.error('Unhandled:',ev.reason);
 });
+function esc(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 function doAdminLogin(){
+  if(_adminLocked){document.getElementById('loginErr').textContent='⛔ Muitas tentativas. Aguarde 5 minutos.';document.getElementById('loginErr').style.display='block';return;}
   const u=document.getElementById('admUser').value.trim();
   const p=document.getElementById('admPass').value.trim();
   if(!ADMIN_USERS[u]||ADMIN_USERS[u]!==p){
+    _adminAttempts++;
+    if(_adminAttempts>=5){_adminLocked=true;clearTimeout(_adminLockTimer);_adminLockTimer=setTimeout(()=>{_adminLocked=false;_adminAttempts=0},300000);}
+    document.getElementById('loginErr').textContent='⚠️ Usuário ou senha incorretos.';
     document.getElementById('loginErr').style.display='block';return;
   }
+  _adminAttempts=0;
   document.getElementById('loginErr').style.display='none';
   adminUser=u;
   document.getElementById('sb-usuario').textContent=u.toUpperCase()+' — COMEP';
@@ -1134,10 +1142,10 @@ function renderHabilitacao(){
       else if(pSim&&!pNao){pHab='✅ Habilitado';pColor='color:var(--green)'}
       else{pHab='❌ Não Habilitado';pColor='color:var(--red)'}
       return `<tr style="background:#f8fafc">
-        <td style="padding:6px 12px 6px 32px;font-size:12px">${p.nome||'—'}</td>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">${p.vinculo||'—'} / ${p.funcao||'—'}</td>
-        <td colspan="2" style="padding:6px 12px;font-size:12px;${pColor};font-weight:600">${pHab}</td>
-        <td style="padding:6px 12px;font-size:11px;color:#94a3b8">${pforms.map(f=>f.tipo+': '+f.curso.substring(0,20)).join(' | ')||'—'}</td>
+        <td style="padding:6px 12px 6px 32px;font-size:12px">${esc(p.nome)||'—'}</td>
+        <td style="padding:6px 12px;font-size:12px;color:#64748b">${esc(p.vinculo)||'—'} / ${esc(p.funcao)||'—'}</td>
+        <td colspan="2" style="padding:6px 12px;font-size:12px;${pColor};font-weight:600">${esc(pHab)}</td>
+        <td style="padding:6px 12px;font-size:11px;color:#94a3b8">${pforms.map(f=>esc(f.tipo)+': '+esc(f.curso).substring(0,20)).join(' | ')||'—'}</td>
       </tr>`;
     }).join('');
     return `<tr id="hab-row-${e.inep}">
@@ -1178,11 +1186,11 @@ function renderHabilitacao(){
         :'<span class="badge badge-red">❌ NÃO HABILITADO</span>';
       const cbdg=m.cargo==='Diretor(a)'?'badge-teal':m.cargo==='Secretário(a) Escolar'?'badge-amber':'badge-blue';
       qaRows+=`<tr>
-        <td style="font-size:11.5px;color:var(--gray-400)">${e.inep}</td>
-        <td style="font-weight:600;font-size:12.5px">${e.nome.substring(0,28)}</td>
-        <td style="font-weight:600">${m.nome||'—'}</td>
-        <td><span class="badge ${cbdg}">${m.cargo||'—'}</span></td>
-        <td style="font-size:12px">${m.formacao||'—'}</td>
+        <td style="font-size:11.5px;color:var(--gray-400)">${esc(e.inep)}</td>
+        <td style="font-weight:600;font-size:12.5px">${esc(e.nome).substring(0,28)}</td>
+        <td style="font-weight:600">${esc(m.nome)||'—'}</td>
+        <td><span class="badge ${cbdg}">${esc(m.cargo)||'—'}</span></td>
+        <td style="font-size:12px">${esc(m.formacao)||'—'}</td>
         <td>${hbdg}</td>
       </tr>`;
     });
@@ -1207,17 +1215,17 @@ function renderHabilitacao(){
       const vbdg=p.vinculo==='EFETIVO'?'badge-teal':p.vinculo==='CONTRATADO'?'badge-amber':'badge-gray';
       // Lotações com habilitação
       const lots=(p.atribuicoes||[]).map(a=>`<div style="font-size:11px;padding:2px 0;border-bottom:1px solid #f1f5f9">
-        <span style="font-weight:600">${a.disciplina}</span>
-        <span style="color:#64748b"> · ${a.etapa}</span>
-        ${a.turno?`<span style="color:#94a3b8"> · ${a.turno}</span>`:''}
-        <span style="${a.habilitacao==='HABILITADO'?'color:var(--green)':'color:var(--red)'};font-weight:700;margin-left:6px">${a.habilitacao==='HABILITADO'?'✅':'❌'} ${a.habilitacao||'—'}</span>
+        <span style="font-weight:600">${esc(a.disciplina)}</span>
+        <span style="color:#64748b"> · ${esc(a.etapa)}</span>
+        ${a.turno?`<span style="color:#94a3b8"> · ${esc(a.turno)}</span>`:''}
+        <span style="${a.habilitacao==='HABILITADO'?'color:var(--green)':'color:var(--red)'};font-weight:700;margin-left:6px">${a.habilitacao==='HABILITADO'?'✅':'❌'} ${esc(a.habilitacao)||'—'}</span>
       </div>`).join('');
       profRows+=`<tr>
-        <td style="font-size:11px;color:var(--gray-400)">${e.inep}</td>
-        <td style="font-size:12px;color:var(--gray-500)">${e.nome.substring(0,22)}</td>
-        <td style="font-weight:600">${p.nome||'—'}</td>
-        <td><span class="badge ${vbdg}">${p.vinculo||'—'}</span></td>
-        <td style="font-size:12px">${p.funcao||'—'}</td>
+        <td style="font-size:11px;color:var(--gray-400)">${esc(e.inep)}</td>
+        <td style="font-size:12px;color:var(--gray-500)">${esc(e.nome).substring(0,22)}</td>
+        <td style="font-weight:600">${esc(p.nome)||'—'}</td>
+        <td><span class="badge ${vbdg}">${esc(p.vinculo)||'—'}</span></td>
+        <td style="font-size:12px">${esc(p.funcao)||'—'}</td>
         <td>${hBdg}</td>
         <td style="min-width:220px">${lots||'<span style="color:var(--gray-400);font-size:11px">Sem lotação</span>'}</td>
       </tr>`;
@@ -1233,10 +1241,11 @@ function renderInfra(){
   ESCOLAS.forEach(e=>{
     const f=fichasCache[e.inep];
     if(!f)return;
-    if(f.ppp==='SIM')instDados.ppp++;
-    if(f.regimento==='SIM')instDados.regimento++;
-    if(f.conselho==='SIM')instDados.conselho++;
-    if(f.calendario==='SIM')instDados.calendario++;
+    const es=f.escrituracao||{};
+    if(es['ei-ppp'])instDados.ppp++;
+    if(es['ei-reg'])instDados.regimento++;
+    if(es['ei-cons'])instDados.conselho++;
+    if(es['ei-cal'])instDados.calendario++;
   });
   const n=ESCOLAS.length;
   document.getElementById('infra-instrumentos').innerHTML=
@@ -1256,7 +1265,7 @@ function renderInfra(){
   const funcMap={};
   ESCOLAS.forEach(e=>{
     const f=fichasCache[e.inep];
-    (f?.funcionarios||[]).forEach(fn=>{
+    (f?.escrituracao?.funcionarios_admin||[]).forEach(fn=>{
       const func=fn.funcao||'Sem função';
       funcMap[func]=(funcMap[func]||0)+1;
     });
