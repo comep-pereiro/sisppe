@@ -256,7 +256,7 @@ input,select,textarea,button{font-family:inherit}
 .mc{width:30px;height:30px;border:none;background:var(--s100);border-radius:6px;cursor:pointer;font-size:16px;flex-shrink:0}
 .mc:hover{background:var(--s200)}
 .mb{padding:24px}
-.mf{padding:16px 24px;border-bottom:1px solid var(--s200);display:flex;justify-content:flex-end;gap:10px;border-radius:0 0 var(--rl) var(--rl)}
+.mf{padding:16px 24px;border-top:1px solid var(--s200);display:flex;justify-content:flex-end;gap:10px;border-radius:0 0 var(--rl) var(--rl)}
 
 /* ── DAYS ── */
 .days{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
@@ -538,15 +538,15 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
         <div class="fg"><label>Área Total (m²)</label><input type="number" id="f-area" placeholder="Ex: 6000"></div>
         <div class="fg"><label>Qtd. Dias Letivos</label><input type="number" id="f-dl" value="200"></div>
         <div class="fg"><label>Carga Horária Semanal (h)</label><input type="number" id="f-ch" value="40"></div>
-        <div class="fg s2">
-         <label>Tipo de Escola <span style="font-size:10px;color:var(--s400);font-weight:400">(selecione todas que se aplicam)</span></label>
-         <div style="display:flex;flex-direction:column;gap:7px;margin-top:6px;padding:10px 12px;border:1.5px solid var(--s200);border-radius:var(--rs);background:var(--s50)">
-          <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="tesc-ei" style="accent-color:var(--t600)"> Educação Infantil</label>
-          <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="tesc-ai" style="accent-color:var(--t600)"> Ensino Fundamental – Anos Iniciais</label>
-          <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="tesc-af" style="accent-color:var(--t600)"> Ensino Fundamental – Anos Finais</label>
-          <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="tesc-eja1" style="accent-color:var(--t600)"> EJA – 1º Segmento</label>
-          <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="tesc-eja2a" style="accent-color:var(--t600)"> EJA – 2º Segmento (6º e 7º anos)</label>
-          <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="tesc-eja2b" style="accent-color:var(--t600)"> EJA – 2º Segmento (8º e 9º anos)</label>
+        <div class="s2" style="display:flex;flex-direction:column">
+         <label style="display:block;font-size:11.5px;font-weight:700;color:var(--s600);margin-bottom:4px;letter-spacing:.03em">Tipo de Escola <span style="font-size:10px;color:var(--s400);font-weight:400">(selecione todas que se aplicam)</span></label>
+         <div style="display:flex;flex-direction:column;gap:8px;padding:10px 12px;border:1.5px solid var(--s200);border-radius:var(--rs);background:var(--s50)">
+          <label style="display:flex !important;flex-direction:row !important;align-items:center;gap:9px;font-size:13px;font-weight:400;cursor:pointer;line-height:1.3"><input type="checkbox" id="tesc-ei" style="accent-color:var(--t600);flex-shrink:0;width:15px;height:15px"> Educação Infantil</label>
+          <label style="display:flex !important;flex-direction:row !important;align-items:center;gap:9px;font-size:13px;font-weight:400;cursor:pointer;line-height:1.3"><input type="checkbox" id="tesc-ai" style="accent-color:var(--t600);flex-shrink:0;width:15px;height:15px"> Ensino Fundamental – Anos Iniciais</label>
+          <label style="display:flex !important;flex-direction:row !important;align-items:center;gap:9px;font-size:13px;font-weight:400;cursor:pointer;line-height:1.3"><input type="checkbox" id="tesc-af" style="accent-color:var(--t600);flex-shrink:0;width:15px;height:15px"> Ensino Fundamental – Anos Finais</label>
+          <label style="display:flex !important;flex-direction:row !important;align-items:center;gap:9px;font-size:13px;font-weight:400;cursor:pointer;line-height:1.3"><input type="checkbox" id="tesc-eja1" style="accent-color:var(--t600);flex-shrink:0;width:15px;height:15px"> EJA – 1º Segmento</label>
+          <label style="display:flex !important;flex-direction:row !important;align-items:center;gap:9px;font-size:13px;font-weight:400;cursor:pointer;line-height:1.3"><input type="checkbox" id="tesc-eja2a" style="accent-color:var(--t600);flex-shrink:0;width:15px;height:15px"> EJA – 2º Segmento (6º e 7º anos)</label>
+          <label style="display:flex !important;flex-direction:row !important;align-items:center;gap:9px;font-size:13px;font-weight:400;cursor:pointer;line-height:1.3"><input type="checkbox" id="tesc-eja2b" style="accent-color:var(--t600);flex-shrink:0;width:15px;height:15px"> EJA – 2º Segmento (8º e 9º anos)</label>
          </div>
         </div>
         <div class="fg"><label>Acesso à Internet</label><select id="f-int"><option value="">Selecione...</option><option>FIBRA ÓPTICA</option><option>ADSL</option><option>CABO</option><option>RÁDIO</option><option>SATELITE</option><option>NÃO POSSUI</option></select></div>
@@ -1001,13 +1001,6 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
     </div>
     <div class="fg"><label>Data de Admissão</label><input type="date" id="qa-adm"></div>
     <div class="fg"><label>Portaria de Nomeação</label><input id="qa-port" placeholder="Nº e data da portaria"></div>
-    <div class="fg"><label>Vínculo *</label>
-     <select id="qa-vinc">
-      <option value="">Selecione...</option>
-      <option>EFETIVO</option>
-      <option>CONTRATADO</option>
-     </select>
-    </div>
     <div class="fg s2"><label>Formação Acadêmica *</label><input id="qa-form" placeholder="Ex: Graduação em Pedagogia — UECE (2010)"></div>
     <div class="fg"><label>Habilitação para o cargo *</label>
      <select id="qa-hab">
@@ -1432,7 +1425,8 @@ function nav(v){
   document.getElementById('sb').classList.remove('open'); // close mobile sidebar
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('.sbi').forEach(x=>x.classList.remove('on'));
-  document.getElementById('v-'+v).classList.add('on');
+  const _vEl=document.getElementById('v-'+v);if(!_vEl){console.warn('nav: view não encontrada:',v);return;}
+  _vEl.classList.add('on');
   const nb=document.getElementById('n-'+v);if(nb)nb.classList.add('on');
   if(v==='dash')rDash();
   else if(v==='ficha')loadFicha();
@@ -1516,7 +1510,8 @@ async function loadFicha(){
   }catch(e){toast('Erro ao carregar ficha.','err')}
 }
 async function salvarFicha(){
-  if(!U||BLQ){toast('⛔ Acesso bloqueado.','err');return}
+  if(!U){toast('Sessão expirada. Faça login novamente.','err');return}
+  if(BLQ){toast('⛔ Acesso bloqueado.','err');return}
   const ficha={
     cnpj:g('f-cnpj'),numero_ato_criacao:g('f-ato'),data_ato_criacao:g('f-dato'),escolas_nucleadas:g('f-nuc'),
     mantenedora_cnpj:g('f-mcnpj'),mantenedora_razao_social:g('f-mraz'),tipo_mantenedora:g('f-mtip'),
@@ -1532,12 +1527,12 @@ async function salvarFicha(){
     assentamento:gc('t-ass'),quilombola:gc('t-qui'),indigena:gc('t-ind')
   };
   const btn=document.getElementById('btn-sfic');
-  btn.disabled=true;btn.innerHTML='<span class="spin"></span> Salvando...';
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spin"></span> Salvando...';}
   try{
     await db.collection('escolas').doc(U.inep).set({ficha,atualizadoPor:U.cpf,atualizadoEm:new Date().toISOString()},{merge:true});
     toast('✅ Ficha salva com sucesso!','ok');clearDirty();
   }catch(e){toast('❌ Erro: '+e.message,'err')}
-  finally{btn.disabled=false;btn.innerHTML='💾 Salvar Alterações'}
+  finally{if(btn){btn.disabled=false;btn.innerHTML='💾 Salvar Alterações'}}
 }
 
 /* ═══════════════════════════════════════════
@@ -1653,7 +1648,7 @@ function openMobM(id=null){
   }else{
     document.getElementById('mob-mt').textContent='Novo Item';
     s('mob-tip','');
-    ['mob-exc','mob-bom','mob-reg','mob-pes'].forEach(id=>{document.getElementById(id).value=0});
+    ['mob-exc','mob-bom','mob-reg','mob-pes'].forEach(fid=>{const el=document.getElementById(fid);if(el)el.value=0});
     s('mob-obs','');
   }
   document.getElementById('m-mob').classList.add('on');
@@ -1742,11 +1737,11 @@ function rProf(){
             <div style="font-size:12px;font-weight:700;color:var(--s600);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">🗓️ Lotações (${(p.atribuicoes||[]).length})</div>
             ${(p.atribuicoes||[]).length?(p.atribuicoes||[]).map(a=>`
               <div style="padding:7px 0;border-bottom:1px solid var(--s200);font-size:12.5px">
-                <span style="font-weight:600">${a.disciplina}</span>
-                <span class="bdg bb" style="margin:0 4px">${a.etapa}</span>
-                ${a.turno?`<span class="bdg bt2">${a.turno}</span>`:''}
+                <span style="font-weight:600">${esc(a.disciplina)}</span>
+                <span class="bdg bb" style="margin:0 4px">${esc(a.etapa)}</span>
+                ${a.turno?`<span class="bdg bt2">${esc(a.turno)}</span>`:''}
                 <div style="font-size:11.5px;color:var(--s500);margin-top:3px">
-                  ${[a.ano_serie,a.turma?'Turma '+a.turma:'',a.carga_horaria?a.carga_horaria+'h/sem':'',(a.dias_semana||[]).join(', ')].filter(Boolean).join(' · ')}
+                  ${[a.ano_serie,a.turma?'Turma '+a.turma:'',a.carga_horaria?a.carga_horaria+'h/sem':'',(a.dias_semana||[]).join(', ')].filter(Boolean).map(esc).join(' · ')}
                 </div>
                 ${hab(a.habilitacao)}
               </div>`).join(''):`<div style="font-size:12px;color:var(--s400)">Nenhuma lotação cadastrada</div>`}
@@ -1874,7 +1869,7 @@ function rLotList(){
           ${a.turno?`<span class="bdg bt2">${esc(a.turno)}</span>`:''}
         </div>
         <div style="font-size:12px;color:var(--s500);margin-top:4px">
-          ${[a.ano_serie,a.turma?'Turma '+a.turma:'',a.carga_horaria?a.carga_horaria+'h/sem':'',(a.dias_semana||[]).join(', ')].filter(Boolean).join(' · ')}
+          ${[a.ano_serie,a.turma?'Turma '+a.turma:'',a.carga_horaria?a.carga_horaria+'h/sem':'',(a.dias_semana||[]).join(', ')].filter(Boolean).map(esc).join(' · ')}
         </div>
         <div style="margin-top:5px">${hab(a.habilitacao)}</div>
       </div>
@@ -2004,7 +1999,7 @@ async function loadDocs(){
       const doc=env[tipo];
       const dt=doc.criadoEm?new Date(doc.criadoEm).toLocaleString('pt-BR'):'—';
       const sz=doc.tamanhoBytes?Math.round(doc.tamanhoBytes/1024)+' KB':'—';
-      const dl=doc.url.replace('/upload/','/upload/fl_attachment/');
+      const dl=doc.url?(doc.url||'').replace('/upload/','/upload/fl_attachment/'):'#';
       rows+=`<tr>
         <td style="color:var(--s400)">+</td>
         <td style="font-size:12.5px">${esc(tipo)}</td>
@@ -2045,6 +2040,8 @@ async function uploadDoc(){
   if(arquivo.type&&arquivo.type!==mimeOk[ext]&&!(ext==='pdf'&&arquivo.type==='application/pdf')){
     toast('Tipo de arquivo inválido. Use PDF ou JPG.','err');return;
   }
+  const btn=document.getElementById('btn-udoc');
+  if(!btn)return;
   btn.disabled=true;btn.innerHTML='<span class="spin"></span>';
   document.getElementById('doc-prw').style.display='block';
   setP(15,'Conectando...');
