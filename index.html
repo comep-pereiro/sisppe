@@ -327,7 +327,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
     <div class="ll-card-ico">📄</div>
     <div class="ll-card-body">
      <div class="ll-card-title">Documentos obrigatórios</div>
-     <div class="ll-card-text">Envie os arquivos nos formatos <strong>PDF, JPG ou JPEG</strong> com tamanho máximo de <strong>10 MB</strong> por arquivo.</div>
+     <div class="ll-card-text">Envie os arquivos nos formatos <strong>PDF, JPG ou JPEG</strong> com tamanho máximo de <strong>5 MB</strong> por arquivo.</div>
     </div>
    </div>
 
@@ -784,7 +784,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
 
     <!-- Documentos de Escrituração -->
     <div class="tpane" id="es-t-doces">
-     <div class="info-box">📤 <strong>Documentos de Escrituração:</strong> Envie aqui os documentos comprobatórios dos instrumentos de gestão. Os arquivos ficam salvos na nuvem e ficam visíveis para o COMEP. Formatos aceitos: <strong>PDF, JPG ou JPEG</strong> — máximo <strong>10 MB</strong>.</div>
+     <div class="info-box">📤 <strong>Documentos de Escrituração:</strong> Envie aqui os documentos comprobatórios dos instrumentos de gestão. Os arquivos ficam salvos na nuvem e ficam visíveis para o COMEP. Formatos aceitos: <strong>PDF, JPG ou JPEG</strong> — máximo <strong>5 MB</strong>.</div>
      <div class="card" style="margin-bottom:16px">
       <div class="ch"><span class="ct">📂 Enviar Documento de Escrituração</span></div>
       <div class="cb">
@@ -821,7 +821,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
         ondrop="docesDrop(event)">
         <div class="uz-ico">📎</div>
         <div class="uz-txt" id="doces-fn">Clique aqui ou arraste o arquivo</div>
-        <div class="uz-hint">PDF, JPG ou JPEG — máximo 10 MB</div>
+        <div class="uz-hint">PDF, JPG ou JPEG — máximo 5 MB</div>
         <input type="file" id="doces-fil" accept=".pdf,.jpg,.jpeg" onchange="docesSel(this)">
        </div>
        <div class="prw" id="doces-prw">
@@ -1095,7 +1095,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
 <div class="mover" id="m-doc" onclick="closeMOver(event,this)">
  <div class="mbox mmd">
   <div class="mh">
-   <div><div class="mt">Enviar Documento</div><div class="ms">PDF, JPG ou JPEG · Máx. 10 MB</div></div>
+   <div><div class="mt">Enviar Documento</div><div class="ms">PDF, JPG ou JPEG · Máx. 5 MB</div></div>
    <button class="mc" onclick="closeM('m-doc')">✕</button>
   </div>
   <div class="mb">
@@ -1129,7 +1129,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
     ondrop="docDrop(event)">
     <div class="uz-ico">📎</div>
     <div class="uz-txt" id="doc-fn">Clique aqui ou arraste o arquivo</div>
-    <div class="uz-hint">PDF, JPG ou JPEG — máximo 10 MB</div>
+    <div class="uz-hint">PDF, JPG ou JPEG — máximo 5 MB</div>
     <input type="file" id="doc-fil" accept=".pdf,.jpg,.jpeg" onchange="docSel(this)">
    </div>
    <div class="prw" id="doc-prw">
@@ -2038,10 +2038,13 @@ async function uploadDoc(){
   const arquivo=fileEl.files[0];
   if(!tipo){toast('Selecione o tipo de documento.','err');return}
   if(!arquivo){toast('Selecione um arquivo.','err');return}
-  if(arquivo.size>10*1024*1024){toast('Arquivo excede 10 MB.','err');return}
+  if(arquivo.size>5*1024*1024){toast('Arquivo excede 5 MB.','err');return}
   const ext=arquivo.name.split('.').pop().toLowerCase();
   if(!['pdf','jpg','jpeg'].includes(ext)){toast('Use PDF ou JPG.','err');return}
-  const btn=document.getElementById('btn-udoc');
+  const mimeOk={'pdf':'application/pdf','jpg':'image/jpeg','jpeg':'image/jpeg'};
+  if(arquivo.type&&arquivo.type!==mimeOk[ext]&&!(ext==='pdf'&&arquivo.type==='application/pdf')){
+    toast('Tipo de arquivo inválido. Use PDF ou JPG.','err');return;
+  }
   btn.disabled=true;btn.innerHTML='<span class="spin"></span>';
   document.getElementById('doc-prw').style.display='block';
   setP(15,'Conectando...');
@@ -2299,7 +2302,7 @@ async function loadNotif(){
     const badge=document.getElementById('notif-badge');
     if(badge){badge.textContent=notifs.length;badge.style.display=notifs.length?'inline-block':'none'}
   }catch(e){
-    listEl.innerHTML='<div class="card"><div class="cb empty"><div class="empty-ic">❌</div><div class="empty-t">Erro ao carregar notificações</div><div class="empty-s">'+e.message+'</div></div></div>';
+    listEl.innerHTML='<div class="card"><div class="cb empty"><div class="empty-ic">❌</div><div class="empty-t">Erro ao carregar notificações</div><div class="empty-s">'+esc(e.message)+'</div></div></div>';
     console.error(e);
   }
 }
@@ -2479,9 +2482,13 @@ async function uploadDoces(){
   const arquivo=fileEl?.files[0];
   if(!tipo){toast('Selecione o tipo de documento.','err');return}
   if(!arquivo){toast('Selecione um arquivo.','err');return}
-  if(arquivo.size>10*1024*1024){toast('Arquivo excede 10 MB.','err');return}
+  if(arquivo.size>5*1024*1024){toast('Arquivo excede 5 MB.','err');return}
   const ext=arquivo.name.split('.').pop().toLowerCase();
   if(!['pdf','jpg','jpeg'].includes(ext)){toast('Use PDF ou JPG/JPEG.','err');return}
+  const mimeOkD={'pdf':'application/pdf','jpg':'image/jpeg','jpeg':'image/jpeg'};
+  if(arquivo.type&&arquivo.type!==mimeOkD[ext]){
+    toast('Tipo de arquivo inválido. Use PDF ou JPG.','err');return;
+  }
   const btn=document.getElementById('btn-udoces');
   if(btn){btn.disabled=true;btn.innerHTML='<span class="spin"></span>'}
   const prwEl=document.getElementById('doces-prw');
