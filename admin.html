@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -32,29 +31,29 @@ html,body{height:100%;overflow:hidden}
 body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size:13.5px;color:var(--gray-700)}
 
 /* ── LOGIN ── */
-#page-login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(–navy) 0%,#1a3a5c 60%,#1e4d3a 100%);z-index:1000;transition:opacity .35s,transform .35s}
+#page-login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy) 0%,#1a3a5c 60%,#1e4d3a 100%);z-index:1000;transition:opacity .35s,transform .35s}
 #page-login.hide{opacity:0;pointer-events:none;transform:scale(1.04)}
-.login-card{background:var(–white);border-radius:14px;box-shadow:var(–shadow-md);width:380px;padding:36px 40px}
+.login-card{background:var(--white);border-radius:14px;box-shadow:var(--shadow-md);width:380px;padding:36px 40px}
 .login-logo{text-align:center;margin-bottom:24px}
-.login-logo-title{font-family:‘Source Serif 4’,serif;font-size:26px;font-weight:700;color:var(–navy);letter-spacing:.03em}
-.login-logo-sub{font-size:11px;color:var(–gray-500);margin-top:4px}
+.login-logo-title{font-family:'Source Serif 4',serif;font-size:26px;font-weight:700;color:var(--navy);letter-spacing:.03em}
+.login-logo-sub{font-size:11px;color:var(--gray-500);margin-top:4px}
 .lf-group{margin-bottom:16px}
-.lf-group label{display:block;font-size:12px;font-weight:600;color:var(–gray-600);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
-.lf-group input{width:100%;padding:10px 12px;border:1.5px solid var(–gray-200);border-radius:8px;font-size:14px;color:var(–gray-700);outline:none;transition:border-color .2s}
-.lf-group input:focus{border-color:var(–green);box-shadow:0 0 0 3px rgba(21,128,61,.12)}
-.btn-enter{width:100%;padding:11px;background:linear-gradient(135deg,var(–green),var(–green2));color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;box-shadow:0 3px 10px rgba(21,128,61,.3);transition:opacity .2s}
+.lf-group label{display:block;font-size:12px;font-weight:600;color:var(--gray-600);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.lf-group input{width:100%;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:14px;color:var(--gray-700);outline:none;transition:border-color .2s}
+.lf-group input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(21,128,61,.12)}
+.btn-enter{width:100%;padding:11px;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;box-shadow:0 3px 10px rgba(21,128,61,.3);transition:opacity .2s}
 .btn-enter:hover{opacity:.9}
-.login-err{display:none;margin-bottom:14px;padding:9px 12px;background:var(–red-pale);border:1px solid #fca5a5;border-radius:6px;font-size:12px;color:var(–red)}
-.login-hint{margin-top:14px;font-size:11px;color:var(–gray-400);text-align:center}
+.login-err{display:none;margin-bottom:14px;padding:9px 12px;background:var(--red-pale);border:1px solid #fca5a5;border-radius:6px;font-size:12px;color:var(--red)}
+.login-hint{margin-top:14px;font-size:11px;color:var(--gray-400);text-align:center}
 
 /* ── APP ── */
 #page-app{position:fixed;inset:0;display:none;flex-direction:row}
 #page-app.show{display:flex}
 
 /* ── SIDEBAR ── */
-.sidebar{width:var(–sidebar-w);background:var(–navy);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sidebar{width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
 .sb-header{padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
-.sb-brand{font-family:‘Source Serif 4’,serif;font-size:19px;font-weight:700;color:#fff;letter-spacing:.04em}
+.sb-brand{font-family:'Source Serif 4',serif;font-size:19px;font-weight:700;color:#fff;letter-spacing:.04em}
 .sb-sub{font-size:9.5px;color:rgba(255,255,255,.45);margin-top:2px}
 .sb-user{padding:12px 16px;background:rgba(255,255,255,.06);margin:10px 12px;border-radius:8px;font-size:11.5px;color:rgba(255,255,255,.7)}
 .sb-user strong{color:#fff;display:block;font-size:12px;margin-bottom:2px}
@@ -62,101 +61,99 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size
 .sb-section{padding:8px 16px 3px;font-size:9.5px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em}
 .sb-item{display:flex;align-items:center;gap:9px;padding:9px 16px;cursor:pointer;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.65);border-left:3px solid transparent;transition:all .15s;user-select:none}
 .sb-item:hover{background:rgba(255,255,255,.07);color:#fff}
-.sb-item.active{background:rgba(255,255,255,.1);color:#fff;border-left-color:var(–green2)}
+.sb-item.active{background:rgba(255,255,255,.1);color:#fff;border-left-color:var(--green2)}
 .sb-item .ico{font-size:15px;width:20px;text-align:center;flex-shrink:0}
 .sb-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);font-size:10px;color:rgba(255,255,255,.3)}
 .sb-logout{padding:8px 16px;cursor:pointer;font-size:12px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:8px;transition:color .15s}
 .sb-logout:hover{color:#fff}
 
 /* ── MAIN ── */
-.main{flex:1;overflow-y:auto;background:var(–gray-100)}
+.main{flex:1;overflow-y:auto;background:var(--gray-100)}
 .view{display:none;padding:24px}
 .view.active{display:block}
-.page-title{font-family:‘Source Serif 4’,serif;font-size:21px;font-weight:700;color:var(–navy);margin-bottom:4px}
-.page-sub{font-size:13px;color:var(–gray-500);margin-bottom:20px}
+.page-title{font-family:'Source Serif 4',serif;font-size:21px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--gray-500);margin-bottom:20px}
 
 /* ── CARDS ── */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px}
-.kpi{background:var(–white);border-radius:10px;padding:16px 18px;box-shadow:var(–shadow);border:1px solid var(–gray-200)}
-.kpi-label{font-size:11px;font-weight:700;color:var(–gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
-.kpi-value{font-size:26px;font-weight:700;color:var(–navy)}
-.kpi-sub{font-size:11px;color:var(–gray-500);margin-top:3px}
+.kpi{background:var(--white);border-radius:10px;padding:16px 18px;box-shadow:var(--shadow);border:1px solid var(--gray-200)}
+.kpi-label{font-size:11px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.kpi-value{font-size:26px;font-weight:700;color:var(--navy)}
+.kpi-sub{font-size:11px;color:var(--gray-500);margin-top:3px}
 
 /* ── PANELS ── */
-.panel{background:var(–white);border-radius:10px;box-shadow:var(–shadow);border:1px solid var(–gray-200);margin-bottom:16px}
-.panel-header{padding:13px 18px;border-bottom:1px solid var(–gray-200);display:flex;align-items:center;justify-content:space-between}
-.panel-title{font-size:14px;font-weight:700;color:var(–navy)}
+.panel{background:var(--white);border-radius:10px;box-shadow:var(--shadow);border:1px solid var(--gray-200);margin-bottom:16px}
+.panel-header{padding:13px 18px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-size:14px;font-weight:700;color:var(--navy)}
 .panel-body{padding:18px}
 
 /* ── TABLE ── */
 .data-table{width:100%;border-collapse:collapse;font-size:12.5px}
-.data-table th{background:var(–gray-50);padding:8px 12px;text-align:left;font-weight:700;font-size:11px;color:var(–gray-500);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(–gray-200)}
-.data-table td{padding:9px 12px;border-bottom:1px solid var(–gray-100);vertical-align:middle}
+.data-table th{background:var(--gray-50);padding:8px 12px;text-align:left;font-weight:700;font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--gray-200)}
+.data-table td{padding:9px 12px;border-bottom:1px solid var(--gray-100);vertical-align:middle}
 .data-table tr:last-child td{border-bottom:none}
-.data-table tr:hover td{background:var(–gray-50)}
+.data-table tr:hover td{background:var(--gray-50)}
 
 /* ── BADGES ── */
 .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
-.badge-green{background:var(–green-pale);color:var(–green)}
-.badge-red{background:var(–red-pale);color:var(–red)}
-.badge-amber{background:var(–amber-pale);color:var(–amber)}
-.badge-blue{background:var(–blue-pale);color:var(–blue)}
+.badge-green{background:var(--green-pale);color:var(--green)}
+.badge-red{background:var(--red-pale);color:var(--red)}
+.badge-amber{background:var(--amber-pale);color:var(--amber)}
+.badge-blue{background:var(--blue-pale);color:var(--blue)}
 .badge-teal{background:#ccfbf1;color:#0f766e}
-.badge-gray{background:var(–gray-100);color:var(–gray-600)}
+.badge-gray{background:var(--gray-100);color:var(--gray-600)}
 
 /* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;border:none}
-.btn-primary{background:var(–green);color:#fff}
-.btn-primary:hover{background:var(–green2)}
-.btn-danger{background:var(–red);color:#fff}
+.btn-primary{background:var(--green);color:#fff}
+.btn-primary:hover{background:var(--green2)}
+.btn-danger{background:var(--red);color:#fff}
 .btn-danger:hover{background:#991b1b}
-.btn-secondary{background:var(–gray-100);color:var(–gray-700);border:1px solid var(–gray-200)}
-.btn-secondary:hover{background:var(–gray-200)}
+.btn-secondary{background:var(--gray-100);color:var(--gray-700);border:1px solid var(--gray-200)}
+.btn-secondary:hover{background:var(--gray-200)}
 .btn-sm{padding:4px 10px;font-size:11.5px}
 
 /* ── ALERTAS ── */
 .alerta-item{border-radius:8px;padding:12px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;font-size:12.5px}
-.alerta-critico{background:#fef2f2;border-left:4px solid var(–red)}
+.alerta-critico{background:#fef2f2;border-left:4px solid var(--red)}
 .alerta-urgente{background:#fff7ed;border-left:4px solid #f97316}
-.alerta-atencao{background:var(–amber-pale);border-left:4px solid var(–amber)}
-.alerta-info{background:var(–blue-pale);border-left:4px solid var(–blue)}
+.alerta-atencao{background:var(--amber-pale);border-left:4px solid var(--amber)}
+.alerta-info{background:var(--blue-pale);border-left:4px solid var(--blue)}
 .alerta-icon{font-size:18px;flex-shrink:0;margin-top:1px}
 .alerta-text strong{display:block;font-weight:700;margin-bottom:2px;font-size:13px}
-.alerta-text span{color:var(–gray-600)}
+.alerta-text span{color:var(--gray-600)}
 
 /* ── PROGRESS BAR ── */
-.prog-wrap{background:var(–gray-100);border-radius:4px;height:8px;overflow:hidden;margin-top:5px}
+.prog-wrap{background:var(--gray-100);border-radius:4px;height:8px;overflow:hidden;margin-top:5px}
 .prog-fill{height:100%;border-radius:4px;transition:width .4s}
-.prog-green{background:var(–green2)}
-.prog-amber{background:var(–amber)}
-.prog-red{background:var(–red)}
+.prog-green{background:var(--green2)}
+.prog-amber{background:var(--amber)}
+.prog-red{background:var(--red)}
 
 /* ── FILTROS ── */
 .filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.filter-btn{padding:5px 12px;border-radius:20px;border:1px solid var(–gray-300);background:var(–white);font-size:12px;cursor:pointer;color:var(–gray-600);transition:all .15s}
-.filter-btn:hover,.filter-btn.active{background:var(–navy);color:#fff;border-color:var(–navy)}
+.filter-btn{padding:5px 12px;border-radius:20px;border:1px solid var(--gray-300);background:var(--white);font-size:12px;cursor:pointer;color:var(--gray-600);transition:all .15s}
+.filter-btn:hover,.filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
 
 /* ── MODAL BLOQUEIO ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:center;justify-content:center}
 .modal-overlay.show{display:flex}
-.modal-box{background:var(–white);border-radius:12px;padding:28px;width:420px;box-shadow:var(–shadow-md)}
-.modal-title{font-family:‘Source Serif 4’,serif;font-size:17px;font-weight:700;color:var(–navy);margin-bottom:12px}
-.modal-input{width:100%;padding:9px 12px;border:1.5px solid var(–gray-200);border-radius:7px;font-size:13px;outline:none;margin-bottom:14px}
-.modal-input:focus{border-color:var(–green)}
+.modal-box{background:var(--white);border-radius:12px;padding:28px;width:420px;box-shadow:var(--shadow-md)}
+.modal-title{font-family:'Source Serif 4',serif;font-size:17px;font-weight:700;color:var(--navy);margin-bottom:12px}
+.modal-input{width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:7px;font-size:13px;outline:none;margin-bottom:14px}
+.modal-input:focus{border-color:var(--green)}
 .modal-btns{display:flex;gap:8px;justify-content:flex-end}
 
 /* ── TOAST ── */
-.toast{position:fixed;bottom:20px;right:20px;background:var(–navy2);color:#fff;padding:11px 18px;font-size:13px;border-radius:8px;box-shadow:var(–shadow-md);z-index:9999;display:none;border-left:4px solid var(–green2);max-width:340px;animation:fadein .25s ease}
-.toast.err{border-left-color:var(–red)}
-.toast.ok{border-left-color:var(–green2)}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--navy2);color:#fff;padding:11px 18px;font-size:13px;border-radius:8px;box-shadow:var(--shadow-md);z-index:9999;display:none;border-left:4px solid var(--green2);max-width:340px;animation:fadein .25s ease}
+.toast.err{border-left-color:var(--red)}
+.toast.ok{border-left-color:var(--green2)}
 @keyframes fadein{from{transform:translateX(16px);opacity:0}to{transform:translateX(0);opacity:1}}
 </style>
-
 </head>
 <body>
 
 <!-- ═══════════════════════════ LOGIN ════════════════════════════ -->
-
 <div id="page-login">
   <div class="login-card">
     <div class="login-logo">
@@ -178,11 +175,9 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size
 </div>
 
 <!-- ═══════════════════════════ APP ════════════════════════════════ -->
-
 <div id="page-app">
 
   <!-- SIDEBAR -->
-
   <aside class="sidebar">
     <div class="sb-header">
       <div class="sb-brand">SISPPe</div>
@@ -213,388 +208,384 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size
   </aside>
 
   <!-- MAIN -->
-
   <main class="main">
 
-```
-<!-- ── DASHBOARD ── -->
-<div class="view active" id="view-dashboard">
-  <div class="page-title">Dashboard</div>
-  <div class="page-sub" id="dash-time">Carregando...</div>
+    <!-- ── DASHBOARD ── -->
+    <div class="view active" id="view-dashboard">
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub" id="dash-time">Carregando...</div>
 
-  <div class="kpi-grid" id="kpi-grid">
-    <div class="kpi"><div class="kpi-label">Total Escolas</div><div class="kpi-value" id="kpi-total">18</div><div class="kpi-sub">cadastradas no sistema</div></div>
-    <div class="kpi"><div class="kpi-label">Docs Completos</div><div class="kpi-value" id="kpi-docs">—</div><div class="kpi-sub">com 6/6 docs enviados</div></div>
-    <div class="kpi"><div class="kpi-label">Fichas Preenchidas</div><div class="kpi-value" id="kpi-fichas">—</div><div class="kpi-sub">com dados no Firestore</div></div>
-    <div class="kpi"><div class="kpi-label">Em Análise</div><div class="kpi-value" id="kpi-analise" style="color:var(--amber)">—</div><div class="kpi-sub">processos em avaliação</div></div>
-    <div class="kpi"><div class="kpi-label">Vencendo 2026</div><div class="kpi-value" id="kpi-venc" style="color:var(--red)">3</div><div class="kpi-sub">precisam renovar urgente</div></div>
-    <div class="kpi"><div class="kpi-label">Bloqueadas</div><div class="kpi-value" id="kpi-bloq" style="color:var(--red)">—</div><div class="kpi-sub">com acesso suspenso</div></div>
-  </div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-    <div class="panel">
-      <div class="panel-header"><span class="panel-title">⚡ Alertas Prioritários</span></div>
-      <div class="panel-body" id="dash-alertas-body">Carregando...</div>
-    </div>
-    <div class="panel">
-      <div class="panel-header"><span class="panel-title">🏫 Progresso por Escola</span><button class="btn btn-secondary btn-sm" onclick="navAdmin('escolas')">Ver todas</button></div>
-      <div class="panel-body" id="dash-progresso-body" style="max-height:320px;overflow-y:auto">Carregando...</div>
-    </div>
-  </div>
-</div>
-
-<!-- ── ALERTAS ── -->
-<div class="view" id="view-alertas">
-  <div class="page-title">Central de Alertas</div>
-  <div class="page-sub">Monitoramento de prazos e pendências de todas as escolas.</div>
-  <div id="alertas-body">Carregando...</div>
-</div>
-
-<!-- ── ESCOLAS ── -->
-<div class="view" id="view-escolas">
-  <div class="page-title">Todas as Escolas</div>
-  <div class="page-sub">Gestão completa das 18 unidades municipais de Pereiro/CE.</div>
-  <div class="filter-row" id="escola-filters">
-    <button class="filter-btn active" onclick="filtrarEscolas('todas',this)">Todas</button>
-    <button class="filter-btn" onclick="filtrarEscolas('pendentes',this)">Pendentes</button>
-    <button class="filter-btn" onclick="filtrarEscolas('completas',this)">Completas</button>
-    <button class="filter-btn" onclick="filtrarEscolas('venc2026',this)">Vencendo 2026</button>
-    <button class="filter-btn" onclick="filtrarEscolas('rural',this)">Rural</button>
-    <button class="filter-btn" onclick="filtrarEscolas('urbana',this)">Urbana</button>
-    <button class="filter-btn" onclick="filtrarEscolas('bloqueadas',this)">Bloqueadas</button>
-  </div>
-  <div class="panel">
-    <div class="panel-body" style="padding:0;overflow-x:auto">
-      <table class="data-table" id="tbl-escolas">
-        <thead>
-          <tr>
-            <th>INEP</th><th>Escola</th><th>Validade</th><th>Zona</th>
-            <th>Docs</th><th>Ficha</th><th>Status</th><th>Ação</th>
-          </tr>
-        </thead>
-        <tbody id="tbody-escolas">
-          <tr><td colspan="8" style="text-align:center;padding:24px;color:var(--gray-400)">🔄 Carregando...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- ── DOCUMENTOS ── -->
-<div class="view" id="view-documentos">
-  <div class="page-title">Documentos Recebidos</div>
-  <div class="page-sub">Visão consolidada dos documentos enviados por todas as escolas.</div>
-  <div class="panel">
-    <div class="panel-body" style="padding:0;overflow-x:auto">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Escola</th>
-            <th>ATO CRIAÇÃO</th>
-            <th>CENSO</th>
-            <th>REL. ANUAL</th>
-            <th>FACHADA</th>
-            <th>DEPENDÊNCIAS</th>
-            <th>REQUERIMENTO</th>
-            <th>% Completo</th>
-          </tr>
-        </thead>
-        <tbody id="tbody-docs">
-          <tr><td colspan="8" style="text-align:center;padding:24px;color:var(--gray-400)">🔄 Carregando...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- ── PENDÊNCIAS ── -->
-<div class="view" id="view-pendencias">
-  <div class="page-title">Pendências</div>
-  <div class="page-sub">Escolas com documentos obrigatórios em aberto.</div>
-  <div id="pend-body">Carregando...</div>
-</div>
-
-<!-- ── HABILITAÇÃO ── -->
-<div class="view" id="view-habilitacao">
-  <div class="page-title">🎓 Habilitação Docente e Administrativa</div>
-  <div class="page-sub">Situação de habilitação de professores, diretores e secretários de todas as escolas municipais.</div>
-
-  <!-- KPIs -->
-  <div class="panel">
-    <div class="panel-header"><span class="panel-title">Resumo Geral — Professores</span></div>
-    <div class="panel-body">
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
-        <div class="kpi" style="border-color:var(--green-pale)"><div class="kpi-label">Taxa de Habilitação</div><div class="kpi-value" id="hab-taxa" style="color:var(--green)">—</div><div class="kpi-sub">professores habilitados</div></div>
-        <div class="kpi" style="border-color:var(--green-pale)"><div class="kpi-label">✅ Professores Habilitados</div><div class="kpi-value" id="hab-sim" style="color:var(--green)">—</div></div>
-        <div class="kpi" style="border-color:#fee2e2"><div class="kpi-label">❌ Não Habilitados</div><div class="kpi-value" id="hab-nao" style="color:var(--red)">—</div></div>
+      <div class="kpi-grid" id="kpi-grid">
+        <div class="kpi"><div class="kpi-label">Total Escolas</div><div class="kpi-value" id="kpi-total">18</div><div class="kpi-sub">cadastradas no sistema</div></div>
+        <div class="kpi"><div class="kpi-label">Docs Completos</div><div class="kpi-value" id="kpi-docs">—</div><div class="kpi-sub">com 6/6 docs enviados</div></div>
+        <div class="kpi"><div class="kpi-label">Fichas Preenchidas</div><div class="kpi-value" id="kpi-fichas">—</div><div class="kpi-sub">com dados no Firestore</div></div>
+        <div class="kpi"><div class="kpi-label">Em Análise</div><div class="kpi-value" id="kpi-analise" style="color:var(--amber)">—</div><div class="kpi-sub">processos em avaliação</div></div>
+        <div class="kpi"><div class="kpi-label">Vencendo 2026</div><div class="kpi-value" id="kpi-venc" style="color:var(--red)">3</div><div class="kpi-sub">precisam renovar urgente</div></div>
+        <div class="kpi"><div class="kpi-label">Bloqueadas</div><div class="kpi-value" id="kpi-bloq" style="color:var(--red)">—</div><div class="kpi-sub">com acesso suspenso</div></div>
       </div>
-      <div style="margin-top:14px;padding:10px 14px;background:#fffbeb;border-left:4px solid #f59e0b;border-radius:0 6px 6px 0;font-size:12.5px;color:#78350f">
-        ℹ️ <strong>Fonte:</strong> Dados preenchidos pelas escolas no Portal SISPPe. Escolas que ainda não cadastraram professores não aparecem nas tabelas abaixo.
-      </div>
-    </div>
-  </div>
 
-  <!-- Por Escola -->
-  <div class="panel">
-    <div class="panel-header"><span class="panel-title">📊 Resumo por Escola</span></div>
-    <div class="panel-body" style="padding:0">
-      <table class="data-table">
-        <thead><tr><th>Escola</th><th>Total Profs.</th><th style="color:var(--green)">✅ Habilitados</th><th style="color:var(--red)">❌ Não Hab.</th><th>Taxa</th></tr></thead>
-        <tbody id="tbody-hab">
-          <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Quadro Administrativo: Diretores e Secretários -->
-  <div class="panel">
-    <div class="panel-header">
-      <span class="panel-title">👥 Quadro Administrativo — Habilitação por Pessoa</span>
-      <span style="font-size:12px;color:var(--gray-400)">Diretores, Secretários e Coordenadores</span>
-    </div>
-    <div class="panel-body" style="padding:0;overflow-x:auto">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>INEP</th>
-            <th>Escola</th>
-            <th>Nome</th>
-            <th>Cargo</th>
-            <th>Formação</th>
-            <th>Habilitação</th>
-          </tr>
-        </thead>
-        <tbody id="tbody-hab-qa">
-          <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Professores: detalhado por pessoa e disciplina -->
-  <div class="panel">
-    <div class="panel-header">
-      <span class="panel-title">🎓 Professores — Habilitação por Pessoa e Disciplina</span>
-      <span style="font-size:12px;color:var(--gray-400)">Habilitação geral e por lotação em sala de aula</span>
-    </div>
-    <div class="panel-body" style="padding:0;overflow-x:auto">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>INEP</th>
-            <th>Escola</th>
-            <th>Professor(a)</th>
-            <th>Vínculo</th>
-            <th>Função</th>
-            <th>Habilitação Geral</th>
-            <th>Lotações e Habilitação por Disciplina</th>
-          </tr>
-        </thead>
-        <tbody id="tbody-hab-profs">
-          <tr><td colspan="7" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- ── INFRAESTRUTURA ── -->
-<div class="view" id="view-infraestrutura">
-  <div class="page-title">🏗 Infraestrutura</div>
-  <div class="page-sub">Instrumentos de gestão, funcionários e escrituração das escolas.</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-    <div class="panel">
-      <div class="panel-header"><span class="panel-title">Instrumentos de Gestão</span></div>
-      <div class="panel-body" id="infra-instrumentos">Carregando...</div>
-    </div>
-    <div class="panel">
-      <div class="panel-header"><span class="panel-title">Funcionários por Função</span></div>
-      <div class="panel-body" id="infra-funcionarios">Carregando...</div>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-header"><span class="panel-title">💻 Sistema de Escrituração Utilizado</span></div>
-    <div class="panel-body" id="infra-sistemas">Carregando...</div>
-  </div>
-</div>
-
-<!-- ── RELATÓRIO ── -->
-<div class="view" id="view-relatorio">
-  <div class="page-title">📊 Relatório Geral</div>
-  <div class="page-sub">Visão consolidada do sistema para prestação de contas.</div>
-  <div style="display:flex;gap:8px;margin-bottom:16px">
-    <button class="btn btn-primary" onclick="gerarRelatorioCSV()">📥 Exportar CSV</button>
-    <button class="btn btn-secondary" onclick="window.print()">🖨️ Imprimir</button>
-  </div>
-  <div class="panel">
-    <div class="panel-header"><span class="panel-title">Situação Geral das Escolas</span></div>
-    <div class="panel-body" style="padding:0;overflow-x:auto">
-      <table class="data-table" id="tbl-relatorio">
-        <thead><tr><th>INEP</th><th>Escola</th><th>Rural</th><th>Validade</th><th>Parecer</th><th>Docs</th><th>Status</th></tr></thead>
-        <tbody id="tbody-relatorio">
-          <tr><td colspan="7" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-header"><span class="panel-title">Linha do Tempo — Vencimentos</span></div>
-    <div class="panel-body">
-      <div id="timeline-venc"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ── GRÁFICOS ── -->
-<div class="view" id="view-graficos">
-  <div class="page-title">📈 Gráficos e Análises</div>
-  <div class="page-sub">Visualizações analíticas do sistema — dados em tempo real.</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-
-    <!-- Vínculo docente -->
-    <div class="panel">
-      <div class="panel-header"><span class="panel-title">Vínculo Docente por Escola</span></div>
-      <div class="panel-body" id="graf-vinculo">
-        <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
-      </div>
-    </div>
-
-    <!-- Docs por escola -->
-    <div class="panel">
-      <div class="panel-header"><span class="panel-title">Documentação por Escola (%)</span></div>
-      <div class="panel-body" id="graf-docs">
-        <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
-      </div>
-    </div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-
-    <!-- Habilitação geral -->
-    <div class="panel">
-      <div class="panel-header"><span class="panel-title">Habilitação Docente — Visão Geral</span></div>
-      <div class="panel-body" id="graf-hab">
-        <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
-      </div>
-    </div>
-
-    <!-- Validade credenciamentos -->
-    <div class="panel">
-      <div class="panel-header"><span class="panel-title">Validade dos Credenciamentos</span></div>
-      <div class="panel-body" id="graf-validade">
-        <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ── SOLICITAÇÕES ── -->
-<div class="view" id="view-solicitacoes">
-  <div class="page-title">📨 Solicitações e Comunicados</div>
-  <div class="page-sub">Gerencie notificações e comunicados enviados às escolas.</div>
-
-  <!-- Enviar notificação -->
-  <div class="panel" style="margin-bottom:16px">
-    <div class="panel-header"><span class="panel-title">📤 Enviar Comunicado às Escolas</span></div>
-    <div class="panel-body">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-        <div style="grid-column:span 2">
-          <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">TÍTULO DO COMUNICADO *</label>
-          <input id="not-titulo" type="text" placeholder="Ex: Prazo para envio do relatório anual" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">⚡ Alertas Prioritários</span></div>
+          <div class="panel-body" id="dash-alertas-body">Carregando...</div>
         </div>
-        <div>
-          <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">DESTINATÁRIO *</label>
-          <select id="not-dest" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
-            <option value="todas">📢 Todas as Escolas</option>
-            <optgroup label="Escola específica">
-              <option value="23138378">Antônio Pinheiro Maia</option>
-              <option value="23138408">Cândido José Nogueira</option>
-              <option value="23219254">Cleonice Freire de Queiroz</option>
-              <option value="23274778">Francisca Nogueira de Sousa</option>
-              <option value="23138483">Francisco das Chagas de Aquino</option>
-              <option value="23283467">João Nogueira de Sousa</option>
-              <option value="23138777">José Matias de Sousa</option>
-              <option value="23178370">José Nilson Bezerra</option>
-              <option value="23138670">Maria das Graças Nogueira</option>
-              <option value="23138688">Maria Nazaré de Jesus</option>
-              <option value="23138742">Miguel Antônio da Rocha</option>
-              <option value="23138530">Nossa Senhora das Graças</option>
-              <option value="23138793">Pedro Gomes de Lima</option>
-              <option value="23178280">Pequeno Príncipe</option>
-              <option value="23138815">Pingo de Gente</option>
-              <option value="23258829">Semeando o Saber</option>
-              <option value="00000017">Luiz Gonçalves de Lima</option>
-              <option value="00000018">Municipal 18 — A Cadastrar</option>
-            </optgroup>
-          </select>
-        </div>
-        <div>
-          <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">TIPO / PRIORIDADE</label>
-          <select id="not-tipo" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
-            <option value="info">🔵 Informativo</option>
-            <option value="atencao">🟡 Atenção</option>
-            <option value="urgente">🔴 Urgente</option>
-            <option value="sucesso">✅ Aprovação / Sucesso</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">PRAZO (opcional)</label>
-          <input id="not-prazo" type="text" placeholder="Ex: 30/04/2025" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
-        </div>
-        <div style="grid-column:span 2">
-          <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">MENSAGEM *</label>
-          <textarea id="not-msg" rows="4" placeholder="Texto completo do comunicado..." style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;resize:vertical"></textarea>
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">🏫 Progresso por Escola</span><button class="btn btn-secondary btn-sm" onclick="navAdmin('escolas')">Ver todas</button></div>
+          <div class="panel-body" id="dash-progresso-body" style="max-height:320px;overflow-y:auto">Carregando...</div>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="enviarNotificacao()">📤 Enviar Comunicado</button>
     </div>
-  </div>
 
-  <!-- Lista de comunicados enviados -->
-  <div class="panel">
-    <div class="panel-header">
-      <span class="panel-title">📋 Comunicados Enviados</span>
-      <button class="btn btn-secondary btn-sm" onclick="carregarNotificacoes()">🔄 Atualizar</button>
+    <!-- ── ALERTAS ── -->
+    <div class="view" id="view-alertas">
+      <div class="page-title">Central de Alertas</div>
+      <div class="page-sub">Monitoramento de prazos e pendências de todas as escolas.</div>
+      <div id="alertas-body">Carregando...</div>
     </div>
-    <div class="panel-body" style="padding:0">
-      <table class="data-table">
-        <thead><tr><th>Destinatário</th><th>Título</th><th>Tipo</th><th>Prazo</th><th>Enviado em</th><th style="text-align:right">Ações</th></tr></thead>
-        <tbody id="tbody-notif">
-          <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
 
-<!-- ── DOCS ESCRITURAÇÃO ── -->
-<div class="view" id="view-escrituracao">
-  <div class="page-title">📝 Documentos de Escrituração</div>
-  <div class="page-sub">Documentos de escrituração enviados pelas escolas.</div>
-  <div class="filter-row" style="margin-bottom:14px">
-    <select id="escrit-escola-sel" onchange="renderEscritDocs()" style="padding:6px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:13px;outline:none;background:#fff;cursor:pointer">
-      <option value="">📢 Todas as Escolas</option>
-    </select>
-    <button class="btn btn-secondary btn-sm" onclick="carregarEscritDocs()">🔄 Atualizar</button>
-  </div>
-  <div class="panel">
-    <div class="panel-body" style="padding:0;overflow-x:auto">
-      <table class="data-table">
-        <thead><tr><th>Escola</th><th>Tipo</th><th>Descrição</th><th>Enviado em</th><th>Tamanho</th><th style="text-align:right">Arquivo</th></tr></thead>
-        <tbody id="tbody-escrit-docs">
-          <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--gray-400)">Clique em 🔄 para carregar os documentos.</td></tr>
-        </tbody>
-      </table>
+    <!-- ── ESCOLAS ── -->
+    <div class="view" id="view-escolas">
+      <div class="page-title">Todas as Escolas</div>
+      <div class="page-sub">Gestão completa das 18 unidades municipais de Pereiro/CE.</div>
+      <div class="filter-row" id="escola-filters">
+        <button class="filter-btn active" onclick="filtrarEscolas('todas',this)">Todas</button>
+        <button class="filter-btn" onclick="filtrarEscolas('pendentes',this)">Pendentes</button>
+        <button class="filter-btn" onclick="filtrarEscolas('completas',this)">Completas</button>
+        <button class="filter-btn" onclick="filtrarEscolas('venc2026',this)">Vencendo 2026</button>
+        <button class="filter-btn" onclick="filtrarEscolas('rural',this)">Rural</button>
+        <button class="filter-btn" onclick="filtrarEscolas('urbana',this)">Urbana</button>
+        <button class="filter-btn" onclick="filtrarEscolas('bloqueadas',this)">Bloqueadas</button>
+      </div>
+      <div class="panel">
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table class="data-table" id="tbl-escolas">
+            <thead>
+              <tr>
+                <th>INEP</th><th>Escola</th><th>Validade</th><th>Zona</th>
+                <th>Docs</th><th>Ficha</th><th>Status</th><th>Ação</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-escolas">
+              <tr><td colspan="8" style="text-align:center;padding:24px;color:var(--gray-400)">🔄 Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-```
+
+    <!-- ── DOCUMENTOS ── -->
+    <div class="view" id="view-documentos">
+      <div class="page-title">Documentos Recebidos</div>
+      <div class="page-sub">Visão consolidada dos documentos enviados por todas as escolas.</div>
+      <div class="panel">
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Escola</th>
+                <th>ATO CRIAÇÃO</th>
+                <th>CENSO</th>
+                <th>REL. ANUAL</th>
+                <th>FACHADA</th>
+                <th>DEPENDÊNCIAS</th>
+                <th>REQUERIMENTO</th>
+                <th>% Completo</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-docs">
+              <tr><td colspan="8" style="text-align:center;padding:24px;color:var(--gray-400)">🔄 Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PENDÊNCIAS ── -->
+    <div class="view" id="view-pendencias">
+      <div class="page-title">Pendências</div>
+      <div class="page-sub">Escolas com documentos obrigatórios em aberto.</div>
+      <div id="pend-body">Carregando...</div>
+    </div>
+
+    <!-- ── HABILITAÇÃO ── -->
+    <div class="view" id="view-habilitacao">
+      <div class="page-title">🎓 Habilitação Docente e Administrativa</div>
+      <div class="page-sub">Situação de habilitação de professores, diretores e secretários de todas as escolas municipais.</div>
+
+      <!-- KPIs -->
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Resumo Geral — Professores</span></div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+            <div class="kpi" style="border-color:var(--green-pale)"><div class="kpi-label">Taxa de Habilitação</div><div class="kpi-value" id="hab-taxa" style="color:var(--green)">—</div><div class="kpi-sub">professores habilitados</div></div>
+            <div class="kpi" style="border-color:var(--green-pale)"><div class="kpi-label">✅ Professores Habilitados</div><div class="kpi-value" id="hab-sim" style="color:var(--green)">—</div></div>
+            <div class="kpi" style="border-color:#fee2e2"><div class="kpi-label">❌ Não Habilitados</div><div class="kpi-value" id="hab-nao" style="color:var(--red)">—</div></div>
+          </div>
+          <div style="margin-top:14px;padding:10px 14px;background:#fffbeb;border-left:4px solid #f59e0b;border-radius:0 6px 6px 0;font-size:12.5px;color:#78350f">
+            ℹ️ <strong>Fonte:</strong> Dados preenchidos pelas escolas no Portal SISPPe. Escolas que ainda não cadastraram professores não aparecem nas tabelas abaixo.
+          </div>
+        </div>
+      </div>
+
+      <!-- Por Escola -->
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">📊 Resumo por Escola</span></div>
+        <div class="panel-body" style="padding:0">
+          <table class="data-table">
+            <thead><tr><th>Escola</th><th>Total Profs.</th><th style="color:var(--green)">✅ Habilitados</th><th style="color:var(--red)">❌ Não Hab.</th><th>Taxa</th></tr></thead>
+            <tbody id="tbody-hab">
+              <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Quadro Administrativo: Diretores e Secretários -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">👥 Quadro Administrativo — Habilitação por Pessoa</span>
+          <span style="font-size:12px;color:var(--gray-400)">Diretores, Secretários e Coordenadores</span>
+        </div>
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>INEP</th>
+                <th>Escola</th>
+                <th>Nome</th>
+                <th>Cargo</th>
+                <th>Formação</th>
+                <th>Habilitação</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-hab-qa">
+              <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Professores: detalhado por pessoa e disciplina -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">🎓 Professores — Habilitação por Pessoa e Disciplina</span>
+          <span style="font-size:12px;color:var(--gray-400)">Habilitação geral e por lotação em sala de aula</span>
+        </div>
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>INEP</th>
+                <th>Escola</th>
+                <th>Professor(a)</th>
+                <th>Vínculo</th>
+                <th>Função</th>
+                <th>Habilitação Geral</th>
+                <th>Lotações e Habilitação por Disciplina</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-hab-profs">
+              <tr><td colspan="7" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── INFRAESTRUTURA ── -->
+    <div class="view" id="view-infraestrutura">
+      <div class="page-title">🏗 Infraestrutura</div>
+      <div class="page-sub">Instrumentos de gestão, funcionários e escrituração das escolas.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Instrumentos de Gestão</span></div>
+          <div class="panel-body" id="infra-instrumentos">Carregando...</div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Funcionários por Função</span></div>
+          <div class="panel-body" id="infra-funcionarios">Carregando...</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">💻 Sistema de Escrituração Utilizado</span></div>
+        <div class="panel-body" id="infra-sistemas">Carregando...</div>
+      </div>
+    </div>
+
+    <!-- ── RELATÓRIO ── -->
+    <div class="view" id="view-relatorio">
+      <div class="page-title">📊 Relatório Geral</div>
+      <div class="page-sub">Visão consolidada do sistema para prestação de contas.</div>
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <button class="btn btn-primary" onclick="gerarRelatorioCSV()">📥 Exportar CSV</button>
+        <button class="btn btn-secondary" onclick="window.print()">🖨️ Imprimir</button>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Situação Geral das Escolas</span></div>
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table class="data-table" id="tbl-relatorio">
+            <thead><tr><th>INEP</th><th>Escola</th><th>Rural</th><th>Validade</th><th>Parecer</th><th>Docs</th><th>Status</th></tr></thead>
+            <tbody id="tbody-relatorio">
+              <tr><td colspan="7" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Linha do Tempo — Vencimentos</span></div>
+        <div class="panel-body">
+          <div id="timeline-venc"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── GRÁFICOS ── -->
+    <div class="view" id="view-graficos">
+      <div class="page-title">📈 Gráficos e Análises</div>
+      <div class="page-sub">Visualizações analíticas do sistema — dados em tempo real.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+
+        <!-- Vínculo docente -->
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Vínculo Docente por Escola</span></div>
+          <div class="panel-body" id="graf-vinculo">
+            <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
+          </div>
+        </div>
+
+        <!-- Docs por escola -->
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Documentação por Escola (%)</span></div>
+          <div class="panel-body" id="graf-docs">
+            <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+        <!-- Habilitação geral -->
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Habilitação Docente — Visão Geral</span></div>
+          <div class="panel-body" id="graf-hab">
+            <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
+          </div>
+        </div>
+
+        <!-- Validade credenciamentos -->
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Validade dos Credenciamentos</span></div>
+          <div class="panel-body" id="graf-validade">
+            <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SOLICITAÇÕES ── -->
+    <div class="view" id="view-solicitacoes">
+      <div class="page-title">📨 Solicitações e Comunicados</div>
+      <div class="page-sub">Gerencie notificações e comunicados enviados às escolas.</div>
+
+      <!-- Enviar notificação -->
+      <div class="panel" style="margin-bottom:16px">
+        <div class="panel-header"><span class="panel-title">📤 Enviar Comunicado às Escolas</span></div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div style="grid-column:span 2">
+              <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">TÍTULO DO COMUNICADO *</label>
+              <input id="not-titulo" type="text" placeholder="Ex: Prazo para envio do relatório anual" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
+            </div>
+            <div>
+              <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">DESTINATÁRIO *</label>
+              <select id="not-dest" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
+                <option value="todas">📢 Todas as Escolas</option>
+                <optgroup label="Escola específica">
+                  <option value="23138378">Antônio Pinheiro Maia</option>
+                  <option value="23138408">Cândido José Nogueira</option>
+                  <option value="23219254">Cleonice Freire de Queiroz</option>
+                  <option value="23274778">Francisca Nogueira de Sousa</option>
+                  <option value="23138483">Francisco das Chagas de Aquino</option>
+                  <option value="23283467">João Nogueira de Sousa</option>
+                  <option value="23138777">José Matias de Sousa</option>
+                  <option value="23178370">José Nilson Bezerra</option>
+                  <option value="23138670">Maria das Graças Nogueira</option>
+                  <option value="23138688">Maria Nazaré de Jesus</option>
+                  <option value="23138742">Miguel Antônio da Rocha</option>
+                  <option value="23138530">Nossa Senhora das Graças</option>
+                  <option value="23138793">Pedro Gomes de Lima</option>
+                  <option value="23178280">Pequeno Príncipe</option>
+                  <option value="23138815">Pingo de Gente</option>
+                  <option value="23258829">Semeando o Saber</option>
+                  <option value="00000017">Luiz Gonçalves de Lima</option>
+                  <option value="00000018">Municipal 18 — A Cadastrar</option>
+                </optgroup>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">TIPO / PRIORIDADE</label>
+              <select id="not-tipo" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
+                <option value="info">🔵 Informativo</option>
+                <option value="atencao">🟡 Atenção</option>
+                <option value="urgente">🔴 Urgente</option>
+                <option value="sucesso">✅ Aprovação / Sucesso</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">PRAZO (opcional)</label>
+              <input id="not-prazo" type="text" placeholder="Ex: 30/04/2025" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
+            </div>
+            <div style="grid-column:span 2">
+              <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">MENSAGEM *</label>
+              <textarea id="not-msg" rows="4" placeholder="Texto completo do comunicado..." style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;resize:vertical"></textarea>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="enviarNotificacao()">📤 Enviar Comunicado</button>
+        </div>
+      </div>
+
+      <!-- Lista de comunicados enviados -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">📋 Comunicados Enviados</span>
+          <button class="btn btn-secondary btn-sm" onclick="carregarNotificacoes()">🔄 Atualizar</button>
+        </div>
+        <div class="panel-body" style="padding:0">
+          <table class="data-table">
+            <thead><tr><th>Destinatário</th><th>Título</th><th>Tipo</th><th>Prazo</th><th>Enviado em</th><th style="text-align:right">Ações</th></tr></thead>
+            <tbody id="tbody-notif">
+              <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DOCS ESCRITURAÇÃO ── -->
+    <div class="view" id="view-escrituracao">
+      <div class="page-title">📝 Documentos de Escrituração</div>
+      <div class="page-sub">Documentos de escrituração enviados pelas escolas.</div>
+      <div class="filter-row" style="margin-bottom:14px">
+        <select id="escrit-escola-sel" onchange="renderEscritDocs()" style="padding:6px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:13px;outline:none;background:#fff;cursor:pointer">
+          <option value="">📢 Todas as Escolas</option>
+        </select>
+        <button class="btn btn-secondary btn-sm" onclick="carregarEscritDocs()">🔄 Atualizar</button>
+      </div>
+      <div class="panel">
+        <div class="panel-body" style="padding:0;overflow-x:auto">
+          <table class="data-table">
+            <thead><tr><th>Escola</th><th>Tipo</th><th>Descrição</th><th>Enviado em</th><th>Tamanho</th><th style="text-align:right">Arquivo</th></tr></thead>
+            <tbody id="tbody-escrit-docs">
+              <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--gray-400)">Clique em 🔄 para carregar os documentos.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
   </main>
 </div>
 
 <!-- MODAL BLOQUEIO -->
-
 <div class="modal-overlay" id="modal-bloqueio">
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Bloquear Escola</div>
@@ -608,7 +599,6 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size
 </div>
 
 <!-- MODAL STATUS -->
-
 <div class="modal-overlay" id="modal-status">
   <div class="modal-box">
     <div class="modal-title">Alterar Status da Escola</div>
@@ -1561,6 +1551,5 @@ function adminToast(msg,type=''){const t=document.getElementById('adminToast');t
 // ── INIT ──────────────────────────────────────────────────────────
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.getElementById('page-app').classList.contains('show'))doAdminLogin();});
 </script>
-
 </body>
 </html>
