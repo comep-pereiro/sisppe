@@ -820,7 +820,7 @@ async function carregarNotificacoes(){
       </td>
     </tr>`).join('');
   }catch(e){
-    tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--red)">❌ Erro: ${e.message}</td></tr>`;
+    tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--red)">❌ Erro: ${esc(e.message)}</td></tr>`;
     console.error(e);
   }
 }
@@ -1080,7 +1080,7 @@ function renderDashboard(){
   document.getElementById('dash-time').textContent='Atualizado em: '+new Date().toLocaleString('pt-BR');
 
   const completos=ESCOLAS.filter(e=>isCompleto(e.inep)).length;
-  const fichas=ESCOLAS.filter(e=>fichasCache[e.inep]!==null).length;
+  const fichas=ESCOLAS.filter(e=>fichasCache[e.inep]?.ficha&&Object.keys(fichasCache[e.inep].ficha).length>0).length;
   const bloqueadas=ESCOLAS.filter(e=>isBloqueado(e.inep)).length;
   const emAnalise=ESCOLAS.filter(e=>statusCache[e.inep]&&statusCache[e.inep].situacao==='em_analise').length;
 
@@ -1152,7 +1152,7 @@ function renderEscolas(){
   const rows=lista.map(e=>{
     const qtd=docsCount(e.inep);
     const pct=Math.round(qtd/6*100);
-    const temFicha=fichasCache[e.inep]!==null;
+    const temFicha=!!(fichasCache[e.inep]?.ficha&&Object.keys(fichasCache[e.inep].ficha).length>0);
     const bloq=isBloqueado(e.inep);
     const sit=statusCache[e.inep]?.situacao||'ativa';
     const vencBadge=e.validade==='31/12/2026'?'badge-red':e.validade==='31/12/2027'?'badge-amber':e.validade==='—'?'badge-gray':'badge-green';
@@ -1170,7 +1170,10 @@ function renderEscolas(){
       <td><span class="badge ${temFicha?'badge-green':'badge-gray'}">${temFicha?'✔ Sim':'— Não'}</span></td>
       <td><span class="badge ${sitBadge}">${sitLabel}</span></td>
       <td>
-        <button class="btn btn-secondary btn-sm" onclick="abrirModalStatus('${e.inep}','${e.nome}')">Status</button>
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-secondary btn-sm" onclick="abrirModalStatus('${e.inep}','${e.nome}')">Status</button>
+          ${temFicha?`<button class="btn btn-danger btn-sm" title="Limpar ficha de teste" onclick="limparFicha('${e.inep}','${esc(e.nome)}')">🗑 Ficha</button>`:''}
+        </div>
       </td>
     </tr>`;
   }).join('');
@@ -1507,6 +1510,17 @@ function abrirModalStatus(inep,nome){
   document.getElementById('modal-status').classList.add('show');
 }
 function fecharModalStatus(){document.getElementById('modal-status').classList.remove('show');modalInep=null;}
+
+async function limparFicha(inep,nome){
+  if(!confirm(`Apagar os dados de ficha da escola "${nome}"?\n\nEsta ação remove apenas os dados da ficha escolar (Identificação, Endereço, Características, etc.) e não pode ser desfeita.`))return;
+  try{
+    await db.collection('escolas').doc(inep).update({ficha:firebase.firestore.FieldValue.delete()});
+    // Atualiza cache local
+    if(fichasCache[inep])delete fichasCache[inep].ficha;
+    renderEscolas();renderDashboard();
+    adminToast(`✅ Ficha de "${nome}" removida com sucesso.`,'ok');
+  }catch(e){adminToast('❌ Erro ao limpar ficha: '+e.message,'err');console.error(e)}
+}
 
 async function confirmarStatus(){
   if(!modalInep)return;
