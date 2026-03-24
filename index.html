@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -38,19 +37,19 @@ input,select,textarea,button{font-family:inherit}
 
 /* ── LOGIN ── */
 #pg-login{
-position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-background:linear-gradient(135deg,var(–s900),#1a3a5c 55%,#0f5e52);
-z-index:1000;transition:opacity .4s,transform .4s;
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--s900),#1a3a5c 55%,#0f5e52);
+  z-index:1000;transition:opacity .4s,transform .4s;
 }
 #pg-login.out{opacity:0;pointer-events:none;transform:scale(1.06)}
 .lcard{
-background:var(–w);border-radius:16px;box-shadow:var(–shl);
-display:grid;grid-template-columns:340px 1fr;max-width:850px;width:95%;overflow:hidden;
+  background:var(--w);border-radius:16px;box-shadow:var(--shl);
+  display:grid;grid-template-columns:340px 1fr;max-width:850px;width:95%;overflow:hidden;
 }
 .ll{background:linear-gradient(165deg,#0f172a 0%,#0c3a2e 100%);padding:36px 28px;display:flex;flex-direction:column;gap:0}
 .ll-brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}
-.ll-ico{width:44px;height:44px;background:var(–t600);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.ll-name{font-family:‘Manrope’,sans-serif;font-size:21px;font-weight:800;color:var(–w);line-height:1}
+.ll-ico{width:44px;height:44px;background:var(--t600);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ll-name{font-family:'Manrope',sans-serif;font-size:21px;font-weight:800;color:var(--w);line-height:1}
 .ll-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;line-height:1.4}
 /* Info cards */
 .ll-card{display:flex;gap:12px;padding:13px 14px;border-radius:10px;background:rgba(255,255,255,.06);margin-bottom:10px;transition:background .2s}
@@ -69,28 +68,28 @@ display:grid;grid-template-columns:340px 1fr;max-width:850px;width:95%;overflow:
 .ll-contact-text strong{color:rgba(255,255,255,.9);display:block;font-size:12px;margin-bottom:2px}
 .ll-ver{margin-top:auto;padding-top:20px;font-size:10px;color:rgba(255,255,255,.2);display:flex;justify-content:space-between;align-items:center}
 .lr{padding:38px 34px;display:flex;flex-direction:column;justify-content:center}
-.lr h2{font-family:‘Manrope’,sans-serif;font-size:22px;font-weight:700;color:var(–s900);margin-bottom:4px}
-.lr > p{font-size:13px;color:var(–s500);margin-bottom:26px}
+.lr h2{font-family:'Manrope',sans-serif;font-size:22px;font-weight:700;color:var(--s900);margin-bottom:4px}
+.lr > p{font-size:13px;color:var(--s500);margin-bottom:26px}
 .fg0{margin-bottom:15px}
-.fg0 label{display:block;font-size:11.5px;font-weight:700;color:var(–s600);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.fg0 label{display:block;font-size:11.5px;font-weight:700;color:var(--s600);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
 .fg0 input{
-width:100%;padding:10px 13px;border:1.5px solid var(–s200);border-radius:var(–rs);
-font-size:13.5px;color:var(–s700);outline:none;transition:border-color .2s,box-shadow .2s;background:var(–s50);
+  width:100%;padding:10px 13px;border:1.5px solid var(--s200);border-radius:var(--rs);
+  font-size:13.5px;color:var(--s700);outline:none;transition:border-color .2s,box-shadow .2s;background:var(--s50);
 }
-.fg0 input:focus{border-color:var(–t600);box-shadow:0 0 0 3px rgba(13,148,136,.12);background:var(–w)}
-.err{display:none;margin-bottom:13px;padding:9px 13px;background:var(–r50);border:1px solid #fca5a5;border-radius:var(–rs);font-size:12.5px;color:var(–r700)}
-.trow{display:flex;align-items:flex-start;gap:8px;margin-bottom:18px;font-size:12px;color:var(–s500);line-height:1.6;cursor:pointer}
-.trow input{accent-color:var(–t600);margin-top:2px;flex-shrink:0}
-.trow a{color:var(–t700);text-decoration:underline;cursor:pointer}
+.fg0 input:focus{border-color:var(--t600);box-shadow:0 0 0 3px rgba(13,148,136,.12);background:var(--w)}
+.err{display:none;margin-bottom:13px;padding:9px 13px;background:var(--r50);border:1px solid #fca5a5;border-radius:var(--rs);font-size:12.5px;color:var(--r700)}
+.trow{display:flex;align-items:flex-start;gap:8px;margin-bottom:18px;font-size:12px;color:var(--s500);line-height:1.6;cursor:pointer}
+.trow input{accent-color:var(--t600);margin-top:2px;flex-shrink:0}
+.trow a{color:var(--t700);text-decoration:underline;cursor:pointer}
 .btn-enter{
-width:100%;padding:11px;background:var(–t700);color:var(–w);border:none;
-border-radius:var(–r);font-size:14px;font-weight:700;cursor:pointer;
-box-shadow:0 4px 12px rgba(13,148,136,.35);transition:all .2s;
+  width:100%;padding:11px;background:var(--t700);color:var(--w);border:none;
+  border-radius:var(--r);font-size:14px;font-weight:700;cursor:pointer;
+  box-shadow:0 4px 12px rgba(13,148,136,.35);transition:all .2s;
 }
-.btn-enter:hover{background:var(–t800);transform:translateY(-1px)}
-.hint{margin-top:13px;padding:10px 13px;background:var(–a50);border-left:3px solid var(–a500);border-radius:0 var(–rs) var(–rs) 0;font-size:11.5px;color:var(–s600);line-height:1.7}
+.btn-enter:hover{background:var(--t800);transform:translateY(-1px)}
+.hint{margin-top:13px;padding:10px 13px;background:var(--a50);border-left:3px solid var(--a500);border-radius:0 var(--rs) var(--rs) 0;font-size:11.5px;color:var(--s600);line-height:1.7}
 .llinks{margin-top:12px;display:flex;flex-direction:column;gap:5px}
-.llinks a{font-size:12px;color:var(–t700);cursor:pointer}
+.llinks a{font-size:12px;color:var(--t700);cursor:pointer}
 .llinks a:hover{text-decoration:underline}
 
 /* ── APP ── */
@@ -98,17 +97,17 @@ box-shadow:0 4px 12px rgba(13,148,136,.35);transition:all .2s;
 #pg-app.on{display:flex}
 
 /* ── SIDEBAR ── */
-.sb{width:268px;background:var(–s900);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;z-index:100}
+.sb{width:268px;background:var(--s900);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;z-index:100}
 .sb-logo{padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,.07)}
 .sb-logo-row{display:flex;align-items:center;gap:10px}
-.sb-logo-ico{width:37px;height:37px;background:var(–t600);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.sb-app{font-family:‘Manrope’,sans-serif;font-size:16px;font-weight:800;color:var(–w)}
+.sb-logo-ico{width:37px;height:37px;background:var(--t600);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.sb-app{font-family:'Manrope',sans-serif;font-size:16px;font-weight:800;color:var(--w)}
 .sb-app-sub{font-size:10px;color:rgba(255,255,255,.38)}
 .sb-escola{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.07)}
 .sb-escola-card{background:rgba(255,255,255,.07);border-radius:8px;padding:10px 12px}
 .sb-elabel{font-size:10px;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.06em}
-.sb-ename{font-size:12.5px;font-weight:600;color:var(–w);margin-top:2px;line-height:1.3}
-.sb-ebadge{display:inline-block;margin-top:5px;padding:2px 8px;background:rgba(20,184,166,.18);border-radius:20px;font-size:10.5px;color:var(–t500);font-weight:600}
+.sb-ename{font-size:12.5px;font-weight:600;color:var(--w);margin-top:2px;line-height:1.3}
+.sb-ebadge{display:inline-block;margin-top:5px;padding:2px 8px;background:rgba(20,184,166,.18);border-radius:20px;font-size:10.5px;color:var(--t500);font-weight:600}
 .sb-status{display:none;margin:8px 12px;padding:8px 12px;border-radius:8px;font-size:11.5px;font-weight:600}
 .sb-status.ok{background:rgba(16,163,74,.15);color:#4ade80;display:block}
 .sb-status.warn{background:rgba(245,158,11,.15);color:#fcd34d;display:block}
@@ -116,32 +115,32 @@ box-shadow:0 4px 12px rgba(13,148,136,.35);transition:all .2s;
 .sb-nav{padding:8px 8px;flex:1}
 .sb-sec{padding:8px 10px 3px;font-size:9.5px;font-weight:700;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:.09em}
 .sbi{
-display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:8px;
-cursor:pointer;font-size:13px;font-weight:500;color:rgba(255,255,255,.55);
-transition:all .14s;border:none;background:none;width:100%;text-align:left;margin-bottom:1px;
+  display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:8px;
+  cursor:pointer;font-size:13px;font-weight:500;color:rgba(255,255,255,.55);
+  transition:all .14s;border:none;background:none;width:100%;text-align:left;margin-bottom:1px;
 }
-.sbi:hover{background:rgba(255,255,255,.07);color:var(–w)}
-.sbi.on{background:var(–t700);color:var(–w)}
+.sbi:hover{background:rgba(255,255,255,.07);color:var(--w)}
+.sbi.on{background:var(--t700);color:var(--w)}
 .sbi .ic{font-size:15px;width:20px;text-align:center;flex-shrink:0}
 .sb-logout{
-padding:13px 14px;border-top:1px solid rgba(255,255,255,.07);
-display:flex;align-items:center;gap:9px;cursor:pointer;
-font-size:13px;color:rgba(255,255,255,.42);transition:color .14s;
+  padding:13px 14px;border-top:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;gap:9px;cursor:pointer;
+  font-size:13px;color:rgba(255,255,255,.42);transition:color .14s;
 }
-.sb-logout:hover{color:var(–w)}
+.sb-logout:hover{color:var(--w)}
 
 /* ── MAIN ── */
 .main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
 .banner{display:none;padding:9px 24px;font-size:12.5px;font-weight:600;text-align:center}
-.banner.bloq{background:var(–r600);color:var(–w);display:block}
-.banner.anal{background:var(–a600);color:var(–w);display:block}
+.banner.bloq{background:var(--r600);color:var(--w);display:block}
+.banner.anal{background:var(--a600);color:var(--w);display:block}
 .ph{
-background:var(–w);border-bottom:1px solid var(–s200);
-padding:14px 24px;display:flex;align-items:center;justify-content:space-between;
-position:sticky;top:0;z-index:50;
+  background:var(--w);border-bottom:1px solid var(--s200);
+  padding:14px 24px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;
 }
-.ph-t{font-family:‘Manrope’,sans-serif;font-size:19px;font-weight:700;color:var(–s900)}
-.ph-s{font-size:12.5px;color:var(–s500);margin-top:1px}
+.ph-t{font-family:'Manrope',sans-serif;font-size:19px;font-weight:700;color:var(--s900)}
+.ph-s{font-size:12.5px;color:var(--s500);margin-top:1px}
 .ph-acts{display:flex;align-items:center;gap:8px}
 
 /* ── VIEWS ── */
@@ -149,31 +148,31 @@ position:sticky;top:0;z-index:50;
 .view.on{display:block}
 
 /* ── BUTTONS ── */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(–r);font-size:13px;font-weight:600;cursor:pointer;transition:all .14s;border:none;white-space:nowrap}
-.bt{background:var(–t700);color:var(–w)}
-.bt:hover{background:var(–t800)}
-.bt:disabled{background:var(–s300);cursor:not-allowed;transform:none!important}
-.bo{background:var(–w);border:1.5px solid var(–s200);color:var(–s700)}
-.bo:hover{background:var(–s50);border-color:var(–s300)}
-.bg{background:transparent;color:var(–s600);border:none}
-.bg:hover{background:var(–s100)}
-.bd{background:var(–r600);color:var(–w)}
-.bd:hover{background:var(–r700)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;transition:all .14s;border:none;white-space:nowrap}
+.bt{background:var(--t700);color:var(--w)}
+.bt:hover{background:var(--t800)}
+.bt:disabled{background:var(--s300);cursor:not-allowed;transform:none!important}
+.bo{background:var(--w);border:1.5px solid var(--s200);color:var(--s700)}
+.bo:hover{background:var(--s50);border-color:var(--s300)}
+.bg{background:transparent;color:var(--s600);border:none}
+.bg:hover{background:var(--s100)}
+.bd{background:var(--r600);color:var(--w)}
+.bd:hover{background:var(--r700)}
 .bsm{padding:5px 11px;font-size:12px}
 .bxs{padding:3px 8px;font-size:11.5px}
 
 /* ── CARDS ── */
-.card{background:var(–w);border-radius:var(–r);border:1px solid var(–s200);box-shadow:0 1px 2px rgba(0,0,0,.05)}
-.ch{padding:15px 20px;border-bottom:1px solid var(–s100);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.ct{font-family:‘Manrope’,sans-serif;font-size:15px;font-weight:700;color:var(–s900)}
-.cs{font-size:12.5px;color:var(–s500);margin-top:1px}
+.card{background:var(--w);border-radius:var(--r);border:1px solid var(--s200);box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.ch{padding:15px 20px;border-bottom:1px solid var(--s100);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ct{font-family:'Manrope',sans-serif;font-size:15px;font-weight:700;color:var(--s900)}
+.cs{font-size:12.5px;color:var(--s500);margin-top:1px}
 .cb{padding:20px}
-.scard{background:var(–w);border-radius:var(–r);border:1px solid var(–s200);padding:20px 22px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
-.sic{width:42px;height:42px;border-radius:var(–r);display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:11px}
-.sic.t{background:var(–t50)}.sic.b{background:var(–b50)}.sic.a{background:var(–a50)}.sic.g{background:var(–g50)}.sic.p{background:var(–p50)}.sic.e{background:var(–e50)}
-.slbl{font-size:12px;color:var(–s500);margin-bottom:3px}
-.sval{font-family:‘Manrope’,sans-serif;font-size:27px;font-weight:800;color:var(–s900)}
-.ssub{font-size:12px;color:var(–s400);margin-top:2px}
+.scard{background:var(--w);border-radius:var(--r);border:1px solid var(--s200);padding:20px 22px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.sic{width:42px;height:42px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:11px}
+.sic.t{background:var(--t50)}.sic.b{background:var(--b50)}.sic.a{background:var(--a50)}.sic.g{background:var(--g50)}.sic.p{background:var(--p50)}.sic.e{background:var(--e50)}
+.slbl{font-size:12px;color:var(--s500);margin-bottom:3px}
+.sval{font-family:'Manrope',sans-serif;font-size:27px;font-weight:800;color:var(--s900)}
+.ssub{font-size:12px;color:var(--s400);margin-top:2px}
 
 /* ── GRIDS ── */
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
@@ -184,129 +183,127 @@ position:sticky;top:0;z-index:50;
 .s2{grid-column:span 2}.s3{grid-column:span 3}.s4{grid-column:span 4}
 
 /* ── FORM FIELDS ── */
-.fg label{display:block;font-size:11.5px;font-weight:700;color:var(–s600);margin-bottom:4px;letter-spacing:.03em}
+.fg label{display:block;font-size:11.5px;font-weight:700;color:var(--s600);margin-bottom:4px;letter-spacing:.03em}
 .fg input,.fg select,.fg textarea{
-width:100%;padding:9px 11px;border:1.5px solid var(–s200);border-radius:var(–rs);
-font-size:13px;color:var(–s700);outline:none;transition:border-color .2s,box-shadow .2s;
-background:var(–w);
+  width:100%;padding:9px 11px;border:1.5px solid var(--s200);border-radius:var(--rs);
+  font-size:13px;color:var(--s700);outline:none;transition:border-color .2s,box-shadow .2s;
+  background:var(--w);
 }
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(–t600);box-shadow:0 0 0 3px rgba(13,148,136,.1)}
-.fg input:disabled,.fg select:disabled{background:var(–s50);color:var(–s400)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--t600);box-shadow:0 0 0 3px rgba(13,148,136,.1)}
+.fg input:disabled,.fg select:disabled{background:var(--s50);color:var(--s400)}
 .fg textarea{resize:vertical;min-height:76px}
-.tog-row{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(–s50);border-radius:var(–rs);border:1px solid var(–s200)}
-.tog-row label{font-size:13px;color:var(–s700);cursor:pointer;font-weight:500}
+.tog-row{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--s50);border-radius:var(--rs);border:1px solid var(--s200)}
+.tog-row label{font-size:13px;color:var(--s700);cursor:pointer;font-weight:500}
 .tog{position:relative;width:40px;height:22px;flex-shrink:0}
 .tog input{opacity:0;width:0;height:0}
-.tog-track{position:absolute;inset:0;background:var(–s300);border-radius:11px;cursor:pointer;transition:background .2s}
-.tog input:checked+.tog-track{background:var(–t600)}
-.tog-track::after{content:’’;position:absolute;left:3px;top:3px;width:16px;height:16px;background:var(–w);border-radius:50%;transition:transform .2s}
+.tog-track{position:absolute;inset:0;background:var(--s300);border-radius:11px;cursor:pointer;transition:background .2s}
+.tog input:checked+.tog-track{background:var(--t600)}
+.tog-track::after{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;background:var(--w);border-radius:50%;transition:transform .2s}
 .tog input:checked+.tog-track::after{transform:translateX(18px)}
 
 /* ── TABS ── */
-.tnav{display:flex;border-bottom:2px solid var(–s200);margin-bottom:20px;gap:0;overflow-x:auto}
+.tnav{display:flex;border-bottom:2px solid var(--s200);margin-bottom:20px;gap:0;overflow-x:auto}
 .tbtn{
-padding:10px 16px;border:none;background:none;cursor:pointer;
-font-size:13px;font-weight:600;color:var(–s500);border-bottom:2px solid transparent;
-margin-bottom:-2px;transition:all .14s;display:flex;align-items:center;gap:7px;white-space:nowrap;
+  padding:10px 16px;border:none;background:none;cursor:pointer;
+  font-size:13px;font-weight:600;color:var(--s500);border-bottom:2px solid transparent;
+  margin-bottom:-2px;transition:all .14s;display:flex;align-items:center;gap:7px;white-space:nowrap;
 }
-.tbtn:hover{color:var(–s700)}
-.tbtn.on{color:var(–t700);border-bottom-color:var(–t700)}
+.tbtn:hover{color:var(--s700)}
+.tbtn.on{color:var(--t700);border-bottom-color:var(--t700)}
 .tpane{display:none}
 .tpane.on{display:block}
 
 /* ── TABLE ── */
 .tw{overflow-x:auto}
 .tbl{width:100%;border-collapse:collapse;font-size:13px}
-.tbl th{background:var(–s50);padding:9px 13px;text-align:left;font-size:11.5px;font-weight:700;color:var(–s500);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(–s200)}
-.tbl td{padding:10px 13px;border-bottom:1px solid var(–s100);vertical-align:middle}
+.tbl th{background:var(--s50);padding:9px 13px;text-align:left;font-size:11.5px;font-weight:700;color:var(--s500);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--s200)}
+.tbl td{padding:10px 13px;border-bottom:1px solid var(--s100);vertical-align:middle}
 .tbl tr:last-child td{border-bottom:none}
-.tbl tr:hover td{background:var(–s50)}
-.tbl-expand{background:var(–s50)!important}
+.tbl tr:hover td{background:var(--s50)}
+.tbl-expand{background:var(--s50)!important}
 
 /* ── BADGES ── */
 .bdg{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11.5px;font-weight:700}
-.bt2{background:var(–t100);color:#0f5e52}
-.bb{background:var(–b100);color:var(–b600)}
-.ba{background:var(–a100);color:var(–a600)}
-.br{background:var(–r100);color:var(–r700)}
-.bgn{background:var(–g100);color:var(–g700)}
-.bsl{background:var(–s100);color:var(–s600)}
-.bp{background:var(–p100);color:var(–p600)}
-.be{background:var(–e100);color:var(–e600)}
+.bt2{background:var(--t100);color:#0f5e52}
+.bb{background:var(--b100);color:var(--b600)}
+.ba{background:var(--a100);color:var(--a600)}
+.br{background:var(--r100);color:var(--r700)}
+.bgn{background:var(--g100);color:var(--g700)}
+.bsl{background:var(--s100);color:var(--s600)}
+.bp{background:var(--p100);color:var(--p600)}
+.be{background:var(--e100);color:var(--e600)}
 
 /* ── UPLOAD ── */
-.uzbox{border:2px dashed var(–s300);border-radius:var(–r);padding:28px;text-align:center;cursor:pointer;background:var(–s50);transition:border-color .2s,background .2s}
-.uzbox:hover,.uzbox.drag{border-color:var(–t600);background:var(–t50)}
+.uzbox{border:2px dashed var(--s300);border-radius:var(--r);padding:28px;text-align:center;cursor:pointer;background:var(--s50);transition:border-color .2s,background .2s}
+.uzbox:hover,.uzbox.drag{border-color:var(--t600);background:var(--t50)}
 .uzbox input{display:none}
 .uz-ico{font-size:34px;margin-bottom:10px}
-.uz-txt{font-size:13.5px;font-weight:600;color:var(–s600)}
-.uz-hint{font-size:11.5px;color:var(–s400);margin-top:5px}
+.uz-txt{font-size:13.5px;font-weight:600;color:var(--s600)}
+.uz-hint{font-size:11.5px;color:var(--s400);margin-top:5px}
 .prw{display:none;margin:12px 0}
-.prl{display:flex;justify-content:space-between;font-size:12px;color:var(–s500);margin-bottom:4px}
-.prb{background:var(–s200);height:8px;border-radius:4px;overflow:hidden}
-.prf{height:100%;background:var(–t600);width:0%;transition:width .3s}
+.prl{display:flex;justify-content:space-between;font-size:12px;color:var(--s500);margin-bottom:4px}
+.prb{background:var(--s200);height:8px;border-radius:4px;overflow:hidden}
+.prf{height:100%;background:var(--t600);width:0%;transition:width .3s}
 
 /* ── MODAL ── */
 .mover{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:400;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
 .mover.on{display:flex}
-.mbox{background:var(–w);border-radius:var(–rl);box-shadow:var(–shl);width:100%;margin:auto}
+.mbox{background:var(--w);border-radius:var(--rl);box-shadow:var(--shl);width:100%;margin:auto}
 .msm{max-width:440px}.mmd{max-width:640px}.mlg{max-width:900px}
-.mh{padding:20px 24px;border-bottom:1px solid var(–s200);display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:var(–w);z-index:10;border-radius:var(–rl) var(–rl) 0 0}
-.mt{font-family:‘Manrope’,sans-serif;font-size:17px;font-weight:700;color:var(–s900)}
-.ms{font-size:12.5px;color:var(–s500);margin-top:3px}
-.mc{width:30px;height:30px;border:none;background:var(–s100);border-radius:6px;cursor:pointer;font-size:16px;flex-shrink:0}
-.mc:hover{background:var(–s200)}
+.mh{padding:20px 24px;border-bottom:1px solid var(--s200);display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:var(--w);z-index:10;border-radius:var(--rl) var(--rl) 0 0}
+.mt{font-family:'Manrope',sans-serif;font-size:17px;font-weight:700;color:var(--s900)}
+.ms{font-size:12.5px;color:var(--s500);margin-top:3px}
+.mc{width:30px;height:30px;border:none;background:var(--s100);border-radius:6px;cursor:pointer;font-size:16px;flex-shrink:0}
+.mc:hover{background:var(--s200)}
 .mb{padding:24px}
-.mf{padding:16px 24px;border-bottom:1px solid var(–s200);display:flex;justify-content:flex-end;gap:10px;border-radius:0 0 var(–rl) var(–rl)}
+.mf{padding:16px 24px;border-bottom:1px solid var(--s200);display:flex;justify-content:flex-end;gap:10px;border-radius:0 0 var(--rl) var(--rl)}
 
 /* ── DAYS ── */
 .days{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
-.day{padding:5px 10px;border-radius:6px;border:1.5px solid var(–s200);background:var(–w);font-size:12px;font-weight:600;cursor:pointer;color:var(–s600);transition:all .14s}
-.day.on{background:var(–t700);border-color:var(–t700);color:var(–w)}
+.day{padding:5px 10px;border-radius:6px;border:1.5px solid var(--s200);background:var(--w);font-size:12px;font-weight:600;cursor:pointer;color:var(--s600);transition:all .14s}
+.day.on{background:var(--t700);border-color:var(--t700);color:var(--w)}
 
 /* ── TOASTS ── */
-.toast{position:fixed;bottom:20px;right:20px;background:var(–s800);color:var(–w);padding:12px 18px;border-radius:var(–r);box-shadow:var(–shl);z-index:9999;display:none;border-left:4px solid var(–t500);font-size:13.5px;max-width:340px;animation:tin .25s ease}
-.toast.err{border-left-color:var(–r500)}
-.toast.ok{border-left-color:var(–g600)}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--s800);color:var(--w);padding:12px 18px;border-radius:var(--r);box-shadow:var(--shl);z-index:9999;display:none;border-left:4px solid var(--t500);font-size:13.5px;max-width:340px;animation:tin .25s ease}
+.toast.err{border-left-color:var(--r500)}
+.toast.ok{border-left-color:var(--g600)}
 @keyframes tin{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
 
 /* ── SPINNER ── */
-.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:var(–w);border-radius:50%;animation:sp .6s linear infinite;flex-shrink:0}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:var(--w);border-radius:50%;animation:sp .6s linear infinite;flex-shrink:0}
 @keyframes sp{to{transform:rotate(360deg)}}
 
 /* ── EMPTY ── */
-.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:44px;color:var(–s400);text-align:center}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:44px;color:var(--s400);text-align:center}
 .empty-ic{font-size:44px;margin-bottom:10px;opacity:.55}
-.empty-t{font-size:14px;font-weight:600;color:var(–s500);margin-bottom:4px}
+.empty-t{font-size:14px;font-weight:600;color:var(--s500);margin-bottom:4px}
 .empty-s{font-size:12.5px}
 
 /* ── DIVIDERS ── */
-hr.div{border:none;border-top:1px solid var(–s200);margin:18px 0}
-.sec-t{font-family:‘Manrope’,sans-serif;font-size:13.5px;font-weight:700;color:var(–s700);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(–s200)}
-.info-box{background:var(–a50);border-left:4px solid var(–a500);padding:11px 16px;border-radius:0 var(–rs) var(–rs) 0;font-size:12.5px;color:var(–s600);line-height:1.7;margin-bottom:18px}
-.info-box strong{color:var(–s800)}
+hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
+.sec-t{font-family:'Manrope',sans-serif;font-size:13.5px;font-weight:700;color:var(--s700);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--s200)}
+.info-box{background:var(--a50);border-left:4px solid var(--a500);padding:11px 16px;border-radius:0 var(--rs) var(--rs) 0;font-size:12.5px;color:var(--s600);line-height:1.7;margin-bottom:18px}
+.info-box strong{color:var(--s800)}
 
 /* ── RESPONSIVE ── */
 
 /* Mobile menu toggle */
 #mob-tog{display:none;position:fixed;top:14px;left:14px;z-index:200;
-width:38px;height:38px;background:var(–t700);border:none;border-radius:8px;
-color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
+  width:38px;height:38px;background:var(--t700);border:none;border-radius:8px;
+  color:#fff;font-size:18px;cursor:pointer;box-shadow:var(--shm)}
 @media(max-width:760px){#mob-tog{display:flex;align-items:center;justify-content:center}}
 @media(max-width:760px){
-.lcard{grid-template-columns:1fr}.ll{display:none}
-.sb{position:fixed;transform:translateX(-100%);transition:transform .3s;width:260px}
-.sb.open{transform:none}
-.g4,.g3,.g2{grid-template-columns:1fr}.gf,.gf3{grid-template-columns:1fr}
-.s2,.s3,.s4{grid-column:span 1}
+  .lcard{grid-template-columns:1fr}.ll{display:none}
+  .sb{position:fixed;transform:translateX(-100%);transition:transform .3s;width:260px}
+  .sb.open{transform:none}
+  .g4,.g3,.g2{grid-template-columns:1fr}.gf,.gf3{grid-template-columns:1fr}
+  .s2,.s3,.s4{grid-column:span 1}
 }
 </style>
-
 </head>
 <body>
 
 <!-- ═══════════════════════ LOGIN ════════════════════════ -->
-
 <div id="pg-login">
  <div class="lcard">
   <div class="ll">
@@ -388,12 +385,10 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
 </div>
 
 <!-- ═══════════════════════ APP ════════════════════════ -->
-
 <div id="pg-app">
 <button id="mob-tog" onclick="document.getElementById('sb').classList.toggle('open')">☰</button>
 
  <!-- SIDEBAR -->
-
  <aside class="sb" id="sb">
   <div class="sb-logo">
    <div class="sb-logo-row">
@@ -428,13 +423,11 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
  </aside>
 
  <!-- MAIN -->
-
  <main class="main">
   <div class="banner bloq" id="bann-bloq" style="display:none">⛔ Acesso bloqueado pelo COMEP. Entre em contato com a Secretaria Municipal de Educação de Pereiro para regularizar.</div>
   <div class="banner anal" id="bann-anal" style="display:none">🔍 Processo em análise pelo COMEP. Aguarde o retorno antes de realizar novas alterações.</div>
 
   <!-- DASHBOARD -->
-
   <div id="v-dash" class="view on">
    <div class="ph"><div><div class="ph-t" id="d-title">Bem-vindo(a)!</div><div class="ph-s" id="d-sub">Carregando...</div></div></div>
    <div style="padding:24px">
@@ -466,7 +459,6 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
   </div>
 
   <!-- FICHA ESCOLAR -->
-
   <div id="v-ficha" class="view">
    <div class="ph"><div><div class="ph-t">Ficha Escolar</div><div class="ph-s">Dados da Instituição</div></div><div class="ph-acts"><button class="btn bo bsm" onclick="gerarPDF()" id="btn-pdf">📄 Exportar PDF</button><button class="btn bt" id="btn-sfic" onclick="salvarFicha()">💾 Salvar Alterações</button></div></div>
    <div style="padding:24px">
@@ -578,7 +570,6 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
   </div>
 
   <!-- DEPENDÊNCIAS FÍSICAS -->
-
   <div id="v-dep" class="view">
    <div class="ph"><div><div class="ph-t">Dependências Físicas</div><div class="ph-s">Salas, laboratórios e espaços da escola</div></div><div class="ph-acts"><button class="btn bt" id="btn-ndep" onclick="openDepM()">+ Nova Dependência</button></div></div>
    <div style="padding:24px">
@@ -600,7 +591,6 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
   </div>
 
   <!-- MOBILIÁRIO -->
-
   <div id="v-mob" class="view">
    <div class="ph"><div><div class="ph-t">Mobiliário / Equipamento</div><div class="ph-s">Condição física dos móveis e equipamentos</div></div><div class="ph-acts"><button class="btn bt" id="btn-nmob" onclick="openMobM()">+ Novo Item</button></div></div>
    <div style="padding:24px">
@@ -617,7 +607,6 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
   </div>
 
   <!-- PROFESSORES -->
-
   <div id="v-prof" class="view">
    <div class="ph"><div><div class="ph-t">Professores</div><div class="ph-s">Corpo docente da escola</div></div><div class="ph-acts"><button class="btn bt" id="btn-nprof" onclick="openProfM()">+ Novo Professor</button></div></div>
    <div style="padding:24px">
@@ -640,7 +629,6 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
   </div>
 
   <!-- QUADRO ADMIN -->
-
   <div id="v-qa" class="view">
    <div class="ph"><div><div class="ph-t">Quadro Administrativo</div><div class="ph-s">Diretores, secretários e coordenadores</div></div><div class="ph-acts"><button class="btn bt" id="btn-nqa" onclick="openQAM()">+ Novo Membro</button></div></div>
    <div style="padding:24px">
@@ -658,7 +646,6 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
   </div>
 
   <!-- FUNCIONÁRIOS / SERVIDORES -->
-
   <div id="v-func" class="view">
    <div class="ph">
     <div><div class="ph-t">Funcionários</div><div class="ph-s">Servidores de apoio não docentes da escola</div></div>
@@ -676,7 +663,6 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
   </div>
 
   <!-- DOCUMENTOS -->
-
   <div id="v-docs" class="view">
    <div class="ph"><div><div class="ph-t">Documentos de Gestão</div><div class="ph-s">Envie e gerencie os documentos obrigatórios para o recredenciamento</div></div><div class="ph-acts"><button class="btn bt" id="btn-ndoc" onclick="document.getElementById('m-doc').classList.add('on')">+ Enviar Documento</button><button class="btn bo bsm" onclick="loadDocs()">🔄</button></div></div>
    <div style="padding:24px">
@@ -692,7 +678,6 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
   </div>
 
   <!-- ESCRITURAÇÃO ESCOLAR -->
-
   <div id="v-escrit" class="view">
    <div class="ph">
     <div><div class="ph-t">Escrituração Escolar</div><div class="ph-s">Instrumentos de gestão, biblioteca e informações complementares</div></div>
@@ -707,165 +692,161 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
      <button class="tbtn" onclick="st('es','doces',this)">📤 Documentos</button>
     </div>
 
-```
-<!-- Instrumentos de Gestão -->
-<div class="tpane on" id="es-t-inst">
- <div class="card" style="margin-bottom:16px">
-  <div class="ch"><span class="ct">Instrumentos de Gestão</span><span class="cs">Informe a existência e situação de cada instrumento</span></div>
-  <div class="cb" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-   <div class="tog-row"><label for="ei-ppp">Projeto Político Pedagógico (PPP)</label><label class="tog"><input type="checkbox" id="ei-ppp"><div class="tog-track"></div></label></div>
-   <div class="tog-row"><label for="ei-reg">Regimento Escolar</label><label class="tog"><input type="checkbox" id="ei-reg"><div class="tog-track"></div></label></div>
-   <div class="tog-row"><label for="ei-cons">Conselho Escolar Ativo</label><label class="tog"><input type="checkbox" id="ei-cons"><div class="tog-track"></div></label></div>
-   <div class="tog-row"><label for="ei-cal">Calendário Escolar Aprovado</label><label class="tog"><input type="checkbox" id="ei-cal"><div class="tog-track"></div></label></div>
-   <div class="tog-row"><label for="ei-plano">Plano de Ação / PDDE</label><label class="tog"><input type="checkbox" id="ei-plano"><div class="tog-track"></div></label></div>
-   <div class="tog-row"><label for="ei-prop">Proposta Curricular Atualizada</label><label class="tog"><input type="checkbox" id="ei-prop"><div class="tog-track"></div></label></div>
-  </div>
- </div>
- <div class="card">
-  <div class="ch"><span class="ct">Sistema de Escrituração</span></div>
-  <div class="cb">
-   <div class="gf">
-    <div class="fg"><label>Sistema Utilizado</label>
-     <select id="ei-sistema">
-      <option value="">Selecione...</option>
-      <option>SIGE — Sistema de Informações para Gestão Escolar</option>
-      <option>SIGPAE</option>
-      <option>Sistema próprio da SME</option>
-      <option>Planilha eletrônica (Excel/Sheets)</option>
-      <option>Manual (livros/fichas físicas)</option>
-      <option>Nenhum</option>
-     </select>
+    <!-- Instrumentos de Gestão -->
+    <div class="tpane on" id="es-t-inst">
+     <div class="card" style="margin-bottom:16px">
+      <div class="ch"><span class="ct">Instrumentos de Gestão</span><span class="cs">Informe a existência e situação de cada instrumento</span></div>
+      <div class="cb" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+       <div class="tog-row"><label for="ei-ppp">Projeto Político Pedagógico (PPP)</label><label class="tog"><input type="checkbox" id="ei-ppp"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="ei-reg">Regimento Escolar</label><label class="tog"><input type="checkbox" id="ei-reg"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="ei-cons">Conselho Escolar Ativo</label><label class="tog"><input type="checkbox" id="ei-cons"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="ei-cal">Calendário Escolar Aprovado</label><label class="tog"><input type="checkbox" id="ei-cal"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="ei-plano">Plano de Ação / PDDE</label><label class="tog"><input type="checkbox" id="ei-plano"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="ei-prop">Proposta Curricular Atualizada</label><label class="tog"><input type="checkbox" id="ei-prop"><div class="tog-track"></div></label></div>
+      </div>
+     </div>
+     <div class="card">
+      <div class="ch"><span class="ct">Sistema de Escrituração</span></div>
+      <div class="cb">
+       <div class="gf">
+        <div class="fg"><label>Sistema Utilizado</label>
+         <select id="ei-sistema">
+          <option value="">Selecione...</option>
+          <option>SIGE — Sistema de Informações para Gestão Escolar</option>
+          <option>SIGPAE</option>
+          <option>Sistema próprio da SME</option>
+          <option>Planilha eletrônica (Excel/Sheets)</option>
+          <option>Manual (livros/fichas físicas)</option>
+          <option>Nenhum</option>
+         </select>
+        </div>
+        <div class="fg"><label>Responsável pela Escrituração</label><input id="ei-resp" placeholder="Nome do(a) responsável"></div>
+       </div>
+      </div>
+     </div>
     </div>
-    <div class="fg"><label>Responsável pela Escrituração</label><input id="ei-resp" placeholder="Nome do(a) responsável"></div>
-   </div>
-  </div>
- </div>
-</div>
 
-<!-- Biblioteca -->
-<div class="tpane" id="es-t-bib">
- <div class="card" style="margin-bottom:16px">
-  <div class="ch"><span class="ct">Acervo Bibliográfico</span><span class="cs">Informe o acervo por etapa de ensino</span></div>
-  <div class="cb">
-   <div class="tw"><table class="tbl">
-    <thead><tr><th>Etapa</th><th>Qtd. Títulos</th><th>Qtd. Exemplares</th><th>Periódicos</th><th>Situação do Acervo</th></tr></thead>
-    <tbody>
-     <tr><td style="font-weight:600">Educação Infantil</td><td><input type="number" id="bib-ei-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ei-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ei-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-ei-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
-     <tr><td style="font-weight:600">Anos Iniciais</td><td><input type="number" id="bib-ai-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ai-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ai-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-ai-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
-     <tr><td style="font-weight:600">Anos Finais</td><td><input type="number" id="bib-af-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-af-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-af-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-af-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
-     <tr><td style="font-weight:600">EJA</td><td><input type="number" id="bib-eja-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-eja-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-eja-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-eja-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
-    </tbody>
-   </table></div>
-  </div>
- </div>
-</div>
-
-<!-- Turnos e Matrículas -->
-<div class="tpane" id="es-t-turn">
- <div class="card" style="margin-bottom:16px">
-  <div class="ch"><span class="ct">Turnos de Funcionamento</span></div>
-  <div class="cb" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-   <div class="tog-row"><label for="et-manha">Manhã</label><label class="tog"><input type="checkbox" id="et-manha"><div class="tog-track"></div></label></div>
-   <div class="tog-row"><label for="et-tarde">Tarde</label><label class="tog"><input type="checkbox" id="et-tarde"><div class="tog-track"></div></label></div>
-   <div class="tog-row"><label for="et-noite">Noite</label><label class="tog"><input type="checkbox" id="et-noite"><div class="tog-track"></div></label></div>
-   <div class="tog-row"><label for="et-integral">Integral</label><label class="tog"><input type="checkbox" id="et-integral"><div class="tog-track"></div></label></div>
-  </div>
- </div>
- <div class="card">
-  <div class="ch"><span class="ct">Matrículas por Etapa e Modalidade</span></div>
-  <div class="cb">
-   <div class="tw"><table class="tbl">
-    <thead><tr><th>Etapa / Modalidade</th><th>Matrículas Totais</th><th>Turmas</th></tr></thead>
-    <tbody>
-     <tr><td style="font-weight:600">Creche (0–3 anos)</td><td><input type="number" id="mt-creche" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-creche-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
-     <tr><td style="font-weight:600">Pré-escola (4–5 anos)</td><td><input type="number" id="mt-pre" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-pre-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
-     <tr><td style="font-weight:600">Ensino Fund. – Anos Iniciais</td><td><input type="number" id="mt-ai" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-ai-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
-     <tr><td style="font-weight:600">Ensino Fund. – Anos Finais</td><td><input type="number" id="mt-af" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-af-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
-     <tr><td style="font-weight:600">EJA</td><td><input type="number" id="mt-eja" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-eja-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
-    </tbody>
-   </table></div>
-  </div>
- </div>
-</div>
-
-<!-- Observações -->
-<div class="tpane" id="es-t-obs">
- <div class="card">
-  <div class="ch"><span class="ct">Observações Gerais</span><span class="cs">Informações adicionais relevantes para o processo de credenciamento</span></div>
-  <div class="cb">
-   <div class="fg"><label>Observações da Escola</label><textarea id="es-obs" rows="6" placeholder="Descreva informações adicionais, situações especiais, necessidades ou qualquer observação relevante para o COMEP..."></textarea></div>
-  </div>
- </div>
-</div>
-
-<!-- Documentos de Escrituração -->
-<div class="tpane" id="es-t-doces">
- <div class="info-box">📤 <strong>Documentos de Escrituração:</strong> Envie aqui os documentos comprobatórios dos instrumentos de gestão. Os arquivos ficam salvos na nuvem e ficam visíveis para o COMEP. Formatos aceitos: <strong>PDF, JPG ou JPEG</strong> — máximo <strong>10 MB</strong>.</div>
- <div class="card" style="margin-bottom:16px">
-  <div class="ch"><span class="ct">📂 Enviar Documento de Escrituração</span></div>
-  <div class="cb">
-   <div class="gf">
-    <div class="fg s2">
-     <label>Tipo de Documento *</label>
-     <select id="doces-tip">
-      <option value="">— Selecione o tipo —</option>
-      <optgroup label="Instrumentos de Gestão">
-       <option>PROJETO POLÍTICO PEDAGÓGICO (PPP)</option>
-       <option>REGIMENTO ESCOLAR</option>
-       <option>ATA DE APROVAÇÃO DO REGIMENTO ESCOLAR</option>
-       <option>CALENDÁRIO ESCOLAR</option>
-       <option>ATA DO CONSELHO ESCOLAR</option>
-       <option>PLANO DE AÇÃO / PDDE</option>
-       <option>PROPOSTA CURRICULAR</option>
-      </optgroup>
-      <optgroup label="Matrículas e Escrituração">
-       <option>ATA DE RESULTADO FINAL</option>
-      </optgroup>
-      <optgroup label="Outros">
-       <option>OUTRO DOCUMENTO DE ESCRITURAÇÃO</option>
-      </optgroup>
-     </select>
+    <!-- Biblioteca -->
+    <div class="tpane" id="es-t-bib">
+     <div class="card" style="margin-bottom:16px">
+      <div class="ch"><span class="ct">Acervo Bibliográfico</span><span class="cs">Informe o acervo por etapa de ensino</span></div>
+      <div class="cb">
+       <div class="tw"><table class="tbl">
+        <thead><tr><th>Etapa</th><th>Qtd. Títulos</th><th>Qtd. Exemplares</th><th>Periódicos</th><th>Situação do Acervo</th></tr></thead>
+        <tbody>
+         <tr><td style="font-weight:600">Educação Infantil</td><td><input type="number" id="bib-ei-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ei-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ei-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-ei-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
+         <tr><td style="font-weight:600">Anos Iniciais</td><td><input type="number" id="bib-ai-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ai-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-ai-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-ai-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
+         <tr><td style="font-weight:600">Anos Finais</td><td><input type="number" id="bib-af-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-af-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-af-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-af-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
+         <tr><td style="font-weight:600">EJA</td><td><input type="number" id="bib-eja-tit" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-eja-ex" min="0" placeholder="0" style="width:80px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="bib-eja-per" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><select id="bib-eja-sit" style="padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"><option value="">—</option><option>Bom</option><option>Regular</option><option>Ruim</option></select></td></tr>
+        </tbody>
+       </table></div>
+      </div>
+     </div>
     </div>
-    <div class="fg s2">
-     <label>Descrição (opcional)</label>
-     <input id="doces-dsc" placeholder="Breve descrição do documento">
-    </div>
-   </div>
-   <div class="uzbox" id="doces-zone" onclick="document.getElementById('doces-fil').click()"
-    ondragover="event.preventDefault();this.classList.add('drag')"
-    ondragleave="this.classList.remove('drag')"
-    ondrop="docesDrop(event)">
-    <div class="uz-ico">📎</div>
-    <div class="uz-txt" id="doces-fn">Clique aqui ou arraste o arquivo</div>
-    <div class="uz-hint">PDF, JPG ou JPEG — máximo 10 MB</div>
-    <input type="file" id="doces-fil" accept=".pdf,.jpg,.jpeg" onchange="docesSel(this)">
-   </div>
-   <div class="prw" id="doces-prw">
-    <div class="prl"><span id="doces-prs">Enviando...</span><span id="doces-prp">0%</span></div>
-    <div class="prb"><div class="prf" id="doces-prf"></div></div>
-   </div>
-   <div style="margin-top:14px;text-align:right">
-    <button class="btn bt" id="btn-udoces" onclick="uploadDoces()">📤 Enviar Documento</button>
-   </div>
-  </div>
- </div>
- <div class="card">
-  <div class="ch"><span class="ct">📋 Documentos Enviados</span><button class="btn bg bsm" onclick="loadDoces()">🔄</button></div>
-  <div class="tw">
-   <table class="tbl">
-    <thead><tr><th>#</th><th>Tipo</th><th>Descrição</th><th>Enviado em</th><th>Tamanho</th><th style="text-align:right">Ações</th></tr></thead>
-    <tbody id="tb-doces"><tr><td colspan="6" style="text-align:center;padding:20px;color:var(--s400)">Clique em 🔄 para carregar.</td></tr></tbody>
-   </table>
-  </div>
- </div>
-</div>
-```
 
+    <!-- Turnos e Matrículas -->
+    <div class="tpane" id="es-t-turn">
+     <div class="card" style="margin-bottom:16px">
+      <div class="ch"><span class="ct">Turnos de Funcionamento</span></div>
+      <div class="cb" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+       <div class="tog-row"><label for="et-manha">Manhã</label><label class="tog"><input type="checkbox" id="et-manha"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="et-tarde">Tarde</label><label class="tog"><input type="checkbox" id="et-tarde"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="et-noite">Noite</label><label class="tog"><input type="checkbox" id="et-noite"><div class="tog-track"></div></label></div>
+       <div class="tog-row"><label for="et-integral">Integral</label><label class="tog"><input type="checkbox" id="et-integral"><div class="tog-track"></div></label></div>
+      </div>
+     </div>
+     <div class="card">
+      <div class="ch"><span class="ct">Matrículas por Etapa e Modalidade</span></div>
+      <div class="cb">
+       <div class="tw"><table class="tbl">
+        <thead><tr><th>Etapa / Modalidade</th><th>Matrículas Totais</th><th>Turmas</th></tr></thead>
+        <tbody>
+         <tr><td style="font-weight:600">Creche (0–3 anos)</td><td><input type="number" id="mt-creche" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-creche-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
+         <tr><td style="font-weight:600">Pré-escola (4–5 anos)</td><td><input type="number" id="mt-pre" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-pre-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
+         <tr><td style="font-weight:600">Ensino Fund. – Anos Iniciais</td><td><input type="number" id="mt-ai" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-ai-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
+         <tr><td style="font-weight:600">Ensino Fund. – Anos Finais</td><td><input type="number" id="mt-af" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-af-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
+         <tr><td style="font-weight:600">EJA</td><td><input type="number" id="mt-eja" min="0" placeholder="0" style="width:90px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td><td><input type="number" id="mt-eja-t" min="0" placeholder="0" style="width:70px;padding:5px 8px;border:1.5px solid var(--s200);border-radius:5px;font-size:12.5px"></td></tr>
+        </tbody>
+       </table></div>
+      </div>
+     </div>
+    </div>
+
+    <!-- Observações -->
+    <div class="tpane" id="es-t-obs">
+     <div class="card">
+      <div class="ch"><span class="ct">Observações Gerais</span><span class="cs">Informações adicionais relevantes para o processo de credenciamento</span></div>
+      <div class="cb">
+       <div class="fg"><label>Observações da Escola</label><textarea id="es-obs" rows="6" placeholder="Descreva informações adicionais, situações especiais, necessidades ou qualquer observação relevante para o COMEP..."></textarea></div>
+      </div>
+     </div>
+    </div>
+
+    <!-- Documentos de Escrituração -->
+    <div class="tpane" id="es-t-doces">
+     <div class="info-box">📤 <strong>Documentos de Escrituração:</strong> Envie aqui os documentos comprobatórios dos instrumentos de gestão. Os arquivos ficam salvos na nuvem e ficam visíveis para o COMEP. Formatos aceitos: <strong>PDF, JPG ou JPEG</strong> — máximo <strong>10 MB</strong>.</div>
+     <div class="card" style="margin-bottom:16px">
+      <div class="ch"><span class="ct">📂 Enviar Documento de Escrituração</span></div>
+      <div class="cb">
+       <div class="gf">
+        <div class="fg s2">
+         <label>Tipo de Documento *</label>
+         <select id="doces-tip">
+          <option value="">— Selecione o tipo —</option>
+          <optgroup label="Instrumentos de Gestão">
+           <option>PROJETO POLÍTICO PEDAGÓGICO (PPP)</option>
+           <option>REGIMENTO ESCOLAR</option>
+           <option>ATA DE APROVAÇÃO DO REGIMENTO ESCOLAR</option>
+           <option>CALENDÁRIO ESCOLAR</option>
+           <option>ATA DO CONSELHO ESCOLAR</option>
+           <option>PLANO DE AÇÃO / PDDE</option>
+           <option>PROPOSTA CURRICULAR</option>
+          </optgroup>
+          <optgroup label="Matrículas e Escrituração">
+           <option>ATA DE RESULTADO FINAL</option>
+          </optgroup>
+          <optgroup label="Outros">
+           <option>OUTRO DOCUMENTO DE ESCRITURAÇÃO</option>
+          </optgroup>
+         </select>
+        </div>
+        <div class="fg s2">
+         <label>Descrição (opcional)</label>
+         <input id="doces-dsc" placeholder="Breve descrição do documento">
+        </div>
+       </div>
+       <div class="uzbox" id="doces-zone" onclick="document.getElementById('doces-fil').click()"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="docesDrop(event)">
+        <div class="uz-ico">📎</div>
+        <div class="uz-txt" id="doces-fn">Clique aqui ou arraste o arquivo</div>
+        <div class="uz-hint">PDF, JPG ou JPEG — máximo 10 MB</div>
+        <input type="file" id="doces-fil" accept=".pdf,.jpg,.jpeg" onchange="docesSel(this)">
+       </div>
+       <div class="prw" id="doces-prw">
+        <div class="prl"><span id="doces-prs">Enviando...</span><span id="doces-prp">0%</span></div>
+        <div class="prb"><div class="prf" id="doces-prf"></div></div>
+       </div>
+       <div style="margin-top:14px;text-align:right">
+        <button class="btn bt" id="btn-udoces" onclick="uploadDoces()">📤 Enviar Documento</button>
+       </div>
+      </div>
+     </div>
+     <div class="card">
+      <div class="ch"><span class="ct">📋 Documentos Enviados</span><button class="btn bg bsm" onclick="loadDoces()">🔄</button></div>
+      <div class="tw">
+       <table class="tbl">
+        <thead><tr><th>#</th><th>Tipo</th><th>Descrição</th><th>Enviado em</th><th>Tamanho</th><th style="text-align:right">Ações</th></tr></thead>
+        <tbody id="tb-doces"><tr><td colspan="6" style="text-align:center;padding:20px;color:var(--s400)">Clique em 🔄 para carregar.</td></tr></tbody>
+       </table>
+      </div>
+     </div>
+    </div>
    </div>
   </div>
 
   <!-- NOTIFICAÇÕES DO COMEP -->
-
   <div id="v-notif" class="view">
    <div class="ph">
     <div><div class="ph-t">🔔 Notificações do COMEP</div><div class="ph-s">Comunicados, alertas e solicitações do Conselho Municipal de Educação</div></div>
@@ -879,11 +860,11 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
    </div>
   </div>
 
+
  </main>
 </div>
 
 <!-- ══════════════ MODAL PROFESSOR ══════════════ -->
-
 <div class="mover" id="m-prof" onclick="closeMOver(event,this)">
  <div class="mbox mlg">
   <div class="mh">
@@ -993,7 +974,6 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
 </div>
 
 <!-- ══════════════ MODAL QUADRO ADMIN ══════════════ -->
-
 <div class="mover" id="m-qa" onclick="closeMOver(event,this)">
  <div class="mbox mmd">
   <div class="mh">
@@ -1044,7 +1024,6 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
 </div>
 
 <!-- ══════════════ MODAL DEPENDÊNCIA ══════════════ -->
-
 <div class="mover" id="m-dep" onclick="closeMOver(event,this)">
  <div class="mbox mmd">
   <div class="mh">
@@ -1079,7 +1058,6 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
 </div>
 
 <!-- ══════════════ MODAL MOBILIÁRIO ══════════════ -->
-
 <div class="mover" id="m-mob" onclick="closeMOver(event,this)">
  <div class="mbox mmd">
   <div class="mh">
@@ -1114,7 +1092,6 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
 </div>
 
 <!-- ══════════════ MODAL DOCUMENTO ══════════════ -->
-
 <div class="mover" id="m-doc" onclick="closeMOver(event,this)">
  <div class="mbox mmd">
   <div class="mh">
@@ -1165,7 +1142,6 @@ color:#fff;font-size:18px;cursor:pointer;box-shadow:var(–shm)}
 </div>
 
 <!-- ══════════════ MODAL FUNCIONÁRIO ══════════════ -->
-
 <div class="mover" id="m-func" onclick="closeMOver(event,this)">
  <div class="mbox mmd">
   <div class="mh">
@@ -2616,6 +2592,5 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&!document.getElementById('pg-login').classList.contains('out'))doLogin()
 });
 </script>
-
 </body>
 </html>
