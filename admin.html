@@ -204,7 +204,7 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size
       <div class="sb-item" onclick="navAdmin('escrituracao')" id="nav-escrituracao"><span class="ico">📝</span> Docs Escrituração</div>
     </nav>
     <div class="sb-logout" onclick="doAdminLogout()">🚪 Sair do Painel</div>
-    <div class="sb-footer">COMEP Pereiro/CE · 2025</div>
+    <div class="sb-footer">COMEP Pereiro/CE · 2026</div>
   </aside>
 
   <!-- MAIN -->
@@ -848,6 +848,7 @@ async function enviarNotificacao(){
 }
 
 async function excluirNotif(id){
+  if(!adminUser){adminToast('⛔ Sessão expirada.','err');return}
   if(!confirm('Excluir este comunicado?'))return;
   try{
     await db.collection('notificacoes').doc(id).delete();
@@ -1023,7 +1024,9 @@ function doAdminLogout(){
 function navAdmin(view){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
-  document.getElementById('view-'+view).classList.add('active');
+  const viewEl=document.getElementById('view-'+view);
+  if(!viewEl){console.warn('navAdmin: view não encontrada:',view);return;}
+  viewEl.classList.add('active');
   const ni=document.getElementById('nav-'+view);if(ni)ni.classList.add('active');
   if(view==='escolas')renderEscolas();
   else if(view==='documentos')renderDocumentos();
@@ -1039,6 +1042,7 @@ function navAdmin(view){
 
 // ── CARGA DE DADOS ────────────────────────────────────────────────
 async function carregarTodosDados(){
+  if(!adminUser)return;
   document.getElementById('dash-time').textContent='🔄 Carregando dados... '+new Date().toLocaleString('pt-BR');
   const promises=ESCOLAS.map(async e=>{
     try{
@@ -1512,6 +1516,7 @@ function abrirModalStatus(inep,nome){
 function fecharModalStatus(){document.getElementById('modal-status').classList.remove('show');modalInep=null;}
 
 async function limparFicha(inep,nome){
+  if(!adminUser){adminToast('⛔ Sessão expirada.','err');return}
   if(!confirm(`Apagar os dados de ficha da escola "${nome}"?\n\nEsta ação remove apenas os dados da ficha escolar (Identificação, Endereço, Características, etc.) e não pode ser desfeita.`))return;
   try{
     await db.collection('escolas').doc(inep).update({ficha:firebase.firestore.FieldValue.delete()});
