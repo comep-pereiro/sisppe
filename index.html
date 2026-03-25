@@ -953,7 +953,7 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
        </div>
        <div class="fg"><label>C.H. Semanal (h)</label><input type="number" id="na-ch" placeholder="Ex: 20" min="0"></div>
        <div class="fg"><label>Habilitação para a disciplina</label><select id="na-hab"><option value="HABILITADO">✅ HABILITADO</option><option value="NÃO HABILITADO">❌ NÃO HABILITADO</option></select></div>
-       <div class="fg"><label>Autorização SEDUC (se houver)</label><input id="na-aut" placeholder="Nº da autorização"></div>
+       <div class="fg"><label>Autorização COMEP (quando NÃO-HABILITADO)</label><input id="na-aut" placeholder="Nº da autorização"></div>
        <div class="fg s2">
         <label>Dias da Semana</label>
         <div class="days" id="dias-row">
@@ -990,8 +990,8 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
     <div class="fg"><label>Cargo *</label>
      <select id="qa-car">
       <option value="">Selecione...</option>
-      <option>Diretor(a)</option><option>Vice-Diretor(a)</option>
-      <option>Secretário(a) Escolar</option><option>Coordenador(a) Pedagógico(a)</option>
+      <option>Diretor(a)</option>
+      <option>Secretário(a) Escolar</option><option>Coordenador(a) Pedagógico(a)</option><option>Coordenador(a) Administrativo(a)</option>
      </select>
     </div>
     <div class="fg"><label>Vínculo *</label>
@@ -1152,14 +1152,15 @@ hr.div{border:none;border-top:1px solid var(--s200);margin:18px 0}
       <option value="">Selecione...</option>
       <option>EFETIVO</option>
       <option>CONTRATADO</option>
+       <option>BOLSISTA</option>
      </select>
     </div>
     <div class="fg s2"><label>Função *</label>
      <select id="fn-func">
       <option value="">Selecione...</option>
-      <option>ZELADOR(A)</option><option>MERENDEIRO(A)</option><option>PORTEIRO(A)</option>
+      <option>ASSISTENTE SOCIAL</option><option>PSICÓLOGO(A)</option><option>ZELADOR(A)</option><option>MERENDEIRO(A)</option><option>PORTEIRO(A)</option>
       <option>AUXILIAR DE SERVIÇOS GERAIS</option><option>VIGIA</option>
-      <option>AUXILIAR ADMINISTRATIVO</option><option>MONITOR(A)</option><option>OUTRO</option>
+      <option>AUXILIAR ADMINISTRATIVO</option><option>CUIDADOR(A)</option><option>MONITOR(A)</option><option>OUTRO</option>
      </select>
     </div>
     <div class="fg"><label>Contato / Telefone</label><input id="fn-tel" placeholder="(88) 99999-9999"></div>
