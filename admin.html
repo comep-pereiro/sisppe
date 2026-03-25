@@ -1,1574 +1,719 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta http-equiv="X-Frame-Options" content="DENY">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src https://fonts.gstatic.com; connect-src https://*.firebaseio.com https://*.googleapis.com; frame-ancestors 'none';">
-<meta name="referrer" content="no-referrer">
-<title>SISPPe — Painel COMEP</title>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-<style>
-:root{
-  --navy:#0f172a;--navy2:#1e293b;--navy3:#334155;
-  --green:#15803d;--green2:#16a34a;--green-pale:#dcfce7;
-  --red:#b91c1c;--red-pale:#fee2e2;
-  --amber:#d97706;--amber-pale:#fef3c7;
-  --blue:#1d4ed8;--blue-pale:#dbeafe;
-  --gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;
-  --gray-300:#cbd5e1;--gray-400:#94a3b8;--gray-500:#64748b;
-  --gray-600:#475569;--gray-700:#334155;--gray-800:#1e293b;
-  --white:#fff;
-  --shadow:0 1px 3px rgba(0,0,0,.12);--shadow-md:0 4px 16px rgba(0,0,0,.14);
-  --sidebar-w:220px;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}
-body{font-family:'Source Sans 3',sans-serif;background:var(--gray-100);font-size:13.5px;color:var(--gray-700)}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>SISPPe — Painel COMEP</title>
 
-/* ── LOGIN ── */
-#page-login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy) 0%,#1a3a5c 60%,#1e4d3a 100%);z-index:1000;transition:opacity .35s,transform .35s}
-#page-login.hide{opacity:0;pointer-events:none;transform:scale(1.04)}
-.login-card{background:var(--white);border-radius:14px;box-shadow:var(--shadow-md);width:380px;padding:36px 40px}
-.login-logo{text-align:center;margin-bottom:24px}
-.login-logo-title{font-family:'Source Serif 4',serif;font-size:26px;font-weight:700;color:var(--navy);letter-spacing:.03em}
-.login-logo-sub{font-size:11px;color:var(--gray-500);margin-top:4px}
-.lf-group{margin-bottom:16px}
-.lf-group label{display:block;font-size:12px;font-weight:600;color:var(--gray-600);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
-.lf-group input{width:100%;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:14px;color:var(--gray-700);outline:none;transition:border-color .2s}
-.lf-group input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(21,128,61,.12)}
-.btn-enter{width:100%;padding:11px;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;box-shadow:0 3px 10px rgba(21,128,61,.3);transition:opacity .2s}
-.btn-enter:hover{opacity:.9}
-.login-err{display:none;margin-bottom:14px;padding:9px 12px;background:var(--red-pale);border:1px solid #fca5a5;border-radius:6px;font-size:12px;color:var(--red)}
-.login-hint{margin-top:14px;font-size:11px;color:var(--gray-400);text-align:center}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
 
-/* ── APP ── */
-#page-app{position:fixed;inset:0;display:none;flex-direction:row}
-#page-app.show{display:flex}
+  <style>
+    :root {
+      --primary: #1a1a2e;
+      --primary-mid: #16213e;
+      --primary-light: #0f3460;
+      --accent: #e94560;
+      --accent-light: #ff6b81;
+      --success: #00b894;
+      --warning: #fdcb6e;
+      --danger: #d63031;
+      --info: #0984e3;
+      --bg: #f1f2f6;
+      --surface: #ffffff;
+      --text: #2d3436;
+      --text-light: #636e72;
+      --border: #dfe6e9;
+      --sidebar-w: 260px;
+      --header-h: 60px;
+      --radius: 8px;
+      --shadow: 0 2px 8px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+      --transition: 0.2s ease;
+    }
 
-/* ── SIDEBAR ── */
-.sidebar{width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
-.sb-header{padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
-.sb-brand{font-family:'Source Serif 4',serif;font-size:19px;font-weight:700;color:#fff;letter-spacing:.04em}
-.sb-sub{font-size:9.5px;color:rgba(255,255,255,.45);margin-top:2px}
-.sb-user{padding:12px 16px;background:rgba(255,255,255,.06);margin:10px 12px;border-radius:8px;font-size:11.5px;color:rgba(255,255,255,.7)}
-.sb-user strong{color:#fff;display:block;font-size:12px;margin-bottom:2px}
-.sb-nav{padding:8px 0;flex:1}
-.sb-section{padding:8px 16px 3px;font-size:9.5px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em}
-.sb-item{display:flex;align-items:center;gap:9px;padding:9px 16px;cursor:pointer;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.65);border-left:3px solid transparent;transition:all .15s;user-select:none}
-.sb-item:hover{background:rgba(255,255,255,.07);color:#fff}
-.sb-item.active{background:rgba(255,255,255,.1);color:#fff;border-left-color:var(--green2)}
-.sb-item .ico{font-size:15px;width:20px;text-align:center;flex-shrink:0}
-.sb-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);font-size:10px;color:rgba(255,255,255,.3)}
-.sb-logout{padding:8px 16px;cursor:pointer;font-size:12px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:8px;transition:color .15s}
-.sb-logout:hover{color:#fff}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── MAIN ── */
-.main{flex:1;overflow-y:auto;background:var(--gray-100)}
-.view{display:none;padding:24px}
-.view.active{display:block}
-.page-title{font-family:'Source Serif 4',serif;font-size:21px;font-weight:700;color:var(--navy);margin-bottom:4px}
-.page-sub{font-size:13px;color:var(--gray-500);margin-bottom:20px}
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
 
-/* ── CARDS ── */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px}
-.kpi{background:var(--white);border-radius:10px;padding:16px 18px;box-shadow:var(--shadow);border:1px solid var(--gray-200)}
-.kpi-label{font-size:11px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
-.kpi-value{font-size:26px;font-weight:700;color:var(--navy)}
-.kpi-sub{font-size:11px;color:var(--gray-500);margin-top:3px}
+    /* ── ADMIN LOGIN ──────────────────────────────── */
+    .admin-login {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-mid) 50%, var(--primary-light) 100%);
+    }
 
-/* ── PANELS ── */
-.panel{background:var(--white);border-radius:10px;box-shadow:var(--shadow);border:1px solid var(--gray-200);margin-bottom:16px}
-.panel-header{padding:13px 18px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
-.panel-title{font-size:14px;font-weight:700;color:var(--navy)}
-.panel-body{padding:18px}
+    .admin-login-box {
+      background: var(--surface);
+      padding: 2.5rem;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow-lg);
+    }
 
-/* ── TABLE ── */
-.data-table{width:100%;border-collapse:collapse;font-size:12.5px}
-.data-table th{background:var(--gray-50);padding:8px 12px;text-align:left;font-weight:700;font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--gray-200)}
-.data-table td{padding:9px 12px;border-bottom:1px solid var(--gray-100);vertical-align:middle}
-.data-table tr:last-child td{border-bottom:none}
-.data-table tr:hover td{background:var(--gray-50)}
+    .admin-login-box h1 {
+      text-align: center;
+      color: var(--primary);
+      font-size: 1.5rem;
+      margin-bottom: 0.3rem;
+    }
 
-/* ── BADGES ── */
-.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
-.badge-green{background:var(--green-pale);color:var(--green)}
-.badge-red{background:var(--red-pale);color:var(--red)}
-.badge-amber{background:var(--amber-pale);color:var(--amber)}
-.badge-blue{background:var(--blue-pale);color:var(--blue)}
-.badge-teal{background:#ccfbf1;color:#0f766e}
-.badge-gray{background:var(--gray-100);color:var(--gray-600)}
+    .admin-login-box .subtitle {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
 
-/* ── BUTTONS ── */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;border:none}
-.btn-primary{background:var(--green);color:#fff}
-.btn-primary:hover{background:var(--green2)}
-.btn-danger{background:var(--red);color:#fff}
-.btn-danger:hover{background:#991b1b}
-.btn-secondary{background:var(--gray-100);color:var(--gray-700);border:1px solid var(--gray-200)}
-.btn-secondary:hover{background:var(--gray-200)}
-.btn-sm{padding:4px 10px;font-size:11.5px}
+    .admin-login-box .badge-admin {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
 
-/* ── ALERTAS ── */
-.alerta-item{border-radius:8px;padding:12px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;font-size:12.5px}
-.alerta-critico{background:#fef2f2;border-left:4px solid var(--red)}
-.alerta-urgente{background:#fff7ed;border-left:4px solid #f97316}
-.alerta-atencao{background:var(--amber-pale);border-left:4px solid var(--amber)}
-.alerta-info{background:var(--blue-pale);border-left:4px solid var(--blue)}
-.alerta-icon{font-size:18px;flex-shrink:0;margin-top:1px}
-.alerta-text strong{display:block;font-weight:700;margin-bottom:2px;font-size:13px}
-.alerta-text span{color:var(--gray-600)}
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color var(--transition);
+    }
+    .form-group input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(233,69,96,0.15); }
 
-/* ── PROGRESS BAR ── */
-.prog-wrap{background:var(--gray-100);border-radius:4px;height:8px;overflow:hidden;margin-top:5px}
-.prog-fill{height:100%;border-radius:4px;transition:width .4s}
-.prog-green{background:var(--green2)}
-.prog-amber{background:var(--amber)}
-.prog-red{background:var(--red)}
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .btn-accent { background: var(--accent); color: #fff; width: 100%; padding: 12px; }
+    .btn-accent:hover { background: var(--accent-light); }
+    .btn-accent:disabled { background: #b2bec3; cursor: not-allowed; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
 
-/* ── FILTROS ── */
-.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.filter-btn{padding:5px 12px;border-radius:20px;border:1px solid var(--gray-300);background:var(--white);font-size:12px;cursor:pointer;color:var(--gray-600);transition:all .15s}
-.filter-btn:hover,.filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+    .alert { padding: 10px 14px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1rem; display: none; }
+    .alert.show { display: flex; align-items: center; gap: 8px; }
+    .alert-danger { background: #ffeaea; color: var(--danger); border: 1px solid #ffc9c9; }
 
-/* ── MODAL BLOQUEIO ── */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:center;justify-content:center}
-.modal-overlay.show{display:flex}
-.modal-box{background:var(--white);border-radius:12px;padding:28px;width:420px;box-shadow:var(--shadow-md)}
-.modal-title{font-family:'Source Serif 4',serif;font-size:17px;font-weight:700;color:var(--navy);margin-bottom:12px}
-.modal-input{width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:7px;font-size:13px;outline:none;margin-bottom:14px}
-.modal-input:focus{border-color:var(--green)}
-.modal-btns{display:flex;gap:8px;justify-content:flex-end}
+    .rate-limit-msg { background: #ffeaea; color: var(--danger); padding: 12px; border-radius: 6px; border: 1px solid #ffc9c9; font-size: 0.85rem; text-align: center; display: none; margin-bottom: 1rem; }
+    .rate-limit-msg.show { display: block; }
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:20px;right:20px;background:var(--navy2);color:#fff;padding:11px 18px;font-size:13px;border-radius:8px;box-shadow:var(--shadow-md);z-index:9999;display:none;border-left:4px solid var(--green2);max-width:340px;animation:fadein .25s ease}
-.toast.err{border-left-color:var(--red)}
-.toast.ok{border-left-color:var(--green2)}
-@keyframes fadein{from{transform:translateX(16px);opacity:0}to{transform:translateX(0);opacity:1}}
-</style>
+    /* ── ADMIN PORTAL LAYOUT ──────────────────────── */
+    .admin-portal { display: none; min-height: 100vh; }
+    .admin-portal.active { display: flex; }
+
+    .admin-sidebar {
+      width: var(--sidebar-w);
+      background: var(--primary);
+      color: #fff;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+    .admin-sidebar .sidebar-header {
+      padding: 1.2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+    }
+    .admin-sidebar .sidebar-header h2 { font-size: 1.2rem; }
+    .admin-sidebar .sidebar-header small { opacity: 0.5; font-size: 0.75rem; }
+
+    .admin-sidebar nav { padding: 0.5rem 0; }
+    .admin-sidebar .nav-section { padding: 0.5rem 1.2rem 0.3rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.3; font-weight: 600; }
+    .admin-sidebar a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 1.2rem; color: rgba(255,255,255,0.6);
+      text-decoration: none; font-size: 0.85rem;
+      transition: all var(--transition); border-left: 3px solid transparent;
+    }
+    .admin-sidebar a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+    .admin-sidebar a.active { color: #fff; background: rgba(255,255,255,0.1); border-left-color: var(--accent); }
+    .admin-sidebar a i { width: 20px; text-align: center; }
+
+    .admin-main { flex: 1; margin-left: var(--sidebar-w); min-height: 100vh; }
+
+    .admin-topbar {
+      height: var(--header-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.5rem;
+      position: sticky; top: 0; z-index: 50;
+    }
+
+    .admin-content { padding: 1.5rem; }
+    .admin-page { display: none; }
+    .admin-page.active { display: block; }
+
+    /* ── DASHBOARD CARDS ──────────────────────────── */
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .admin-stat {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      box-shadow: var(--shadow);
+      border-top: 3px solid var(--primary-light);
+    }
+    .admin-stat .value { font-size: 2rem; font-weight: 700; color: var(--primary); }
+    .admin-stat .label { font-size: 0.78rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+    .card-header {
+      padding: 1rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .card-header h3 { font-size: 1rem; color: var(--primary); }
+    .card-body { padding: 1.2rem; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    table th { background: var(--bg); padding: 10px 12px; text-align: left; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-light); border-bottom: 2px solid var(--border); }
+    table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    table tr:hover { background: #f7f9fc; }
+
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; }
+    .badge-success { background: #d4edda; color: #155724; }
+    .badge-warning { background: #fff3cd; color: #856404; }
+    .badge-danger { background: #f8d7da; color: #721c24; }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+
+    /* ── FILTERS ───────────────────────────────────── */
+    .filters {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;
+    }
+    .filter-btn {
+      padding: 6px 14px; border: 1.5px solid var(--border); border-radius: 20px;
+      background: var(--surface); font-size: 0.8rem; font-weight: 500;
+      cursor: pointer; transition: all var(--transition); font-family: inherit;
+    }
+    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .session-warning {
+      display: none; position: fixed; bottom: 20px; right: 20px;
+      background: #fff3cd; border: 1px solid #ffc107; border-radius: var(--radius);
+      padding: 1rem 1.5rem; box-shadow: var(--shadow-lg); z-index: 2000; max-width: 350px;
+    }
+    .session-warning.show { display: block; }
+    .session-warning h4 { color: #856404; font-size: 0.9rem; }
+    .session-warning p { color: #856404; font-size: 0.8rem; }
+
+    @media (max-width: 768px) {
+      .admin-sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+      .admin-sidebar.open { transform: translateX(0); }
+      .admin-main { margin-left: 0; }
+      .admin-stats { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media print {
+      .admin-sidebar, .admin-topbar, .btn { display: none !important; }
+      .admin-main { margin-left: 0 !important; }
+    }
+  </style>
 </head>
 <body>
+  <!-- ════════════════════════════════════════════════════════
+       TELA DE LOGIN ADMIN
+       ════════════════════════════════════════════════════════ -->
+  <div id="adminLogin" class="admin-login">
+    <div class="admin-login-box">
+      <h1><i class="fas fa-shield-alt"></i> SISPPe</h1>
+      <p class="subtitle">Painel Administrativo — <span class="badge-admin">COMEP</span></p>
 
-<!-- ═══════════════════════════ LOGIN ════════════════════════════ -->
-<div id="page-login">
-  <div class="login-card">
-    <div class="login-logo">
-      <div class="login-logo-title">SISPPe</div>
-      <div class="login-logo-sub">Painel Administrativo — COMEP Pereiro/CE</div>
-    </div>
-    <div class="login-err" id="loginErr">⚠️ Usuário ou senha inválidos.</div>
-    <div class="lf-group">
-      <label>Usuário</label>
-      <input type="text" id="admUser" placeholder="Usuário" autocomplete="username" onkeydown="if(event.key==='Enter')doAdminLogin()">
-    </div>
-    <div class="lf-group">
-      <label>Senha</label>
-      <input type="password" id="admPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAdminLogin()">
-    </div>
-    <button class="btn-enter" onclick="doAdminLogin()">Entrar no Painel</button>
-    <div class="login-hint">Acesso restrito aos membros do COMEP — COMEP Pereiro/CE</div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════ APP ════════════════════════════════ -->
-<div id="page-app">
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sb-header">
-      <div class="sb-brand">SISPPe</div>
-      <div class="sb-sub">Painel Administrativo</div>
-    </div>
-    <div class="sb-user">
-      <strong id="sb-usuario">COMEP</strong>
-      Conselho Municipal de Educação
-    </div>
-    <nav class="sb-nav">
-      <div class="sb-section">Principal</div>
-      <div class="sb-item active" onclick="navAdmin('dashboard')" id="nav-dashboard"><span class="ico">🏠</span> Dashboard</div>
-      <div class="sb-item" onclick="navAdmin('alertas')" id="nav-alertas"><span class="ico">🔔</span> Central de Alertas</div>
-      <div class="sb-section">Escolas</div>
-      <div class="sb-item" onclick="navAdmin('escolas')" id="nav-escolas"><span class="ico">🏫</span> Todas as Escolas</div>
-      <div class="sb-item" onclick="navAdmin('documentos')" id="nav-documentos"><span class="ico">📁</span> Documentos</div>
-      <div class="sb-item" onclick="navAdmin('pendencias')" id="nav-pendencias"><span class="ico">⏳</span> Pendências</div>
-      <div class="sb-section">Análise</div>
-      <div class="sb-item" onclick="navAdmin('habilitacao')" id="nav-habilitacao"><span class="ico">🎓</span> Habilitação Docente</div>
-      <div class="sb-item" onclick="navAdmin('infraestrutura')" id="nav-infraestrutura"><span class="ico">🏗</span> Infraestrutura</div>
-      <div class="sb-item" onclick="navAdmin('relatorio')" id="nav-relatorio"><span class="ico">📊</span> Relatório Geral</div>
-      <div class="sb-item" onclick="navAdmin('graficos')" id="nav-graficos"><span class="ico">📈</span> Gráficos</div>
-      <div class="sb-item" onclick="navAdmin('solicitacoes')" id="nav-solicitacoes"><span class="ico">📨</span> Solicitações</div>
-      <div class="sb-item" onclick="navAdmin('escrituracao')" id="nav-escrituracao"><span class="ico">📝</span> Docs Escrituração</div>
-    </nav>
-    <div class="sb-logout" onclick="doAdminLogout()">🚪 Sair do Painel</div>
-    <div class="sb-footer">COMEP Pereiro/CE · 2026</div>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-
-    <!-- ── DASHBOARD ── -->
-    <div class="view active" id="view-dashboard">
-      <div class="page-title">Dashboard</div>
-      <div class="page-sub" id="dash-time">Carregando...</div>
-
-      <div class="kpi-grid" id="kpi-grid">
-        <div class="kpi"><div class="kpi-label">Total Escolas</div><div class="kpi-value" id="kpi-total">18</div><div class="kpi-sub">cadastradas no sistema</div></div>
-        <div class="kpi"><div class="kpi-label">Docs Completos</div><div class="kpi-value" id="kpi-docs">—</div><div class="kpi-sub">com 6/6 docs enviados</div></div>
-        <div class="kpi"><div class="kpi-label">Fichas Preenchidas</div><div class="kpi-value" id="kpi-fichas">—</div><div class="kpi-sub">com dados no Firestore</div></div>
-        <div class="kpi"><div class="kpi-label">Em Análise</div><div class="kpi-value" id="kpi-analise" style="color:var(--amber)">—</div><div class="kpi-sub">processos em avaliação</div></div>
-        <div class="kpi"><div class="kpi-label">Vencendo 2026</div><div class="kpi-value" id="kpi-venc" style="color:var(--red)">3</div><div class="kpi-sub">precisam renovar urgente</div></div>
-        <div class="kpi"><div class="kpi-label">Bloqueadas</div><div class="kpi-value" id="kpi-bloq" style="color:var(--red)">—</div><div class="kpi-sub">com acesso suspenso</div></div>
+      <div id="adminAlert" class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span id="adminAlertMsg">Credenciais inválidas.</span>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-        <div class="panel">
-          <div class="panel-header"><span class="panel-title">⚡ Alertas Prioritários</span></div>
-          <div class="panel-body" id="dash-alertas-body">Carregando...</div>
-        </div>
-        <div class="panel">
-          <div class="panel-header"><span class="panel-title">🏫 Progresso por Escola</span><button class="btn btn-secondary btn-sm" onclick="navAdmin('escolas')">Ver todas</button></div>
-          <div class="panel-body" id="dash-progresso-body" style="max-height:320px;overflow-y:auto">Carregando...</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── ALERTAS ── -->
-    <div class="view" id="view-alertas">
-      <div class="page-title">Central de Alertas</div>
-      <div class="page-sub">Monitoramento de prazos e pendências de todas as escolas.</div>
-      <div id="alertas-body">Carregando...</div>
-    </div>
-
-    <!-- ── ESCOLAS ── -->
-    <div class="view" id="view-escolas">
-      <div class="page-title">Todas as Escolas</div>
-      <div class="page-sub">Gestão completa das 18 unidades municipais de Pereiro/CE.</div>
-      <div class="filter-row" id="escola-filters">
-        <button class="filter-btn active" onclick="filtrarEscolas('todas',this)">Todas</button>
-        <button class="filter-btn" onclick="filtrarEscolas('pendentes',this)">Pendentes</button>
-        <button class="filter-btn" onclick="filtrarEscolas('completas',this)">Completas</button>
-        <button class="filter-btn" onclick="filtrarEscolas('venc2026',this)">Vencendo 2026</button>
-        <button class="filter-btn" onclick="filtrarEscolas('rural',this)">Rural</button>
-        <button class="filter-btn" onclick="filtrarEscolas('urbana',this)">Urbana</button>
-        <button class="filter-btn" onclick="filtrarEscolas('bloqueadas',this)">Bloqueadas</button>
-      </div>
-      <div class="panel">
-        <div class="panel-body" style="padding:0;overflow-x:auto">
-          <table class="data-table" id="tbl-escolas">
-            <thead>
-              <tr>
-                <th>INEP</th><th>Escola</th><th>Validade</th><th>Zona</th>
-                <th>Docs</th><th>Ficha</th><th>Status</th><th>Ação</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-escolas">
-              <tr><td colspan="8" style="text-align:center;padding:24px;color:var(--gray-400)">🔄 Carregando...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── DOCUMENTOS ── -->
-    <div class="view" id="view-documentos">
-      <div class="page-title">Documentos Recebidos</div>
-      <div class="page-sub">Visão consolidada dos documentos enviados por todas as escolas.</div>
-      <div class="panel">
-        <div class="panel-body" style="padding:0;overflow-x:auto">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Escola</th>
-                <th>ATO CRIAÇÃO</th>
-                <th>CENSO</th>
-                <th>REL. ANUAL</th>
-                <th>FACHADA</th>
-                <th>DEPENDÊNCIAS</th>
-                <th>REQUERIMENTO</th>
-                <th>% Completo</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-docs">
-              <tr><td colspan="8" style="text-align:center;padding:24px;color:var(--gray-400)">🔄 Carregando...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── PENDÊNCIAS ── -->
-    <div class="view" id="view-pendencias">
-      <div class="page-title">Pendências</div>
-      <div class="page-sub">Escolas com documentos obrigatórios em aberto.</div>
-      <div id="pend-body">Carregando...</div>
-    </div>
-
-    <!-- ── HABILITAÇÃO ── -->
-    <div class="view" id="view-habilitacao">
-      <div class="page-title">🎓 Habilitação Docente e Administrativa</div>
-      <div class="page-sub">Situação de habilitação de professores, diretores e secretários de todas as escolas municipais.</div>
-
-      <!-- KPIs -->
-      <div class="panel">
-        <div class="panel-header"><span class="panel-title">Resumo Geral — Professores</span></div>
-        <div class="panel-body">
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
-            <div class="kpi" style="border-color:var(--green-pale)"><div class="kpi-label">Taxa de Habilitação</div><div class="kpi-value" id="hab-taxa" style="color:var(--green)">—</div><div class="kpi-sub">professores habilitados</div></div>
-            <div class="kpi" style="border-color:var(--green-pale)"><div class="kpi-label">✅ Professores Habilitados</div><div class="kpi-value" id="hab-sim" style="color:var(--green)">—</div></div>
-            <div class="kpi" style="border-color:#fee2e2"><div class="kpi-label">❌ Não Habilitados</div><div class="kpi-value" id="hab-nao" style="color:var(--red)">—</div></div>
-          </div>
-          <div style="margin-top:14px;padding:10px 14px;background:#fffbeb;border-left:4px solid #f59e0b;border-radius:0 6px 6px 0;font-size:12.5px;color:#78350f">
-            ℹ️ <strong>Fonte:</strong> Dados preenchidos pelas escolas no Portal SISPPe. Escolas que ainda não cadastraram professores não aparecem nas tabelas abaixo.
-          </div>
-        </div>
+      <div id="adminRateLimit" class="rate-limit-msg">
+        <i class="fas fa-ban"></i> Bloqueado por excesso de tentativas.<br>
+        Aguarde <strong id="adminCountdown">--</strong> segundos.
       </div>
 
-      <!-- Por Escola -->
-      <div class="panel">
-        <div class="panel-header"><span class="panel-title">📊 Resumo por Escola</span></div>
-        <div class="panel-body" style="padding:0">
-          <table class="data-table">
-            <thead><tr><th>Escola</th><th>Total Profs.</th><th style="color:var(--green)">✅ Habilitados</th><th style="color:var(--red)">❌ Não Hab.</th><th>Taxa</th></tr></thead>
-            <tbody id="tbody-hab">
-              <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="form-group">
+        <label>Usuário</label>
+        <input type="text" id="adminUser" placeholder="Usuário COMEP" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" id="adminPass" placeholder="Sua senha" autocomplete="current-password">
       </div>
 
-      <!-- Quadro Administrativo: Diretores e Secretários -->
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">👥 Quadro Administrativo — Habilitação por Pessoa</span>
-          <span style="font-size:12px;color:var(--gray-400)">Diretores, Secretários e Coordenadores</span>
-        </div>
-        <div class="panel-body" style="padding:0;overflow-x:auto">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>INEP</th>
-                <th>Escola</th>
-                <th>Nome</th>
-                <th>Cargo</th>
-                <th>Formação</th>
-                <th>Habilitação</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-hab-qa">
-              <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <button type="button" id="btnAdminLogin" class="btn btn-accent">
+        <i class="fas fa-sign-in-alt"></i> Entrar no Painel
+      </button>
 
-      <!-- Professores: detalhado por pessoa e disciplina -->
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">🎓 Professores — Habilitação por Pessoa e Disciplina</span>
-          <span style="font-size:12px;color:var(--gray-400)">Habilitação geral e por lotação em sala de aula</span>
-        </div>
-        <div class="panel-body" style="padding:0;overflow-x:auto">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>INEP</th>
-                <th>Escola</th>
-                <th>Professor(a)</th>
-                <th>Vínculo</th>
-                <th>Função</th>
-                <th>Habilitação Geral</th>
-                <th>Lotações e Habilitação por Disciplina</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-hab-profs">
-              <tr><td colspan="7" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── INFRAESTRUTURA ── -->
-    <div class="view" id="view-infraestrutura">
-      <div class="page-title">🏗 Infraestrutura</div>
-      <div class="page-sub">Instrumentos de gestão, funcionários e escrituração das escolas.</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-        <div class="panel">
-          <div class="panel-header"><span class="panel-title">Instrumentos de Gestão</span></div>
-          <div class="panel-body" id="infra-instrumentos">Carregando...</div>
-        </div>
-        <div class="panel">
-          <div class="panel-header"><span class="panel-title">Funcionários por Função</span></div>
-          <div class="panel-body" id="infra-funcionarios">Carregando...</div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-header"><span class="panel-title">💻 Sistema de Escrituração Utilizado</span></div>
-        <div class="panel-body" id="infra-sistemas">Carregando...</div>
-      </div>
-    </div>
-
-    <!-- ── RELATÓRIO ── -->
-    <div class="view" id="view-relatorio">
-      <div class="page-title">📊 Relatório Geral</div>
-      <div class="page-sub">Visão consolidada do sistema para prestação de contas.</div>
-      <div style="display:flex;gap:8px;margin-bottom:16px">
-        <button class="btn btn-primary" onclick="gerarRelatorioCSV()">📥 Exportar CSV</button>
-        <button class="btn btn-secondary" onclick="window.print()">🖨️ Imprimir</button>
-      </div>
-      <div class="panel">
-        <div class="panel-header"><span class="panel-title">Situação Geral das Escolas</span></div>
-        <div class="panel-body" style="padding:0;overflow-x:auto">
-          <table class="data-table" id="tbl-relatorio">
-            <thead><tr><th>INEP</th><th>Escola</th><th>Rural</th><th>Validade</th><th>Parecer</th><th>Docs</th><th>Status</th></tr></thead>
-            <tbody id="tbody-relatorio">
-              <tr><td colspan="7" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-header"><span class="panel-title">Linha do Tempo — Vencimentos</span></div>
-        <div class="panel-body">
-          <div id="timeline-venc"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── GRÁFICOS ── -->
-    <div class="view" id="view-graficos">
-      <div class="page-title">📈 Gráficos e Análises</div>
-      <div class="page-sub">Visualizações analíticas do sistema — dados em tempo real.</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-
-        <!-- Vínculo docente -->
-        <div class="panel">
-          <div class="panel-header"><span class="panel-title">Vínculo Docente por Escola</span></div>
-          <div class="panel-body" id="graf-vinculo">
-            <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
-          </div>
-        </div>
-
-        <!-- Docs por escola -->
-        <div class="panel">
-          <div class="panel-header"><span class="panel-title">Documentação por Escola (%)</span></div>
-          <div class="panel-body" id="graf-docs">
-            <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
-          </div>
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-
-        <!-- Habilitação geral -->
-        <div class="panel">
-          <div class="panel-header"><span class="panel-title">Habilitação Docente — Visão Geral</span></div>
-          <div class="panel-body" id="graf-hab">
-            <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
-          </div>
-        </div>
-
-        <!-- Validade credenciamentos -->
-        <div class="panel">
-          <div class="panel-header"><span class="panel-title">Validade dos Credenciamentos</span></div>
-          <div class="panel-body" id="graf-validade">
-            <div style="text-align:center;color:var(--gray-400);padding:20px">🔄 Carregando...</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── SOLICITAÇÕES ── -->
-    <div class="view" id="view-solicitacoes">
-      <div class="page-title">📨 Solicitações e Comunicados</div>
-      <div class="page-sub">Gerencie notificações e comunicados enviados às escolas.</div>
-
-      <!-- Enviar notificação -->
-      <div class="panel" style="margin-bottom:16px">
-        <div class="panel-header"><span class="panel-title">📤 Enviar Comunicado às Escolas</span></div>
-        <div class="panel-body">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-            <div style="grid-column:span 2">
-              <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">TÍTULO DO COMUNICADO *</label>
-              <input id="not-titulo" type="text" placeholder="Ex: Prazo para envio do relatório anual" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
-            </div>
-            <div>
-              <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">DESTINATÁRIO *</label>
-              <select id="not-dest" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
-                <option value="todas">📢 Todas as Escolas</option>
-                <optgroup label="Escola específica">
-                  <option value="23138378">Antônio Pinheiro Maia</option>
-                  <option value="23138408">Cândido José Nogueira</option>
-                  <option value="23219254">Cleonice Freire de Queiroz</option>
-                  <option value="23274778">Francisca Nogueira de Sousa</option>
-                  <option value="23138483">Francisco das Chagas de Aquino</option>
-                  <option value="23283467">João Nogueira de Sousa</option>
-                  <option value="23138777">José Matias de Sousa</option>
-                  <option value="23178370">José Nilson Bezerra</option>
-                  <option value="23138670">Maria das Graças Nogueira</option>
-                  <option value="23138688">Maria Nazaré de Jesus</option>
-                  <option value="23138742">Miguel Antônio da Rocha</option>
-                  <option value="23138530">Nossa Senhora das Graças</option>
-                  <option value="23138793">Pedro Gomes de Lima</option>
-                  <option value="23178280">Pequeno Príncipe</option>
-                  <option value="23138815">Pingo de Gente</option>
-                  <option value="23258829">Semeando o Saber</option>
-                  <option value="00000017">Luiz Gonçalves de Lima</option>
-                  <option value="00000018">Municipal 18 — A Cadastrar</option>
-                </optgroup>
-              </select>
-            </div>
-            <div>
-              <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">TIPO / PRIORIDADE</label>
-              <select id="not-tipo" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
-                <option value="info">🔵 Informativo</option>
-                <option value="atencao">🟡 Atenção</option>
-                <option value="urgente">🔴 Urgente</option>
-                <option value="sucesso">✅ Aprovação / Sucesso</option>
-              </select>
-            </div>
-            <div>
-              <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">PRAZO (opcional)</label>
-              <input id="not-prazo" type="text" placeholder="Ex: 30/04/2025" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
-            </div>
-            <div style="grid-column:span 2">
-              <label style="font-size:11.5px;font-weight:700;color:var(--gray-600);display:block;margin-bottom:4px">MENSAGEM *</label>
-              <textarea id="not-msg" rows="4" placeholder="Texto completo do comunicado..." style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none;resize:vertical"></textarea>
-            </div>
-          </div>
-          <button class="btn btn-primary" onclick="enviarNotificacao()">📤 Enviar Comunicado</button>
-        </div>
-      </div>
-
-      <!-- Lista de comunicados enviados -->
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">📋 Comunicados Enviados</span>
-          <button class="btn btn-secondary btn-sm" onclick="carregarNotificacoes()">🔄 Atualizar</button>
-        </div>
-        <div class="panel-body" style="padding:0">
-          <table class="data-table">
-            <thead><tr><th>Destinatário</th><th>Título</th><th>Tipo</th><th>Prazo</th><th>Enviado em</th><th style="text-align:right">Ações</th></tr></thead>
-            <tbody id="tbody-notif">
-              <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── DOCS ESCRITURAÇÃO ── -->
-    <div class="view" id="view-escrituracao">
-      <div class="page-title">📝 Documentos de Escrituração</div>
-      <div class="page-sub">Documentos de escrituração enviados pelas escolas.</div>
-      <div class="filter-row" style="margin-bottom:14px">
-        <select id="escrit-escola-sel" onchange="renderEscritDocs()" style="padding:6px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:13px;outline:none;background:#fff;cursor:pointer">
-          <option value="">📢 Todas as Escolas</option>
-        </select>
-        <button class="btn btn-secondary btn-sm" onclick="carregarEscritDocs()">🔄 Atualizar</button>
-      </div>
-      <div class="panel">
-        <div class="panel-body" style="padding:0;overflow-x:auto">
-          <table class="data-table">
-            <thead><tr><th>Escola</th><th>Tipo</th><th>Descrição</th><th>Enviado em</th><th>Tamanho</th><th style="text-align:right">Arquivo</th></tr></thead>
-            <tbody id="tbody-escrit-docs">
-              <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--gray-400)">Clique em 🔄 para carregar os documentos.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-  </main>
-</div>
-
-<!-- MODAL BLOQUEIO -->
-<div class="modal-overlay" id="modal-bloqueio">
-  <div class="modal-box">
-    <div class="modal-title" id="modal-title">Bloquear Escola</div>
-    <p style="font-size:12.5px;color:var(--gray-600);margin-bottom:14px" id="modal-desc"></p>
-    <textarea class="modal-input" id="modal-motivo" rows="3" placeholder="Motivo do bloqueio (opcional)..."></textarea>
-    <div class="modal-btns">
-      <button class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
-      <button class="btn btn-danger" id="modal-confirm-btn" onclick="confirmarBloqueio()">Confirmar</button>
+      <p style="text-align:center; margin-top:1rem; color:var(--text-light); font-size:0.78rem;">
+        Acesso restrito aos membros do COMEP — Pereiro/CE
+      </p>
     </div>
   </div>
-</div>
 
-<!-- MODAL STATUS -->
-<div class="modal-overlay" id="modal-status">
-  <div class="modal-box">
-    <div class="modal-title">Alterar Status da Escola</div>
-    <p style="font-size:12.5px;color:var(--gray-600);margin-bottom:14px" id="modal-status-desc"></p>
-    <select class="modal-input" id="modal-status-sel">
-      <option value="ativa">✅ Ativa</option>
-      <option value="em_analise">🔍 Em Análise</option>
-      <option value="bloqueada">⛔ Bloqueada</option>
-    </select>
-    <textarea class="modal-input" id="modal-status-obs" rows="2" placeholder="Observação (opcional)..."></textarea>
-    <div class="modal-btns">
-      <button class="btn btn-secondary" onclick="fecharModalStatus()">Cancelar</button>
-      <button class="btn btn-primary" onclick="confirmarStatus()">Salvar</button>
+  <!-- ════════════════════════════════════════════════════════
+       PAINEL ADMINISTRATIVO (após login)
+       ════════════════════════════════════════════════════════ -->
+  <div id="adminPortal" class="admin-portal">
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-header">
+        <h2><i class="fas fa-shield-alt"></i> SISPPe</h2>
+        <small>Painel Administrativo</small>
+        <br><small style="opacity:0.4;">COMEP Pereiro/CE</small>
+      </div>
+      <nav>
+        <div class="nav-section">Principal</div>
+        <a href="#" data-admin-page="adm-dashboard" class="active"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="#" data-admin-page="adm-alertas"><i class="fas fa-bell"></i> Central de Alertas</a>
+
+        <div class="nav-section">Escolas</div>
+        <a href="#" data-admin-page="adm-escolas"><i class="fas fa-school"></i> Todas as Escolas</a>
+        <a href="#" data-admin-page="adm-documentos"><i class="fas fa-folder-open"></i> Documentos</a>
+        <a href="#" data-admin-page="adm-pendencias"><i class="fas fa-hourglass-half"></i> Pendências</a>
+
+        <div class="nav-section">Análise</div>
+        <a href="#" data-admin-page="adm-habilitacao"><i class="fas fa-chalkboard-teacher"></i> Habilitação Docente</a>
+        <a href="#" data-admin-page="adm-infra"><i class="fas fa-building"></i> Infraestrutura</a>
+        <a href="#" data-admin-page="adm-relatorio"><i class="fas fa-chart-bar"></i> Relatório Geral</a>
+        <a href="#" data-admin-page="adm-graficos"><i class="fas fa-chart-pie"></i> Gráficos</a>
+        <a href="#" data-admin-page="adm-comunicados"><i class="fas fa-envelope"></i> Comunicados</a>
+        <a href="#" data-admin-page="adm-escrituracao"><i class="fas fa-edit"></i> Docs Escrituração</a>
+        <a href="#" data-admin-page="adm-auditoria"><i class="fas fa-clipboard-check"></i> Logs de Auditoria</a>
+
+        <div class="nav-section" style="margin-top:1rem;"></div>
+        <a href="#" id="btnAdminLogout"><i class="fas fa-sign-out-alt"></i> Sair do Painel</a>
+      </nav>
+    </aside>
+
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div>
+          <button class="btn btn-sm" id="adminMobileToggle" style="display:none;border:1px solid var(--border);background:#fff;"><i class="fas fa-bars"></i></button>
+          <strong style="font-size:0.9rem; color:var(--primary);">COMEP — Painel Administrativo</strong>
+        </div>
+        <div>
+          <span class="badge badge-danger" style="font-size:0.7rem;">ADMIN</span>
+        </div>
+      </div>
+
+      <div class="admin-content">
+        <!-- ══ DASHBOARD ══════════════════════════════ -->
+        <div id="adm-dashboard" class="admin-page active">
+          <div class="admin-stats">
+            <div class="admin-stat">
+              <div class="value" id="admTotalEscolas">18</div>
+              <div class="label">Total de Escolas</div>
+            </div>
+            <div class="admin-stat" style="border-top-color:var(--success)">
+              <div class="value" id="admDocsCompletos">—</div>
+              <div class="label">Docs Completos</div>
+            </div>
+            <div class="admin-stat" style="border-top-color:var(--info)">
+              <div class="value" id="admFichasPreenchidas">—</div>
+              <div class="label">Fichas Preenchidas</div>
+            </div>
+            <div class="admin-stat" style="border-top-color:var(--warning)">
+              <div class="value" id="admEmAnalise">—</div>
+              <div class="label">Em Análise</div>
+            </div>
+            <div class="admin-stat" style="border-top-color:var(--danger)">
+              <div class="value" id="admVencendo">3</div>
+              <div class="label">Vencendo 2026</div>
+            </div>
+            <div class="admin-stat" style="border-top-color:#636e72">
+              <div class="value" id="admBloqueadas">—</div>
+              <div class="label">Bloqueadas</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-exclamation-triangle" style="color:var(--warning)"></i> Alertas Prioritários</h3>
+            </div>
+            <div class="card-body" id="admAlertsList">
+              <p style="color:var(--text-light); text-align:center; padding:1rem;">Carregando alertas...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ TODAS AS ESCOLAS ════════════════════════ -->
+        <div id="adm-escolas" class="admin-page">
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-school"></i> Todas as Escolas</h3>
+              <button class="btn btn-sm btn-outline" id="btnRefreshEscolas"><i class="fas fa-sync-alt"></i> Atualizar</button>
+            </div>
+            <div class="card-body">
+              <div class="filters">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="pendentes">Pendentes</button>
+                <button class="filter-btn" data-filter="completas">Completas</button>
+                <button class="filter-btn" data-filter="vencendo">Vencendo 2026</button>
+                <button class="filter-btn" data-filter="rural">Rural</button>
+                <button class="filter-btn" data-filter="urbana">Urbana</button>
+                <button class="filter-btn" data-filter="bloqueadas">Bloqueadas</button>
+              </div>
+              <div class="table-responsive">
+                <table id="tblEscolas">
+                  <thead>
+                    <tr>
+                      <th>INEP</th><th>Escola</th><th>Validade</th><th>Zona</th><th>Docs</th><th>Ficha</th><th>Status</th><th>Ação</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tblEscolasBody">
+                    <tr><td colspan="8" style="text-align:center; padding:2rem; color:var(--text-light);">Carregando escolas...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ LOGS DE AUDITORIA (NOVO) ═══════════════ -->
+        <div id="adm-auditoria" class="admin-page">
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-clipboard-check"></i> Logs de Auditoria</h3>
+              <button class="btn btn-sm btn-outline"><i class="fas fa-sync-alt"></i> Atualizar</button>
+            </div>
+            <div class="card-body">
+              <p style="color:var(--text-light); font-size:0.85rem; margin-bottom:1rem;">
+                <i class="fas fa-info-circle"></i> Registro imutável de todas as ações do sistema — login, alterações, uploads e exclusões.
+              </p>
+              <div class="table-responsive">
+                <table>
+                  <thead>
+                    <tr><th>Data/Hora</th><th>Ação</th><th>Usuário</th><th>Escola</th><th>Detalhes</th></tr>
+                  </thead>
+                  <tbody id="tblAuditBody">
+                    <tr><td colspan="5" style="text-align:center; padding:2rem; color:var(--text-light);">Carregando logs...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ OUTRAS PÁGINAS (placeholder) ═══════════ -->
+        <div id="adm-alertas" class="admin-page"><div class="card"><div class="card-header"><h3><i class="fas fa-bell"></i> Central de Alertas</h3></div><div class="card-body"><p style="color:var(--text-light);text-align:center;padding:2rem;">Carregando alertas...</p></div></div></div>
+        <div id="adm-documentos" class="admin-page"><div class="card"><div class="card-header"><h3><i class="fas fa-folder-open"></i> Documentos Recebidos</h3></div><div class="card-body"><p style="color:var(--text-light);text-align:center;padding:2rem;">Carregando documentos...</p></div></div></div>
+        <div id="adm-pendencias" class="admin-page"><div class="card"><div class="card-header"><h3><i class="fas fa-hourglass-half"></i> Pendências</h3></div><div class="card-body"><p style="color:var(--text-light);text-align:center;padding:2rem;">Carregando pendências...</p></div></div></div>
+        <div id="adm-habilitacao" class="admin-page"><div class="card"><div class="card-header"><h3><i class="fas fa-chalkboard-teacher"></i> Habilitação Docente</h3></div><div class="card-body"><p style="color:var(--text-light);text-align:center;padding:2rem;">Carregando habilitação...</p></div></div></div>
+        <div id="adm-infra" class="admin-page"><div class="card"><div class="card-header"><h3><i class="fas fa-building"></i> Infraestrutura</h3></div><div class="card-body"><p style="color:var(--text-light);text-align:center;padding:2rem;">Carregando infraestrutura...</p></div></div></div>
+        <div id="adm-relatorio" class="admin-page"><div class="card"><div class="card-header"><h3><i class="fas fa-chart-bar"></i> Relatório Geral</h3></div><div class="card-body"><p style="color:var(--text-light);text-align:center;padding:2rem;">Carregando relatório...</p></div></div></div>
+        <div id="adm-graficos" class="admin-page"><div class="card"><div class="card-header"><h3><i class="fas fa-chart-pie"></i> Gráficos e Análises</h3></div><div class="card-body"><p style="color:var(--text-light);text-align:center;padding:2rem;">Carregando gráficos...</p></div></div></div>
+        <div id="adm-comunicados" class="admin-page"><div class="card"><div class="card-header"><h3><i class="fas fa-envelope"></i> Comunicados</h3></div><div class="card-body"><p style="color:var(--text-light);text-align:center;padding:2rem;">Carregando comunicados...</p></div></div></div>
+        <div id="adm-escrituracao" class="admin-page"><div class="card"><div class="card-header"><h3><i class="fas fa-edit"></i> Docs Escrituração</h3></div><div class="card-body"><p style="color:var(--text-light);text-align:center;padding:2rem;">Carregando escrituração...</p></div></div></div>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="toast" id="adminToast"></div>
+  <!-- SESSION WARNING -->
+  <div id="adminSessionWarning" class="session-warning">
+    <h4><i class="fas fa-clock"></i> Sessão expirando</h4>
+    <p>Sessão será encerrada em 5 minutos por inatividade.</p>
+  </div>
 
-<script>
-// ── FIREBASE ─────────────────────────────────────────────────────
-firebase.initializeApp({
-  apiKey           : "AIzaSyBCoQxXZKIz_e8wH75QV00k6maHejuEWio",
-  authDomain       : "sisppe-comep.firebaseapp.com",
-  projectId        : "sisppe-comep",
-  storageBucket    : "sisppe-comep.firebasestorage.app",
-  messagingSenderId: "186342537977",
-  appId            : "1:186342537977:web:28cbd98684d5dd549fc028"
-});
-const db = firebase.firestore();
+  <!-- ════════════════════════════════════════════════════════
+       SCRIPTS
+       ════════════════════════════════════════════════════════ -->
+  <script src="security.js"></script>
 
-// ── DADOS ESTÁTICOS ───────────────────────────────────────────────
-const ESCOLAS = [
-  {inep:"23138378",nome:"Antônio Pinheiro Maia",    validade:"31/12/2027",parecer:"0621/2024",rural:"SIM"},
-  {inep:"23138408",nome:"Cândido José Nogueira",    validade:"31/12/2030",parecer:"0305/2025",rural:"NÃO"},
-  {inep:"23219254",nome:"Cleonice Freire de Queiroz",validade:"31/12/2030",parecer:"0305/2025",rural:"NÃO"},
-  {inep:"23274778",nome:"Francisca Nogueira de Sousa",validade:"31/12/2028",parecer:"0278/2025",rural:"NÃO"},
-  {inep:"23138483",nome:"Francisco das Chagas de Aquino",validade:"31/12/2028",parecer:"0303/2025",rural:"SIM"},
-  {inep:"23283467",nome:"João Nogueira de Sousa",   validade:"31/12/2028",parecer:"0346/2025",rural:"SIM"},
-  {inep:"23138777",nome:"José Matias de Sousa",     validade:"31/12/2030",parecer:"0305/2025",rural:"SIM"},
-  {inep:"23178370",nome:"José Nilson Bezerra",      validade:"31/12/2027",parecer:"0621/2024",rural:"SIM"},
-  {inep:"23138670",nome:"Maria das Graças Nogueira",validade:"31/12/2030",parecer:"0305/2025",rural:"SIM"},
-  {inep:"23138688",nome:"Maria Nazaré de Jesus",    validade:"31/12/2026",parecer:"0894/2024",rural:"SIM"},
-  {inep:"23138742",nome:"Miguel Antônio da Rocha",  validade:"31/12/2027",parecer:"098/2025", rural:"SIM"},
-  {inep:"23138530",nome:"Nossa Senhora das Graças", validade:"31/12/2028",parecer:"0304/2025",rural:"SIM"},
-  {inep:"23138793",nome:"Pedro Gomes de Lima",      validade:"31/12/2026",parecer:"0894/2024",rural:"SIM"},
-  {inep:"23178280",nome:"Pequeno Príncipe",         validade:"31/12/2028",parecer:"0304/2025",rural:"NÃO"},
-  {inep:"23138815",nome:"Pingo de Gente",           validade:"31/12/2028",parecer:"0304/2025",rural:"NÃO"},
-  {inep:"23258829",nome:"Semeando o Saber",         validade:"31/12/2026",parecer:"0112/2025",rural:"SIM"},
-  {inep:"00000017",nome:"Luiz Gonçalves de Lima",   validade:"—",         parecer:"—",        rural:"SIM"},
-  {inep:"00000018",nome:"Municipal 18 — A Cadastrar",validade:"—",        parecer:"—",        rural:"—"}
-];
-const DOCS_OBRIG=['ATO DE CRIAÇÃO','COMPROVANTE DO CENSO ESCOLAR','COMPROVANTE DO RELATÓRIO ANUAL','FOTO FACHADA DO PRÉDIO','FOTOS DAS DEPENDÊNCIAS','REQUERIMENTO / OFÍCIO'];
-const ADMIN_USERS={
-  // Jobenemar Carvalho dos Santos — Presidente COMEP (login = CPF sem formatação)
-  "36064572353":"job@2353",
-  // Acesso técnico de suporte (manter para contingência)
-  "comep":"comep@2025",
-  "admin":"COMEP@admin#2025"
-};
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+    import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy, limit }
+      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-let adminUser=null, docsCache={}, fichasCache={}, statusCache={}, filtroAtual='todas';
-let profsCache={}, qaCache={};
-let modalInep=null;
+    // ⚠️ SUBSTITUIR pelos valores reais
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-// ── LOGIN ─────────────────────────────────────────────────────────
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
+    // DOM
+    const $loginScreen = document.getElementById('adminLogin');
+    const $portal = document.getElementById('adminPortal');
+    const $btnLogin = document.getElementById('btnAdminLogin');
+    const $alert = document.getElementById('adminAlert');
+    const $alertMsg = document.getElementById('adminAlertMsg');
+    const $rateLimit = document.getElementById('adminRateLimit');
 
-// ── GRÁFICOS ──────────────────────────────────────────────────────
-function renderGraficos(){
-  try{
-    renderGrafVinculo();
-    renderGrafDocs();
-    renderGrafHab();
-    renderGrafValidade();
-  }catch(e){console.error('renderGraficos:',e)}
-}
+    // ══════════════════════════════════════════════════════
+    // LOGIN
+    // ══════════════════════════════════════════════════════
+    $btnLogin.addEventListener('click', async () => {
+      const user = document.getElementById('adminUser').value.trim();
+      const pass = document.getElementById('adminPass').value;
 
-function svgBar(data, opts={}){
-  // data: [{label, value, color, max}]
-  const W=opts.width||320, BH=opts.barH||22, GAP=opts.gap||8;
-  const LW=opts.labelW||160, VW=60;
-  const total=data.length;
-  const H=total*(BH+GAP)+GAP;
-  const maxVal=opts.maxVal||Math.max(...data.map(d=>d.value),1);
-  const BW=W-LW-VW-10;
-  let rows='';
-  data.forEach((d,i)=>{
-    const y=GAP+i*(BH+GAP);
-    const barW=Math.max(0,Math.round((d.value/maxVal)*BW));
-    const pct=maxVal>0?Math.round(d.value/maxVal*100):0;
-    rows+=`
-      <text x="0" y="${y+BH*0.72}" font-size="11" fill="#64748b" font-family="Inter,sans-serif"
-        text-anchor="start" style="dominant-baseline:auto">${d.label.substring(0,22)}${d.label.length>22?'…':''}</text>
-      <rect x="${LW}" y="${y}" width="${BW}" height="${BH}" rx="4" fill="#f1f5f9"/>
-      <rect x="${LW}" y="${y}" width="${barW}" height="${BH}" rx="4" fill="${d.color||'#0f766e'}"/>
-      <text x="${LW+barW+5}" y="${y+BH*0.72}" font-size="11" fill="#334155" font-family="Inter,sans-serif">${d.value}${opts.suffix||''}</text>`;
-  });
-  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;overflow:visible">${rows}</svg>`;
-}
-
-function svgDonut(slices, opts={}){
-  // slices: [{label, value, color}]
-  const R=opts.R||70, r=opts.r||45, CX=90, CY=85, W=opts.W||260, H=180;
-  const total=slices.reduce((s,d)=>s+d.value,0)||1;
-  let startAngle=-Math.PI/2;
-  let paths='',legend='';
-  slices.forEach((s,i)=>{
-    if(s.value===0)return;
-    const angle=(s.value/total)*2*Math.PI;
-    const endAngle=startAngle+angle;
-    const x1=CX+R*Math.cos(startAngle),y1=CY+R*Math.sin(startAngle);
-    const x2=CX+R*Math.cos(endAngle),y2=CY+R*Math.sin(endAngle);
-    const x3=CX+r*Math.cos(endAngle),y3=CY+r*Math.sin(endAngle);
-    const x4=CX+r*Math.cos(startAngle),y4=CY+r*Math.sin(startAngle);
-    const large=angle>Math.PI?1:0;
-    paths+=`<path d="M${x1},${y1} A${R},${R} 0 ${large} 1 ${x2},${y2} L${x3},${y3} A${r},${r} 0 ${large} 0 ${x4},${y4} Z" fill="${s.color}" opacity="0.92"/>`;
-    const ly=22+i*20;
-    legend+=`<rect x="${CX*2+10}" y="${ly-9}" width="12" height="12" rx="3" fill="${s.color}"/>
-      <text x="${CX*2+26}" y="${ly}" font-size="11" fill="#334155" font-family="Inter,sans-serif">${s.label} (${s.value})</text>`;
-    startAngle=endAngle;
-  });
-  const pct=total>0?Math.round(slices[0]?.value/total*100):0;
-  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px;overflow:visible">
-    ${paths}
-    <text x="${CX}" y="${CY-4}" text-anchor="middle" font-size="18" font-weight="bold" fill="#0f172a" font-family="Manrope,sans-serif">${pct}%</text>
-    <text x="${CX}" y="${CY+14}" text-anchor="middle" font-size="9" fill="#64748b" font-family="Inter,sans-serif">${slices[0]?.label||''}</text>
-    ${legend}
-  </svg>`;
-}
-
-function renderGrafVinculo(){
-  const el=document.getElementById('graf-vinculo');
-  if(!el)return;
-  const counts={EFETIVO:0,CONTRATADO:0,TEMPORÁRIO:0,CEDIDO:0,'OUTRO':0};
-  ESCOLAS.forEach(e=>{
-    (profsCache[e.inep]||[]).forEach(p=>{
-      const v=p.vinculo||'OUTRO';
-      if(counts[v]!==undefined)counts[v]++;else counts['OUTRO']++;
-    });
-  });
-  const total=Object.values(counts).reduce((a,b)=>a+b,0);
-  if(total===0){el.innerHTML='<div style="text-align:center;color:var(--gray-400);padding:20px;font-size:12.5px">Nenhum professor cadastrado ainda.</div>';return}
-  const cores={EFETIVO:'#0f766e',CONTRATADO:'#d97706',TEMPORÁRIO:'#9333ea',CEDIDO:'#2563eb','OUTRO':'#94a3b8'};
-  const slices=Object.entries(counts).filter(([,v])=>v>0).map(([k,v])=>({label:k,value:v,color:cores[k]}));
-  el.innerHTML=svgDonut(slices,{});
-}
-
-function renderGrafDocs(){
-  const el=document.getElementById('graf-docs');
-  if(!el)return;
-  const data=ESCOLAS.map(e=>{
-    const pct=Math.round(docsCount(e.inep)/6*100);
-    const color=pct===100?'#16a34a':pct>=66?'#d97706':'#dc2626';
-    return{label:e.nome.substring(0,22)+(e.nome.length>22?'…':''),value:pct,color,maxVal:100};
-  }).sort((a,b)=>b.value-a.value);
-  el.innerHTML=svgBar(data,{width:380,labelW:150,barH:18,gap:6,maxVal:100,suffix:'%'});
-}
-
-function renderGrafHab(){
-  const el=document.getElementById('graf-hab');
-  if(!el)return;
-  let sim=0,nao=0,semForm=0;
-  ESCOLAS.forEach(e=>{
-    (profsCache[e.inep]||[]).forEach(p=>{
-      const forms=p.formacoes||[];
-      if(!forms.length){semForm++;return}
-      forms.some(f=>f.parecer==='NÃO HABILITADO')?nao++:sim++;
-    });
-  });
-  const total=sim+nao+semForm||1;
-  if(sim+nao+semForm===0){el.innerHTML='<div style="text-align:center;color:var(--gray-400);padding:20px;font-size:12.5px">Nenhum professor cadastrado.</div>';return}
-  const slices=[
-    {label:'Habilitados',value:sim,color:'#16a34a'},
-    {label:'Não Habilitados',value:nao,color:'#dc2626'},
-    {label:'Sem Formação',value:semForm,color:'#94a3b8'},
-  ].filter(s=>s.value>0);
-  el.innerHTML=svgDonut(slices,{});
-}
-
-function renderGrafValidade(){
-  const el=document.getElementById('graf-validade');
-  if(!el)return;
-  const grupos={'2026':0,'2027':0,'2028':0,'2029+':0,'Indefinido':0};
-  ESCOLAS.forEach(e=>{
-    const v=e.validade||'—';
-    if(v.includes('2026'))grupos['2026']++;
-    else if(v.includes('2027'))grupos['2027']++;
-    else if(v.includes('2028'))grupos['2028']++;
-    else if(v==='—'||!v)grupos['Indefinido']++;
-    else grupos['2029+']++;
-  });
-  const cores={'2026':'#dc2626','2027':'#d97706','2028':'#0f766e','2029+':'#2563eb','Indefinido':'#94a3b8'};
-  const data=Object.entries(grupos).filter(([,v])=>v>0).map(([k,v])=>({label:'Vence em '+k,value:v,color:cores[k]}));
-  const maxV=Math.max(...data.map(d=>d.value),1);
-  el.innerHTML=svgBar(data,{width:380,labelW:140,barH:22,gap:8,maxVal:maxV,suffix:' escola(s)'});
-}
-
-// ── SOLICITAÇÕES / NOTIFICAÇÕES ────────────────────────────────────
-async function carregarNotificacoes(){
-  const tbody=document.getElementById('tbody-notif');
-  if(!tbody)return;
-  tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-400)">🔄 Carregando...</td></tr>';
-  try{
-    const snap=await db.collection('notificacoes').get();
-    const notifs=snap.docs.map(d=>({id:d.id,...d.data()}));
-    notifs.sort((a,b)=>(b.criadoEm||'').localeCompare(a.criadoEm||''));
-    if(!notifs.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-400)">Nenhum comunicado enviado ainda.</td></tr>';return}
-    const tipoIcon={'urgente':'🔴','atencao':'🟡','info':'🔵','sucesso':'✅'};
-    const destNome=(d)=>d==='todas'?'📢 Todas':ESCOLAS.find(e=>e.inep===d)?.nome?.substring(0,20)||d;
-    tbody.innerHTML=notifs.map(n=>`<tr>
-      <td style="font-size:12px">${esc(destNome(n.destinatario))}</td>
-      <td style="font-weight:600;font-size:12.5px">${esc(n.titulo)||'—'}</td>
-      <td><span class="badge badge-${n.tipo==='urgente'?'red':n.tipo==='atencao'?'amber':n.tipo==='sucesso'?'green':'blue'}">${tipoIcon[n.tipo]||'📌'} ${esc(n.tipo)||'info'}</span></td>
-      <td style="font-size:12px">${esc(n.prazo)||'—'}</td>
-      <td style="font-size:12px;color:var(--gray-500)">${n.criadoEm?new Date(n.criadoEm).toLocaleString('pt-BR'):'—'}</td>
-      <td style="text-align:right">
-        <button class="btn btn-secondary btn-sm" onclick="excluirNotif('${esc(n.id)}')" style="color:var(--red)">🗑️</button>
-      </td>
-    </tr>`).join('');
-  }catch(e){
-    tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--red)">❌ Erro: ${esc(e.message)}</td></tr>`;
-    console.error(e);
-  }
-}
-
-async function enviarNotificacao(){
-  const titulo=document.getElementById('not-titulo')?.value?.trim();
-  const dest=document.getElementById('not-dest')?.value;
-  const tipo=document.getElementById('not-tipo')?.value||'info';
-  const msg=document.getElementById('not-msg')?.value?.trim();
-  const prazo=document.getElementById('not-prazo')?.value?.trim();
-  if(!titulo||!msg){adminToast('⚠️ Preencha título e mensagem.');return}
-  try{
-    await db.collection('notificacoes').add({
-      titulo,destinatario:dest,tipo,mensagem:msg,prazo:prazo||'',
-      criadoPor:adminUser,criadoEm:new Date().toISOString()
-    });
-    adminToast('✅ Comunicado enviado com sucesso!');
-    document.getElementById('not-titulo').value='';
-    document.getElementById('not-msg').value='';
-    document.getElementById('not-prazo').value='';
-    document.getElementById('not-dest').value='todas';
-    document.getElementById('not-tipo').value='info';
-    carregarNotificacoes();
-  }catch(e){adminToast('❌ Erro: '+e.message,'err');console.error(e)}
-}
-
-async function excluirNotif(id){
-  if(!adminUser){adminToast('⛔ Sessão expirada.','err');return}
-  if(!confirm('Excluir este comunicado?'))return;
-  try{
-    await db.collection('notificacoes').doc(id).delete();
-    adminToast('✅ Comunicado excluído.','ok');
-    carregarNotificacoes();
-  }catch(e){adminToast('❌ Erro: '+e.message,'err');console.error(e)}
-}
-
-function renderSolicitacoes(){
-  carregarNotificacoes();
-}
-
-// ── ESCRITURAÇÃO DOCS ─────────────────────────────────────────────
-let escritDocCache = {}; // { inep: [ {id, tipo, url, ...} ] }
-
-async function carregarEscritDocs(){
-  // Populate school selector
-  const sel = document.getElementById('escrit-escola-sel');
-  if(sel && sel.options.length <= 1){
-    ESCOLAS.forEach(e=>{
-      const opt = document.createElement('option');
-      opt.value = e.inep; opt.textContent = e.nome;
-      sel.appendChild(opt);
-    });
-  }
-  const tbody = document.getElementById('tbody-escrit-docs');
-  if(!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--gray-400)">🔄 Carregando...</td></tr>';
-  escritDocCache = {};
-  try{
-    await Promise.all(ESCOLAS.map(async e=>{
-      try{
-        const snap = await db.collection('escolas').doc(e.inep).collection('documentos_escrituracao').get();
-        escritDocCache[e.inep] = snap.docs.map(d=>({id:d.id,...d.data(),_escolaNome:e.nome,_inep:e.inep}));
-      }catch(err){ escritDocCache[e.inep] = []; }
-    }));
-    renderEscritDocs();
-  }catch(e){
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--red)">❌ Erro ao carregar: ${esc(e.message)}</td></tr>`;
-  }
-}
-
-function renderEscritDocs(){
-  const tbody = document.getElementById('tbody-escrit-docs');
-  if(!tbody) return;
-  const sel = document.getElementById('escrit-escola-sel');
-  const filtroInep = sel ? sel.value : '';
-  let docs = [];
-  ESCOLAS.forEach(e=>{
-    if(filtroInep && e.inep !== filtroInep) return;
-    (escritDocCache[e.inep]||[]).forEach(d=>docs.push(d));
-  });
-  docs.sort((a,b)=>(b.criadoEm||'').localeCompare(a.criadoEm||''));
-  if(!docs.length){
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--gray-400)">Nenhum documento de escrituração enviado ainda.</td></tr>';
-    return;
-  }
-  tbody.innerHTML = docs.map(d=>{
-    const dt = d.criadoEm ? new Date(d.criadoEm).toLocaleString('pt-BR') : '—';
-    const sz = d.tamanhoBytes ? Math.round(d.tamanhoBytes/1024)+' KB' : '—';
-    const dl = (d.url||'').replace('/upload/','/upload/fl_attachment/');
-    return `<tr>
-      <td style="font-weight:600;font-size:12px">${esc(d._escolaNome||d.escola||'—').substring(0,28)}</td>
-      <td style="font-size:12.5px">${esc(d.tipo||'—')}</td>
-      <td style="font-size:12px;color:var(--gray-500)">${esc(d.descricao||'—')}</td>
-      <td style="font-size:12px;color:var(--gray-500)">${dt}</td>
-      <td style="font-size:12px;color:var(--gray-400)">${sz}</td>
-      <td style="text-align:right">
-        <a href="${dl}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">📥 Baixar</a>
-      </td>
-    </tr>`;
-  }).join('');
-}
-
-// ── GLOBAL ERROR BOUNDARY ────────────────────────────────────────
-window.addEventListener('unhandledrejection',ev=>{
-  const msg=ev.reason?.message||'Erro desconhecido';
-  if(msg.includes('permission-denied'))adminToast('⛔ Permissão negada no Firestore.');
-  else if(msg.includes('unavailable')||msg.includes('network'))adminToast('📡 Sem conexão. Verifique a internet.');
-  else if(msg.includes('FAILED_PRECONDITION')||msg.includes('index'))adminToast('⚠️ Índice Firestore pendente.');
-  ev.preventDefault();
-  console.error('Unhandled:',ev.reason);
-});
-function esc(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
-let _adminAttempts=0,_adminLocked=false,_adminLockTimer=null;
-let _adminSessionTimer=null,_adminSessionWarnTimer=null;
-
-// Restaura bloqueio admin do sessionStorage
-(function(){
-  try{
-    if(sessionStorage.getItem('_sisppe_admin_locked')){
-      const until=parseInt(sessionStorage.getItem('_sisppe_admin_locked'));
-      if(until>Date.now()){
-        _adminLocked=true;
-        setTimeout(()=>{_adminLocked=false;sessionStorage.removeItem('_sisppe_admin_locked')},until-Date.now());
-      }else{sessionStorage.removeItem('_sisppe_admin_locked');}
-    }
-  }catch(e){}
-})();
-
-function _loginDelay(ms){return new Promise(r=>setTimeout(r,ms));}
-
-function _resetAdminSession(){
-  clearTimeout(_adminSessionTimer);clearTimeout(_adminSessionWarnTimer);
-  _adminSessionWarnTimer=setTimeout(()=>{adminToast('⏱ Sessão expirará em 5 minutos por inatividade.')},7*60*60*1000+55*60*1000);
-  _adminSessionTimer=setTimeout(()=>{doAdminLogout();alert('Sessão administrativa encerrada por inatividade.')},8*60*60*1000);
-}
-
-async function doAdminLogin(){
-  if(_adminLocked){document.getElementById('loginErr').textContent='⛔ Muitas tentativas. Aguarde 5 minutos.';document.getElementById('loginErr').style.display='block';return;}
-  const u=document.getElementById('admUser').value.trim();
-  const p=document.getElementById('admPass').value.trim();
-
-  const btn=document.querySelector('.btn-enter');
-  if(btn){btn.disabled=true;btn.textContent='Verificando...';}
-
-  // Delay artificial em toda tentativa
-  await _loginDelay(400+Math.floor(Math.random()*350));
-
-  if(!ADMIN_USERS[u]||ADMIN_USERS[u]!==p){
-    // Limpa senha imediatamente
-    document.getElementById('admPass').value='';
-    if(btn){btn.disabled=false;btn.textContent='Entrar no Painel';}
-
-    _adminAttempts++;
-    if(_adminAttempts>=5){
-      _adminLocked=true;
-      const until=Date.now()+300000;
-      try{sessionStorage.setItem('_sisppe_admin_locked',String(until));}catch(e){}
-      clearTimeout(_adminLockTimer);
-      _adminLockTimer=setTimeout(()=>{_adminLocked=false;_adminAttempts=0;try{sessionStorage.removeItem('_sisppe_admin_locked');}catch(e){}},300000);
-    }
-    document.getElementById('loginErr').textContent='⚠️ Usuário ou senha incorretos.';
-    document.getElementById('loginErr').style.display='block';return;
-  }
-
-  _adminAttempts=0;
-  document.getElementById('loginErr').style.display='none';
-  if(btn){btn.disabled=false;btn.textContent='Entrar no Painel';}
-  adminUser=u;
-
-  const nomes={'36064572353':'Jobenemar C. dos Santos — Presidente COMEP','comep':'COMEP','admin':'Administrador'};
-  document.getElementById('sb-usuario').textContent=nomes[u]||'COMEP';
-
-  _resetAdminSession();
-  ['mousemove','keydown','click','touchstart'].forEach(ev=>
-    document.addEventListener(ev,_resetAdminSession,{passive:true})
-  );
-
-  document.getElementById('page-login').classList.add('hide');
-  setTimeout(()=>{
-    document.getElementById('page-app').classList.add('show');
-    navAdmin('dashboard');
-    carregarTodosDados();
-  },350);
-}
-
-function doAdminLogout(){
-  adminUser=null;
-  docsCache={};fichasCache={};statusCache={};profsCache={};qaCache={};
-  clearTimeout(_adminSessionTimer);clearTimeout(_adminSessionWarnTimer);
-  _adminSessionTimer=null;_adminSessionWarnTimer=null;
-  ['mousemove','keydown','click','touchstart'].forEach(ev=>
-    document.removeEventListener(ev,_resetAdminSession)
-  );
-  document.getElementById('page-app').classList.remove('show');
-  document.getElementById('page-login').classList.remove('hide');
-  document.getElementById('admPass').value='';
-  document.getElementById('admUser').value='';
-}
-
-// ── NAVEGAÇÃO ─────────────────────────────────────────────────────
-function navAdmin(view){
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
-  const viewEl=document.getElementById('view-'+view);
-  if(!viewEl){console.warn('navAdmin: view não encontrada:',view);return;}
-  viewEl.classList.add('active');
-  const ni=document.getElementById('nav-'+view);if(ni)ni.classList.add('active');
-  if(view==='escolas')renderEscolas();
-  else if(view==='documentos')renderDocumentos();
-  else if(view==='alertas')renderAlertas();
-  else if(view==='pendencias')renderPendencias();
-  else if(view==='habilitacao')renderHabilitacao();
-  else if(view==='infraestrutura')renderInfra();
-  else if(view==='relatorio')renderRelatorio();
-  else if(view==='graficos')renderGraficos();
-  else if(view==='solicitacoes')renderSolicitacoes();
-  else if(view==='escrituracao'){carregarEscritDocs();}
-}
-
-// ── CARGA DE DADOS ────────────────────────────────────────────────
-async function carregarTodosDados(){
-  if(!adminUser)return;
-  document.getElementById('dash-time').textContent='🔄 Carregando dados... '+new Date().toLocaleString('pt-BR');
-  const promises=ESCOLAS.map(async e=>{
-    try{
-      const [docsSnap,fichaSnap,profsSnap,qaSnap]=await Promise.all([
-        db.collection('escolas').doc(e.inep).collection('documentos').get(),
-        db.collection('escolas').doc(e.inep).get(),
-        db.collection('escolas').doc(e.inep).collection('professores').get(),
-        db.collection('escolas').doc(e.inep).collection('quadro_admin').get()
-      ]);
-      const tipos=new Set();
-      docsSnap.forEach(d=>tipos.add(d.data().tipo));
-      docsCache[e.inep]=tipos;
-      if(fichaSnap.exists){
-        fichasCache[e.inep]=fichaSnap.data();
-        statusCache[e.inep]={bloqueado:fichaSnap.data().bloqueado||false,situacao:fichaSnap.data().situacao||'ativa'};
-      }else{
-        fichasCache[e.inep]=null;
-        statusCache[e.inep]={bloqueado:false,situacao:'ativa'};
+      if (!user || !pass) {
+        $alert.classList.add('show');
+        $alertMsg.textContent = 'Preencha usuário e senha.';
+        return;
       }
-      profsCache[e.inep]=profsSnap.docs.map(d=>({id:d.id,...d.data()}));
-      qaCache[e.inep]=qaSnap.docs.map(d=>({id:d.id,...d.data()}));
-    }catch(err){
-      docsCache[e.inep]=new Set();fichasCache[e.inep]=null;
-      statusCache[e.inep]={bloqueado:false,situacao:'ativa'};
-      profsCache[e.inep]=[];qaCache[e.inep]=[];
+
+      // Rate limit
+      const check = SISPPeSecurity.checkRateLimit('admin_login');
+      if (!check.allowed) {
+        $rateLimit.classList.add('show');
+        let sec = check.remainingSeconds;
+        const el = document.getElementById('adminCountdown');
+        const iv = setInterval(() => {
+          el.textContent = sec--;
+          if (sec < 0) { clearInterval(iv); $rateLimit.classList.remove('show'); }
+        }, 1000);
+        return;
+      }
+
+      $btnLogin.disabled = true;
+      $btnLogin.innerHTML = '<span class="spinner"></span> Verificando...';
+      $alert.classList.remove('show');
+
+      try {
+        // Admin login via Firebase Auth
+        const email = user + '@admin.sisppe.comep.com.br';
+        const cred = await signInWithEmailAndPassword(auth, email, pass);
+
+        // Verificar se é admin via custom claims
+        const token = await cred.user.getIdTokenResult();
+        if (token.claims.role !== 'admin') {
+          await signOut(auth);
+          $alert.classList.add('show');
+          $alertMsg.textContent = 'Acesso negado. Você não tem permissão de administrador.';
+          return;
+        }
+
+        await SISPPeSecurity.registrarAuditLog(db, {
+          acao: 'ADMIN_LOGIN',
+          uid: cred.user.uid,
+          usuario: SISPPeSecurity.sanitizar(user)
+        });
+
+      } catch (error) {
+        $alert.classList.add('show');
+        if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found') {
+          $alertMsg.textContent = 'Usuário ou senha inválidos.';
+        } else {
+          $alertMsg.textContent = 'Erro de autenticação. Tente novamente.';
+        }
+      } finally {
+        $btnLogin.disabled = false;
+        $btnLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar no Painel';
+      }
+    });
+
+    document.getElementById('adminPass').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') $btnLogin.click();
+    });
+
+    // ══════════════════════════════════════════════════════
+    // AUTH STATE
+    // ══════════════════════════════════════════════════════
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const token = await user.getIdTokenResult();
+        if (token.claims.role === 'admin') {
+          $loginScreen.style.display = 'none';
+          $portal.classList.add('active');
+          loadAdminDashboard();
+
+          SISPPeSecurity.iniciarTimeoutSessao(
+            () => document.getElementById('adminSessionWarning').classList.add('show'),
+            () => { signOut(auth); alert('Sessão encerrada por inatividade.'); }
+          );
+        } else {
+          await signOut(auth);
+        }
+      } else {
+        $loginScreen.style.display = '';
+        $portal.classList.remove('active');
+        SISPPeSecurity.pararTimeoutSessao();
+      }
+    });
+
+    // ══════════════════════════════════════════════════════
+    // LOGOUT
+    // ══════════════════════════════════════════════════════
+    document.getElementById('btnAdminLogout').addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (confirm('Sair do painel administrativo?')) {
+        await signOut(auth);
+      }
+    });
+
+    // ══════════════════════════════════════════════════════
+    // NAVIGATION
+    // ══════════════════════════════════════════════════════
+    document.querySelectorAll('[data-admin-page]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        const page = el.dataset.adminPage;
+        document.querySelectorAll('.admin-page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.admin-sidebar a').forEach(a => a.classList.remove('active'));
+        document.getElementById(page)?.classList.add('active');
+        el.classList.add('active');
+        document.getElementById('adminSidebar').classList.remove('open');
+      });
+    });
+
+    // ══════════════════════════════════════════════════════
+    // LOAD ADMIN DASHBOARD
+    // ══════════════════════════════════════════════════════
+    async function loadAdminDashboard() {
+      try {
+        const escolasSnap = await getDocs(collection(db, 'escolas'));
+        const escolas = [];
+        let docsCompletos = 0, fichasPreenchidas = 0, emAnalise = 0, bloqueadas = 0;
+
+        escolasSnap.forEach(doc => {
+          const data = doc.data();
+          escolas.push({ id: doc.id, ...data });
+
+          if (data.docsCount >= 6) docsCompletos++;
+          if (data.fichaPreenchida) fichasPreenchidas++;
+          if (data.status === 'em_analise') emAnalise++;
+          if (data.status === 'bloqueada') bloqueadas++;
+        });
+
+        document.getElementById('admTotalEscolas').textContent = escolas.length;
+        document.getElementById('admDocsCompletos').textContent = docsCompletos;
+        document.getElementById('admFichasPreenchidas').textContent = fichasPreenchidas;
+        document.getElementById('admEmAnalise').textContent = emAnalise;
+        document.getElementById('admBloqueadas').textContent = bloqueadas;
+
+        // Populate schools table
+        const tbody = document.getElementById('tblEscolasBody');
+        if (escolas.length > 0) {
+          tbody.innerHTML = escolas.map(e => {
+            const inep = SISPPeSecurity.corrigirINEP(e.inep || '');
+            const nome = SISPPeSecurity.sanitizar(e.nome || e.nomeEscola || '—');
+            const zona = e.zonaRural ? 'Rural' : 'Urbana';
+            const status = e.status === 'bloqueada' ? '<span class="badge badge-danger">Bloqueada</span>' :
+                          e.status === 'em_analise' ? '<span class="badge badge-warning">Em Análise</span>' :
+                          '<span class="badge badge-success">Ativa</span>';
+            const validade = e.validade ? new Date(e.validade.seconds * 1000).toLocaleDateString('pt-BR') : '—';
+
+            return `<tr>
+              <td><code>${SISPPeSecurity.sanitizar(inep)}</code></td>
+              <td><strong>${nome}</strong></td>
+              <td>${validade}</td>
+              <td>${zona}</td>
+              <td>${e.docsCount || 0}/6</td>
+              <td>${e.fichaPreenchida ? '<span class="badge badge-success">OK</span>' : '<span class="badge badge-warning">Pendente</span>'}</td>
+              <td>${status}</td>
+              <td><button class="btn btn-sm btn-outline">Detalhes</button></td>
+            </tr>`;
+          }).join('');
+        }
+
+        // Load audit logs
+        loadAuditLogs();
+
+      } catch (error) {
+        console.error('Erro ao carregar dashboard admin:', error);
+      }
     }
-  });
-  await Promise.all(promises);
-  renderDashboard();
-  document.getElementById('dash-time').textContent='✅ Atualizado em: '+new Date().toLocaleString('pt-BR');
-}
 
-function docsCount(inep){return DOCS_OBRIG.filter(t=>docsCache[inep]&&docsCache[inep].has(t)).length;}
-function isCompleto(inep){return docsCount(inep)===6;}
-function isBloqueado(inep){return statusCache[inep]&&statusCache[inep].bloqueado;}
+    // ══════════════════════════════════════════════════════
+    // LOAD AUDIT LOGS
+    // ══════════════════════════════════════════════════════
+    async function loadAuditLogs() {
+      try {
+        const q = query(collection(db, 'audit_logs'), orderBy('timestamp', 'desc'), limit(50));
+        const snap = await getDocs(q);
+        const tbody = document.getElementById('tblAuditBody');
 
-// ── DASHBOARD ─────────────────────────────────────────────────────
-function renderDashboard(){
-  document.getElementById('dash-time').textContent='Atualizado em: '+new Date().toLocaleString('pt-BR');
+        if (snap.empty) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:2rem; color:var(--text-light);">Nenhum log registrado.</td></tr>';
+          return;
+        }
 
-  const completos=ESCOLAS.filter(e=>isCompleto(e.inep)).length;
-  const fichas=ESCOLAS.filter(e=>fichasCache[e.inep]?.ficha&&Object.keys(fichasCache[e.inep].ficha).length>0).length;
-  const bloqueadas=ESCOLAS.filter(e=>isBloqueado(e.inep)).length;
-  const emAnalise=ESCOLAS.filter(e=>statusCache[e.inep]&&statusCache[e.inep].situacao==='em_analise').length;
+        tbody.innerHTML = '';
+        snap.forEach(doc => {
+          const d = doc.data();
+          const ts = d.timestamp?.toDate?.() ? d.timestamp.toDate().toLocaleString('pt-BR') : '—';
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><code style="font-size:0.75rem;">${SISPPeSecurity.sanitizar(ts)}</code></td>
+            <td><span class="badge badge-info">${SISPPeSecurity.sanitizar(d.acao || '—')}</span></td>
+            <td>${SISPPeSecurity.sanitizar(d.uid?.substring(0, 8) || d.executadoPor?.substring(0, 8) || '—')}...</td>
+            <td>${SISPPeSecurity.sanitizar(d.escolaId || d.escola || '—')}</td>
+            <td style="font-size:0.75rem; max-width:200px; overflow:hidden; text-overflow:ellipsis;">${SISPPeSecurity.sanitizar(JSON.stringify(d.alterados || d.motivo || '').substring(0, 100))}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (error) {
+        console.error('Erro logs:', error);
+      }
+    }
 
-  document.getElementById('kpi-docs').textContent=completos;
-  document.getElementById('kpi-fichas').textContent=fichas;
-  document.getElementById('kpi-bloq').textContent=bloqueadas;
-  document.getElementById('kpi-analise').textContent=emAnalise;
-
-  // Alertas
-  const alertasHtml=buildAlertasHtml(3);
-  document.getElementById('dash-alertas-body').innerHTML=alertasHtml;
-
-  // Progresso
-  let prog='';
-  ESCOLAS.slice(0,8).forEach(e=>{
-    const pct=Math.round(docsCount(e.inep)/6*100);
-    const cor=pct===100?'prog-green':pct>=50?'prog-amber':'prog-red';
-    prog+=`<div style="margin-bottom:12px">
-      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-        <span style="color:var(--gray-700);font-weight:600">${e.nome.substring(0,30)}${e.nome.length>30?'…':''}</span>
-        <span style="color:var(--gray-500)">${pct}%</span>
-      </div>
-      <div class="prog-wrap"><div class="prog-fill ${cor}" style="width:${pct}%"></div></div>
-    </div>`;
-  });
-  document.getElementById('dash-progresso-body').innerHTML=prog;
-}
-
-function buildAlertasHtml(limit=99){
-  let html='';
-  const hoje=new Date();
-  const esc2026=ESCOLAS.filter(e=>e.validade==='31/12/2026');
-  const escSemDoc=ESCOLAS.filter(e=>docsCount(e.inep)<6);
-  const escBloq=ESCOLAS.filter(e=>isBloqueado(e.inep));
-
-  if(escBloq.length){
-    escBloq.slice(0,limit).forEach(e=>{
-      html+=`<div class="alerta-item alerta-critico"><div class="alerta-icon">⛔</div><div class="alerta-text"><strong>${e.nome}</strong><span>Escola bloqueada pelo COMEP.</span></div></div>`;
+    // Filters
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        // Filter logic would go here
+      });
     });
-  }
-  esc2026.slice(0,limit).forEach(e=>{
-    html+=`<div class="alerta-item alerta-urgente"><div class="alerta-icon">🔴</div><div class="alerta-text"><strong>${e.nome}</strong><span>Credenciamento vence em 31/12/2026 — renovação urgente.</span></div></div>`;
-  });
-  escSemDoc.slice(0,limit).forEach(e=>{
-    const pend=6-docsCount(e.inep);
-    html+=`<div class="alerta-item alerta-atencao"><div class="alerta-icon">📋</div><div class="alerta-text"><strong>${e.nome}</strong><span>${pend} documento(s) obrigatório(s) pendentes.</span></div></div>`;
-  });
-  if(!html)html='<div style="color:var(--green);font-size:13px">✅ Nenhum alerta crítico no momento.</div>';
-  return html;
-}
-
-// ── ESCOLAS ───────────────────────────────────────────────────────
-function filtrarEscolas(filtro,btn){
-  filtroAtual=filtro;
-  document.querySelectorAll('#escola-filters .filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderEscolas();
-}
-
-function renderEscolas(){
-  let lista=ESCOLAS;
-  if(filtroAtual==='pendentes')lista=lista.filter(e=>!isCompleto(e.inep));
-  else if(filtroAtual==='completas')lista=lista.filter(e=>isCompleto(e.inep));
-  else if(filtroAtual==='venc2026')lista=lista.filter(e=>e.validade==='31/12/2026');
-  else if(filtroAtual==='rural')lista=lista.filter(e=>e.rural==='SIM');
-  else if(filtroAtual==='urbana')lista=lista.filter(e=>e.rural==='NÃO');
-  else if(filtroAtual==='bloqueadas')lista=lista.filter(e=>isBloqueado(e.inep));
-
-  const rows=lista.map(e=>{
-    const qtd=docsCount(e.inep);
-    const pct=Math.round(qtd/6*100);
-    const temFicha=!!(fichasCache[e.inep]?.ficha&&Object.keys(fichasCache[e.inep].ficha).length>0);
-    const bloq=isBloqueado(e.inep);
-    const sit=statusCache[e.inep]?.situacao||'ativa';
-    const vencBadge=e.validade==='31/12/2026'?'badge-red':e.validade==='31/12/2027'?'badge-amber':e.validade==='—'?'badge-gray':'badge-green';
-    const sitBadge=bloq?'badge-red':sit==='em_analise'?'badge-amber':'badge-green';
-    const sitLabel=bloq?'⛔ Bloqueada':sit==='em_analise'?'🔍 Em Análise':'✅ Ativa';
-    return `<tr>
-      <td style="font-size:11px;color:var(--gray-400)">${e.inep}</td>
-      <td style="font-weight:600">${e.nome}</td>
-      <td><span class="badge ${vencBadge}">${e.validade}</span></td>
-      <td><span class="badge ${e.rural==='SIM'?'badge-amber':'badge-blue'}">${e.rural}</span></td>
-      <td>
-        <span style="font-size:12px">${qtd}/6</span>
-        <div class="prog-wrap" style="width:80px"><div class="prog-fill ${pct===100?'prog-green':pct>=50?'prog-amber':'prog-red'}" style="width:${pct}%"></div></div>
-      </td>
-      <td><span class="badge ${temFicha?'badge-green':'badge-gray'}">${temFicha?'✔ Sim':'— Não'}</span></td>
-      <td><span class="badge ${sitBadge}">${sitLabel}</span></td>
-      <td>
-        <div style="display:flex;gap:4px">
-          <button class="btn btn-secondary btn-sm" onclick="abrirModalStatus('${e.inep}','${e.nome}')">Status</button>
-          ${temFicha?`<button class="btn btn-danger btn-sm" title="Limpar ficha de teste" onclick="limparFicha('${e.inep}','${esc(e.nome)}')">🗑 Ficha</button>`:''}
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-
-  document.getElementById('tbody-escolas').innerHTML=rows||'<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--gray-400)">Nenhuma escola encontrada com este filtro.</td></tr>';
-}
-
-// ── DOCUMENTOS ────────────────────────────────────────────────────
-function renderDocumentos(){
-  const rows=ESCOLAS.map(e=>{
-    const cols=DOCS_OBRIG.map(tipo=>
-      docsCache[e.inep]&&docsCache[e.inep].has(tipo)
-        ?`<td>✅</td>`
-        :`<td style="color:var(--red);font-weight:700">—</td>`
-    ).join('');
-    const pct=Math.round(docsCount(e.inep)/6*100);
-    return `<tr><td style="font-weight:600;font-size:12px">${esc(e.nome.substring(0,25))}${e.nome.length>25?'…':''}</td>${cols}<td><span class="badge ${pct===100?'badge-green':pct>=50?'badge-amber':'badge-red'}">${pct}%</span></td></tr>`;
-  }).join('');
-  document.getElementById('tbody-docs').innerHTML=rows;
-}
-
-// ── ALERTAS ───────────────────────────────────────────────────────
-function renderAlertas(){
-  let html='<div style="margin-bottom:16px">';
-  html+='<div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px">⛔ Crítico — Bloqueadas</div>';
-  const bloq=ESCOLAS.filter(e=>isBloqueado(e.inep));
-  if(bloq.length)bloq.forEach(e=>{html+=`<div class="alerta-item alerta-critico"><div class="alerta-icon">⛔</div><div class="alerta-text"><strong>${e.nome}</strong><span>Escola bloqueada. Acesso suspenso pelo COMEP.</span></div></div>`;});
-  else html+='<div style="color:var(--gray-500);font-size:12.5px;padding:8px 0">Nenhuma escola bloqueada.</div>';
-
-  html+='</div><div style="margin-bottom:16px">';
-  html+='<div style="font-size:13px;font-weight:700;color:#f97316;margin-bottom:10px">🔴 Urgente — Vencendo 2026</div>';
-  const venc26=ESCOLAS.filter(e=>e.validade==='31/12/2026');
-  venc26.forEach(e=>{html+=`<div class="alerta-item alerta-urgente"><div class="alerta-icon">🔴</div><div class="alerta-text"><strong>${e.nome}</strong><span>Parecer ${e.parecer} · Vence em 31/12/2026. Solicitar recredenciamento até 01/10/2026.</span></div></div>`;});
-
-  html+='</div><div style="margin-bottom:16px">';
-  html+='<div style="font-size:13px;font-weight:700;color:var(--amber);margin-bottom:10px">🟡 Atenção — Vencendo 2027</div>';
-  ESCOLAS.filter(e=>e.validade==='31/12/2027').forEach(e=>{html+=`<div class="alerta-item alerta-atencao"><div class="alerta-icon">🟡</div><div class="alerta-text"><strong>${e.nome}</strong><span>Parecer ${e.parecer} · Vence em 31/12/2027. Monitorar para recredenciamento 2027.</span></div></div>`;});
-
-  html+='</div><div>';
-  html+='<div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:10px">📋 Pendências de Documentos</div>';
-  const pend=ESCOLAS.filter(e=>!isCompleto(e.inep));
-  pend.forEach(e=>{const n=6-docsCount(e.inep);html+=`<div class="alerta-item alerta-info"><div class="alerta-icon">📋</div><div class="alerta-text"><strong>${e.nome}</strong><span>${n} documento(s) obrigatório(s) pendentes de envio.</span></div></div>`;});
-  if(!pend.length)html+='<div style="color:var(--green);font-size:12.5px;padding:8px 0">✅ Todas as escolas enviaram os documentos obrigatórios.</div>';
-  html+='</div>';
-  document.getElementById('alertas-body').innerHTML=html;
-}
-
-// ── PENDÊNCIAS ────────────────────────────────────────────────────
-function renderPendencias(){
-  const pend=ESCOLAS.filter(e=>!isCompleto(e.inep));
-  if(!pend.length){document.getElementById('pend-body').innerHTML='<div style="color:var(--green);padding:20px;font-size:14px">✅ Todas as escolas estão com documentos completos.</div>';return;}
-  let html='<div class="panel"><div class="panel-body" style="padding:0"><table class="data-table"><thead><tr><th>Escola</th>';
-  DOCS_OBRIG.forEach(t=>html+=`<th style="font-size:10px">${t.substring(0,12)}…</th>`);
-  html+='</tr></thead><tbody>';
-  pend.forEach(e=>{
-    html+=`<tr><td style="font-weight:600;font-size:12px">${e.nome.substring(0,28)}</td>`;
-    DOCS_OBRIG.forEach(t=>{
-      html+=docsCache[e.inep]&&docsCache[e.inep].has(t)?`<td>✅</td>`:`<td style="color:var(--red)">❌</td>`;
-    });
-    html+='</tr>';
-  });
-  html+='</tbody></table></div></div>';
-  document.getElementById('pend-body').innerHTML=html;
-}
-
-// ── HABILITAÇÃO ─────────────────────────────────────────────────────────
-
-function toggleHabRow(inep){
-  const row=document.getElementById('hab-expand-'+inep);
-  const btn=document.querySelector('#hab-row-'+inep+' button');
-  if(!row||!btn)return;
-  const vis=row.style.display!=='none';
-  row.style.display=vis?'none':'table-row';
-  btn.textContent=vis?'⌄':'⌃';
-}
-function renderHabilitacao(){
-  // ---- KPIs globais ----
-  let habSim=0,habNao=0,totProfs=0,totQASim=0,totQANao=0;
-
-  ESCOLAS.forEach(e=>{
-    // Professores (subcollection nova)
-    const profs=(profsCache&&profsCache[e.inep])||[];
-    totProfs+=profs.length;
-    profs.forEach(p=>{
-      const forms=p.formacoes||[];
-      if(forms.length===0){ habNao++; return; }
-      const temNao=forms.some(f=>f.parecer==='NÃO HABILITADO');
-      const temSim=forms.some(f=>f.parecer==='HABILITADO');
-      if(temSim&&!temNao)habSim++;
-      else habNao++;
-    });
-    // Quadro admin
-    const qa=(qaCache&&qaCache[e.inep])||[];
-    qa.forEach(m=>{
-      if((m.habilitacao||'HABILITADO')==='HABILITADO')totQASim++;
-      else totQANao++;
-    });
-  });
-
-  const tot=habSim+habNao;
-  document.getElementById('hab-taxa').textContent=tot>0?Math.round(habSim/tot*100)+'%':'—';
-  document.getElementById('hab-sim').textContent=habSim||'—';
-  document.getElementById('hab-nao').textContent=habNao||'—';
-
-  // ---- Tabela por Escola ----
-  const rows=ESCOLAS.map(e=>{
-    const profs=(profsCache&&profsCache[e.inep])||[];
-    const total=profs.length;
-    let sim=0,nao=0;
-    profs.forEach(p=>{
-      const forms=p.formacoes||[];
-      const temNao=forms.some(f=>f.parecer==='NÃO HABILITADO');
-      const temSim=forms.some(f=>f.parecer==='HABILITADO');
-      if(forms.length===0)nao++;
-      else if(temSim&&!temNao)sim++;
-      else nao++;
-    });
-    const taxa=sim+nao>0?Math.round(sim/(sim+nao)*100)+'%':'—';
-    const profRows2=profs.map(p=>{
-      const pforms=p.formacoes||[];
-      const pNao=pforms.some(f=>f.parecer==='NÃO HABILITADO');
-      const pSim=pforms.some(f=>f.parecer==='HABILITADO');
-      let pHab,pColor;
-      if(!pforms.length){pHab='Sem formação';pColor='color:#94a3b8'}
-      else if(pSim&&!pNao){pHab='✅ Habilitado';pColor='color:var(--green)'}
-      else{pHab='❌ Não Habilitado';pColor='color:var(--red)'}
-      return `<tr style="background:#f8fafc">
-        <td style="padding:6px 12px 6px 32px;font-size:12px">${esc(p.nome)||'—'}</td>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">${esc(p.vinculo)||'—'} / ${esc(p.funcao)||'—'}</td>
-        <td colspan="2" style="padding:6px 12px;font-size:12px;${pColor};font-weight:600">${esc(pHab)}</td>
-        <td style="padding:6px 12px;font-size:11px;color:#94a3b8">${pforms.map(f=>esc(f.tipo)+': '+esc(f.curso).substring(0,20)).join(' | ')||'—'}</td>
-      </tr>`;
-    }).join('');
-    return `<tr id="hab-row-${e.inep}">
-      <td>
-        <button onclick="toggleHabRow('${e.inep}')" style="border:none;background:none;cursor:pointer;font-size:13px;padding:2px 4px" title="Expandir professores">⌄</button>
-        <span style="font-weight:600;font-size:12px">${e.nome.substring(0,30)}</span>
-      </td>
-      <td>${total||'—'}</td>
-      <td style="color:var(--green)">${sim||'—'}</td>
-      <td style="color:var(--red)">${nao||'—'}</td>
-      <td><span class="badge ${sim+nao>0?(sim/(sim+nao))>=.8?'badge-green':'badge-amber':'badge-gray'}">${taxa}</span></td>
-    </tr>
-    ${total>0?`<tr id="hab-expand-${e.inep}" style="display:none">
-      <td colspan="5" style="padding:0;border-bottom:2px solid var(--teal-pale,#ccfbf1)">
-        <table style="width:100%;border-collapse:collapse;background:#f8fafc">
-          <thead><tr>
-            <th style="padding:6px 12px 6px 32px;font-size:10.5px;color:#64748b;text-align:left">PROFESSOR(A)</th>
-            <th style="padding:6px 12px;font-size:10.5px;color:#64748b;text-align:left">VÍNCULO / FUNÇÃO</th>
-            <th colspan="2" style="padding:6px 12px;font-size:10.5px;color:#64748b;text-align:left">HABILITAÇÃO</th>
-            <th style="padding:6px 12px;font-size:10.5px;color:#64748b;text-align:left">FORMAÇÕES</th>
-          </tr></thead>
-          <tbody>${profRows2}</tbody>
-        </table>
-      </td>
-    </tr>`:''}`;
-  }).join('');
-  document.getElementById('tbody-hab').innerHTML=rows;
-
-  // ---- Tabela Quadro Administrativo ----
-  let qaRows='';
-  ESCOLAS.forEach(e=>{
-    const qa=(qaCache&&qaCache[e.inep])||[];
-    if(!qa.length)return;
-    qa.forEach(m=>{
-      const h=m.habilitacao||'HABILITADO';
-      const hbdg=h==='HABILITADO'
-        ?'<span class="badge badge-green">✅ HABILITADO</span>'
-        :'<span class="badge badge-red">❌ NÃO HABILITADO</span>';
-      const cbdg=m.cargo==='Diretor(a)'?'badge-teal':m.cargo==='Secretário(a) Escolar'?'badge-amber':'badge-blue';
-      qaRows+=`<tr>
-        <td style="font-size:11.5px;color:var(--gray-400)">${esc(e.inep)}</td>
-        <td style="font-weight:600;font-size:12.5px">${esc(e.nome).substring(0,28)}</td>
-        <td style="font-weight:600">${esc(m.nome)||'—'}</td>
-        <td><span class="badge ${cbdg}">${esc(m.cargo)||'—'}</span></td>
-        <td style="font-size:12px">${esc(m.formacao)||'—'}</td>
-        <td>${hbdg}</td>
-      </tr>`;
-    });
-  });
-  document.getElementById('tbody-hab-qa').innerHTML=qaRows||
-    '<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--gray-400)">Nenhum membro do quadro administrativo cadastrado ainda.</td></tr>';
-
-  // ---- Tabela Professores detalhada ----
-  let profRows='';
-  ESCOLAS.forEach(e=>{
-    const profs=(profsCache&&profsCache[e.inep])||[];
-    if(!profs.length)return;
-    profs.forEach(p=>{
-      const forms=p.formacoes||[];
-      // Habilitação geral: HABILITADO se ao menos 1 formação habilitada e NENHUMA não habilitada
-      const temNao=forms.some(f=>f.parecer==='NÃO HABILITADO');
-      const temSim=forms.some(f=>f.parecer==='HABILITADO');
-      let hGeral,hBdg;
-      if(forms.length===0){hGeral='SEM FORMAÇÃO';hBdg='<span class="badge badge-gray">⚠️ SEM FORMAÇÃO</span>';}
-      else if(temSim&&!temNao){hGeral='HABILITADO';hBdg='<span class="badge badge-green">✅ HABILITADO</span>';}
-      else{hGeral='NÃO HABILITADO';hBdg='<span class="badge badge-red">❌ NÃO HABILITADO</span>';}
-      const vbdg=p.vinculo==='EFETIVO'?'badge-teal':p.vinculo==='CONTRATADO'?'badge-amber':'badge-gray';
-      // Lotações com habilitação
-      const lots=(p.atribuicoes||[]).map(a=>`<div style="font-size:11px;padding:2px 0;border-bottom:1px solid #f1f5f9">
-        <span style="font-weight:600">${esc(a.disciplina)}</span>
-        <span style="color:#64748b"> · ${esc(a.etapa)}</span>
-        ${a.turno?`<span style="color:#94a3b8"> · ${esc(a.turno)}</span>`:''}
-        <span style="${a.habilitacao==='HABILITADO'?'color:var(--green)':'color:var(--red)'};font-weight:700;margin-left:6px">${a.habilitacao==='HABILITADO'?'✅':'❌'} ${esc(a.habilitacao)||'—'}</span>
-      </div>`).join('');
-      profRows+=`<tr>
-        <td style="font-size:11px;color:var(--gray-400)">${esc(e.inep)}</td>
-        <td style="font-size:12px;color:var(--gray-500)">${esc(e.nome).substring(0,22)}</td>
-        <td style="font-weight:600">${esc(p.nome)||'—'}</td>
-        <td><span class="badge ${vbdg}">${esc(p.vinculo)||'—'}</span></td>
-        <td style="font-size:12px">${esc(p.funcao)||'—'}</td>
-        <td>${hBdg}</td>
-        <td style="min-width:220px">${lots||'<span style="color:var(--gray-400);font-size:11px">Sem lotação</span>'}</td>
-      </tr>`;
-    });
-  });
-  document.getElementById('tbody-hab-profs').innerHTML=profRows||
-    '<tr><td colspan="7" style="text-align:center;padding:16px;color:var(--gray-400)">Nenhum professor cadastrado ainda. Os professores são cadastrados pelas escolas no Portal.</td></tr>';
-}
-
-// ── INFRAESTRUTURA ────────────────────────────────────────────────
-function renderInfra(){
-  const instDados={ppp:0,regimento:0,conselho:0,calendario:0};
-  ESCOLAS.forEach(e=>{
-    const f=fichasCache[e.inep];
-    if(!f)return;
-    const es=f.escrituracao||{};
-    if(es['ei-ppp'])instDados.ppp++;
-    if(es['ei-reg'])instDados.regimento++;
-    if(es['ei-cons'])instDados.conselho++;
-    if(es['ei-cal'])instDados.calendario++;
-  });
-  const n=ESCOLAS.length;
-  document.getElementById('infra-instrumentos').innerHTML=
-    ['PPP','Regimento Escolar','Conselho Escolar','Calendário'].map((label,i)=>{
-      const key=Object.keys(instDados)[i];
-      const v=instDados[key];
-      const pct=Math.round(v/n*100);
-      return `<div style="margin-bottom:14px">
-        <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px">
-          <span style="font-weight:600">${label}</span>
-          <span style="color:var(--gray-500)">${v}/${n} (${pct}%)</span>
-        </div>
-        <div class="prog-wrap"><div class="prog-fill ${pct>=80?'prog-green':pct>=50?'prog-amber':'prog-red'}" style="width:${pct}%"></div></div>
-      </div>`;
-    }).join('');
-
-  const funcMap={};
-  ESCOLAS.forEach(e=>{
-    const f=fichasCache[e.inep];
-    (f?.escrituracao?.funcionarios_admin||[]).forEach(fn=>{
-      const func=fn.funcao||'Sem função';
-      funcMap[func]=(funcMap[func]||0)+1;
-    });
-  });
-  const funcHtml=Object.entries(funcMap).sort((a,b)=>b[1]-a[1]).map(([k,v])=>
-    `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--gray-100);font-size:12.5px"><span>${k}</span><span class="badge badge-blue">${v}</span></div>`
-  ).join('');
-  document.getElementById('infra-funcionarios').innerHTML=funcHtml||'<div style="color:var(--gray-400);font-size:12.5px">Nenhum funcionário cadastrado nas fichas.</div>';
-
-  // Escrituração: sistema utilizado
-  const sistemas = {};
-  ESCOLAS.forEach(e=>{
-    const f = fichasCache[e.inep];
-    const es = f?.escrituracao||{};
-    const sis = es.sistema_escrituracao||'Não informado';
-    sistemas[sis] = (sistemas[sis]||0)+1;
-  });
-  const sisEl = document.getElementById('infra-sistemas');
-  if(sisEl){
-    const sisHtml = Object.entries(sistemas).sort((a,b)=>b[1]-a[1]).map(([k,v])=>
-      `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--gray-100);font-size:12.5px"><span>${esc(k)}</span><span class="badge badge-teal">${v}</span></div>`
-    ).join('');
-    sisEl.innerHTML = sisHtml||'<div style="color:var(--gray-400);font-size:12.5px">Sem dados.</div>';
-  }
-}
-
-// ── RELATÓRIO ─────────────────────────────────────────────────────
-function renderRelatorio(){
-  const rows=ESCOLAS.map(e=>{
-    const qtd=docsCount(e.inep);
-    const bloq=isBloqueado(e.inep);
-    const sit=statusCache[e.inep]?.situacao||'ativa';
-    const sitLabel=bloq?'⛔ Bloqueada':sit==='em_analise'?'🔍 Em Análise':'✅ Ativa';
-    return `<tr>
-      <td style="font-size:11px;color:var(--gray-400)">${e.inep}</td>
-      <td style="font-weight:600;font-size:12px">${esc(e.nome)}</td>
-      <td><span class="badge ${e.rural==='SIM'?'badge-amber':'badge-blue'}">${e.rural}</span></td>
-      <td>${e.validade}</td>
-      <td style="font-size:11px">${e.parecer}</td>
-      <td><span class="badge ${qtd===6?'badge-green':qtd>=3?'badge-amber':'badge-red'}">${qtd}/6</span></td>
-      <td>${sitLabel}</td>
-    </tr>`;
-  }).join('');
-  document.getElementById('tbody-relatorio').innerHTML=rows;
-
-  // Timeline de vencimentos
-  const grupos={'2026':[],'2027':[],'2028':[],'2030':[],'Indefinido':[]};
-  ESCOLAS.forEach(e=>{
-    const ano=e.validade==='—'?'Indefinido':e.validade.split('/')[2];
-    if(grupos[ano])grupos[ano].push(e.nome);
-    else grupos['Indefinido'].push(e.nome);
-  });
-  let timeline='';
-  Object.entries(grupos).forEach(([ano,lista])=>{
-    if(!lista.length)return;
-    const cor=ano==='2026'?'var(--red)':ano==='2027'?'var(--amber)':ano==='Indefinido'?'var(--gray-400)':'var(--green)';
-    timeline+=`<div style="margin-bottom:16px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:12px;height:12px;border-radius:50%;background:${cor};flex-shrink:0"></div><strong style="font-size:13px;color:var(--navy)">${ano}</strong><span style="font-size:12px;color:var(--gray-500)">(${lista.length} escola${lista.length>1?'s':''})</span></div><div style="padding-left:22px;font-size:12px;color:var(--gray-600)">${lista.join(' · ')}</div></div>`;
-  });
-  document.getElementById('timeline-venc').innerHTML=timeline;
-}
-
-function gerarRelatorioCSV(){
-  const header='INEP,Escola,Rural,Validade,Parecer,Docs,Status\n';
-  const rows=ESCOLAS.map(e=>{
-    const qtd=docsCount(e.inep);
-    const sit=isBloqueado(e.inep)?'Bloqueada':(statusCache[e.inep]?.situacao||'ativa');
-    return `${e.inep},"${e.nome}",${e.rural},${e.validade},${e.parecer},${qtd}/6,${sit}`;
-  }).join('\n');
-  const blob=new Blob(['\uFEFF'+header+rows],{type:'text/csv;charset=utf-8;'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='SISPPe_Relatorio_'+new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')+'.csv';a.click();
-  URL.revokeObjectURL(url);
-  adminToast('✅ CSV exportado com sucesso!');
-}
-
-// ── MODAL STATUS ──────────────────────────────────────────────────
-function abrirModalStatus(inep,nome){
-  modalInep=inep;
-  document.getElementById('modal-status-desc').textContent=nome;
-  const sit=statusCache[inep]?.situacao||'ativa';
-  document.getElementById('modal-status-sel').value=isBloqueado(inep)?'bloqueada':sit;
-  document.getElementById('modal-status-obs').value='';
-  document.getElementById('modal-status').classList.add('show');
-}
-function fecharModalStatus(){document.getElementById('modal-status').classList.remove('show');modalInep=null;}
-
-async function limparFicha(inep,nome){
-  if(!adminUser){adminToast('⛔ Sessão expirada.','err');return}
-  if(!confirm(`Apagar os dados de ficha da escola "${nome}"?\n\nEsta ação remove apenas os dados da ficha escolar (Identificação, Endereço, Características, etc.) e não pode ser desfeita.`))return;
-  try{
-    await db.collection('escolas').doc(inep).update({ficha:firebase.firestore.FieldValue.delete()});
-    // Atualiza cache local
-    if(fichasCache[inep])delete fichasCache[inep].ficha;
-    renderEscolas();renderDashboard();
-    adminToast(`✅ Ficha de "${nome}" removida com sucesso.`,'ok');
-  }catch(e){adminToast('❌ Erro ao limpar ficha: '+e.message,'err');console.error(e)}
-}
-
-async function confirmarStatus(){
-  if(!modalInep)return;
-  const sit=document.getElementById('modal-status-sel').value;
-  const obs=document.getElementById('modal-status-obs').value.trim();
-  const bloq=sit==='bloqueada';
-  try{
-    await db.collection('escolas').doc(modalInep).set({
-      bloqueado:bloq,
-      situacao:sit,
-      ...(obs&&{motivo_bloqueio:obs}),
-      atualizadoPorComep:adminUser,
-      atualizadoEm:new Date().toISOString()
-    },{merge:true});
-    statusCache[modalInep]={bloqueado:bloq,situacao:sit};
-    fecharModalStatus();
-    renderEscolas();
-    renderDashboard();
-    adminToast(`✅ Status atualizado: ${sit}`,'ok');
-  }catch(e){adminToast('❌ Erro: '+e.message,'err');}
-}
-
-function fecharModal(){document.getElementById('modal-bloqueio').classList.remove('show');modalInep=null;}
-async function confirmarBloqueio(){
-  if(!modalInep)return;
-  const motivo=document.getElementById('modal-motivo').value.trim();
-  try{
-    await db.collection('escolas').doc(modalInep).set({
-      bloqueado:true,situacao:'bloqueada',
-      ...(motivo&&{motivo_bloqueio:motivo}),
-      atualizadoPorComep:adminUser,atualizadoEm:new Date().toISOString()
-    },{merge:true});
-    statusCache[modalInep]={bloqueado:true,situacao:'bloqueada'};
-    fecharModal();renderEscolas();renderDashboard();
-    adminToast('✅ Escola bloqueada com sucesso.');
-  }catch(e){adminToast('❌ Erro: '+e.message,'err');console.error(e)}
-}
-
-// ── TOAST ─────────────────────────────────────────────────────────
-function adminToast(msg,type=''){const t=document.getElementById('adminToast');t.textContent=msg;t.className='toast'+(type?' '+type:'');t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',4000);}
-
-// ── INIT ──────────────────────────────────────────────────────────
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.getElementById('page-app').classList.contains('show'))doAdminLogin();});
-</script>
+  </script>
 </body>
 </html>
