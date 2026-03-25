@@ -12,6 +12,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="security.js"></script>
   <script src="security.js"></script>
 <style>
 /* ── RESET ── */
@@ -1344,6 +1345,14 @@ async function doLogin(){
     if(btn){btn.disabled=false;btn.textContent='Entrar no Portal';}
     return;
   }
+  // Validação CPF com dígitos verificadores
+  if(typeof SEC!=='undefined'&&!SEC.validarCPF(cpf.replace(/\D/g,''))){
+    document.getElementById('lerr').textContent='⚠️ CPF inválido. Verifique os dígitos.';
+    document.getElementById('lerr').style.display='block';
+    document.getElementById('inpPw').value='';
+    if(btn){btn.disabled=false;btn.textContent='Entrar no Portal';}
+    return;
+  }
   const match=Object.values(USERS).find(u=>u.cpf===cpf&&u.pw===pw);
 
   if(!match){
@@ -2050,6 +2059,7 @@ async function uploadDoc(){
   const ext=arquivo.name.split('.').pop().toLowerCase();
   if(!['pdf','jpg','jpeg'].includes(ext)){toast('Use PDF ou JPG.','err');return}
   if(typeof SEC!=='undefined'){const _vf=await SEC.validarArquivo(arquivo);if(!_vf.ok){toast('❌ '+_vf.erros.join(' '),'err');btn.disabled=BLQ;btn.innerHTML='📤 Enviar Documento';return;}}
+  if(typeof SEC!=='undefined'){const _vf=await SEC.validarArquivo(arquivo);if(!_vf.ok){toast('❌ '+_vf.erros.join(' '),'err');btn.disabled=BLQ;btn.innerHTML='📤 Enviar Documento';return;}}
   const mimeOk={'pdf':'application/pdf','jpg':'image/jpeg','jpeg':'image/jpeg'};
   if(arquivo.type&&arquivo.type!==mimeOk[ext]&&!(ext==='pdf'&&arquivo.type==='application/pdf')){
     toast('Tipo de arquivo inválido. Use PDF ou JPG.','err');return;
@@ -2497,6 +2507,7 @@ async function uploadDoces(){
   const ext=arquivo.name.split('.').pop().toLowerCase();
   if(!['pdf','jpg','jpeg'].includes(ext)){toast('Use PDF ou JPG/JPEG.','err');return}
   if(typeof SEC!=='undefined'){const _vf=await SEC.validarArquivo(arquivo);if(!_vf.ok){toast('❌ '+_vf.erros.join(' '),'err');if(btn){btn.disabled=BLQ;btn.innerHTML='📤 Enviar Documento';}return;}}
+  if(typeof SEC!=='undefined'){const _vf=await SEC.validarArquivo(arquivo);if(!_vf.ok){toast('❌ '+_vf.erros.join(' '),'err');if(btn){btn.disabled=BLQ;btn.innerHTML='📤 Enviar Documento';}return;}}
   const mimeOkD={'pdf':'application/pdf','jpg':'image/jpeg','jpeg':'image/jpeg'};
   if(arquivo.type&&arquivo.type!==mimeOkD[ext]){
     toast('Tipo de arquivo inválido. Use PDF ou JPG.','err');return;
@@ -2611,6 +2622,9 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&!document.getElementById('pg-login').classList.contains('out'))doLogin()
 });
   /* ── CPF Click-to-Reveal (LGPD) ── */
+document.addEventListener('click',e=>{const el=e.target.closest('.cpf-m');if(!el)return;const cpf=el.dataset.cpf;if(!cpf)return;if(el.textContent.includes('***')){el.textContent=typeof SEC!=='undefined'?SEC.formatarCPF(cpf):cpf;setTimeout(()=>{el.textContent=typeof SEC!=='undefined'?SEC.mascararCPF(cpf):'***.***.***-**';},5000);}});
+(function(){const st=document.createElement('style');st.textContent='.cpf-m{position:relative}.cpf-m:hover::after{content:"Clique p/ ver";position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;white-space:nowrap;pointer-events:none;z-index:10}';document.head.appendChild(st);})();
+/* ── CPF Click-to-Reveal (LGPD) ── */
 document.addEventListener('click',e=>{const el=e.target.closest('.cpf-m');if(!el)return;const cpf=el.dataset.cpf;if(!cpf)return;if(el.textContent.includes('***')){el.textContent=typeof SEC!=='undefined'?SEC.formatarCPF(cpf):cpf;setTimeout(()=>{el.textContent=typeof SEC!=='undefined'?SEC.mascararCPF(cpf):'***.***.***-**';},5000);}});
 (function(){const st=document.createElement('style');st.textContent='.cpf-m{position:relative}.cpf-m:hover::after{content:"Clique p/ ver";position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;white-space:nowrap;pointer-events:none;z-index:10}';document.head.appendChild(st);})();
 </script>
